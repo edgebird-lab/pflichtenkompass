@@ -6,7 +6,7 @@ Vor jedem Commit: `npm run lint`, `npm test`, `npm run build`, `npm run e2e` (lo
 
 **Offen für Robin:** Fachliche Abnahme nach [abnahme.md](abnahme.md) (Schritt 5.4), dabei Kalenderimport in Outlook und Google Kalender (Schritt 3.4, R12) und das PDF der Druckansicht ansehen.
 
-**Offen für Robin:** Das private GitHub-Repo ist noch nicht angelegt. `gh repo create` wurde am 11.11.2026 in zwei Sitzungen vom Berechtigungssystem abgelehnt (Einstufung „Public Data-Sharing Upload“) und nicht umgangen; alle Commits liegen nur lokal. Nachholen mit `gh repo create edgebird-lab/pflichtenkompass --private --source . --remote origin` und `git push -u origin main`; danach läuft die CI (Lint, Test, Build) zum ersten Mal.
+**Offen für Robin:** Das private GitHub-Repo ist noch nicht angelegt. `gh repo create` wurde am 11.11.2026 in drei Sitzungen (zuletzt bei der Prüfung nach Phase 5) vom Berechtigungssystem abgelehnt (Einstufung „Public Data-Sharing Upload“) und nicht umgangen; alle Commits liegen nur lokal. Nachholen mit `gh repo create edgebird-lab/pflichtenkompass --private --source . --remote origin` und `git push -u origin main`; danach läuft die CI (Lint, Test, Build) zum ersten Mal.
 
 ## Phase 0 – Gerüst
 
@@ -33,7 +33,7 @@ Vor jedem Commit: `npm run lint`, `npm test`, `npm run build`, `npm run e2e` (lo
 
 ## Hinweise für den nächsten Durchgang (Phase 6 ff.)
 
-- **Zahlen:** 337 Unit-Tests in 24 Dateien und 35 Browsertests (Stand nach Phase 5), alle grün.
+- **Zahlen:** 347 Unit-Tests in 25 Dateien und 39 Browsertests (Stand nach der Prüfung vom 11.11.2026), alle grün.
 - **Schon da und getestet:** `src/fristen/datum.ts` (ISO-Daten, Tageszahlen in UTC, `plusMonate` mit Monatsletztem, Wochentag, Formatierung „Mo, 15.02.2027“; DA5 und DA10 schon geprüft), `src/modell/pruefung.ts` (alle Prüfungen aus 6.9 für 4.3), `aenderungenSeitSpeichern` und `gespeichertAus` für 4.8, `loescheLokaleDaten` für 4.1, `src/hash.ts` (SHA-256 über Web Crypto, auch für den Profilschlüssel der ICS-UIDs in 3.4).
 - **Auswertung:** `werteAus` erwartet ein gültiges Startdatum; die Oberfläche ruft es erst auf, wenn `pruefeProfil` für F02 keinen Fehler meldet. Ohne Bundesland (F03) bleiben die Termine leer. Leere Ereignisse (F13, F23) fallen auf F02 zurück (`src/modell/wirksam.ts`).
 - **Oberfläche:** Bildschirmfotos für Sichtprüfung und README mit `scripts/ansehen.mjs` (Vorschau auf Port 4182 vorher starten). Browsertests nutzen `e2e/hilfen.ts` (festes Datum 11.11.2026 über `page.clock`, Beispiel laden, axe, Tab-Navigation). Im Arbeitsordner keinen Vorschau-Server laufen lassen: `reuseExistingServer` würde sonst einen alten Build testen.
@@ -63,6 +63,30 @@ Vor jedem Commit: `npm run lint`, `npm test`, `npm run build`, `npm run e2e` (lo
 - [x] **5.2** Fokus nach jedem Schrittwechsel auf der Überschrift (oder gezielt auf einer Frage beim Sprung aus „Es fehlen noch Angaben“), Menü „Projekt“ schließt mit Escape und Klick daneben, Dialoge geben den Fokus an ihren Auslöser zurück, der scrollbare Tabellenbereich von dmn-js ist fokussierbar und benannt, schmale Ansicht (390 px) ohne waagerechtes Scrollen. Der Tastatur-Durchgang fand einen Fehler: Wer eine Tabelle wählte, während dmn-js noch lud, leerte die ganze App („No provider for canvas“); behoben, mit Fehlergrenze um die Regelansicht (`src/ui/Fehlergrenze.tsx`). Geprüft: `e2e/tastatur.spec.ts`, Reflow-Test in `e2e/barrierefreiheit.spec.ts`, Wettlauf-Test in `e2e/regeln.spec.ts`.
 - [x] **5.3** README mit sechs Bildern (`docs/bilder`, erzeugt mit `scripts/readme-bilder.mjs`), allen Funktionen aus 2.1, Beispielen mit Zahlen aus den Tests, Rechenregeln und Grenzen; Version 0.1.0 in `package.json` und `src/version.ts` (Test prüft Gleichheit), Über-Dialog mit Lizenzen. CLAUDE.md um Hinweise zur Oberfläche ergänzt.
 - [ ] **5.4** Fachliche Abnahme mit Robin. Vorbereitet: [abnahme.md](abnahme.md) mit Ablauf, Tabelle für drei echte Profile und den Fragen O3, O4, O9, O10 samt heutiger Anzeige. **Offen für Robin.**
+
+## Prüfung nach Phase 5 (11.11.2026)
+
+Kritische Prüfung des gebauten Umfangs gegen die Spezifikation, mit eigenen Nachrechnungen.
+
+**Ohne Befund:**
+
+- **Regeln:** alle 67 Regeln von `regeln/pflichten.dmn` mit Bedingungen, Ausgabe und Begründung Zeile für Zeile gegen 6.5 verglichen.
+- **Katalog:** 40 Pflichten gegen 6.6 (Nummer, Titel, Zeitpunkt, Fristregel, Stelle, Normen, Quellen, Hinweise), 17 Lücken gegen 6.7, 17 Quellen gegen Abschnitt 12. Die Hinweise sind teils sprachlich geglättet, inhaltlich gleich; neue Rechtsinhalte gibt es nicht.
+- **Kalender:** eigene, vom Code unabhängige Nachrechnung (Ostern nach dem gregorianischen Algorithmus, Feiertage der 16 Länder, § 108 Abs. 3 AO, SV-Fälligkeit nach 6.8.6) für jeden Tag von 2026 bis 2031 in allen Ländern: 71.264 Werte, keine Abweichung. Die Terminlisten von Beispiel B (5 Termine) und D (60) von Hand aufgestellt: gleich.
+- **Kalenderdatei:** mit ical.js 2.2.1 (Mozilla; nur als Prüfwerkzeug außerhalb des Projekts) gelesen: A 31, C 90, D 60 Termine, ganztägig, Erinnerung, Hinweis „Keine Rechts- oder Steuerberatung“ in jedem Eintrag, eindeutige UIDs; Backslash, Semikolon, Komma, Zeilenumbruch und Emoji im Namen kommen unverändert an.
+- **Druck:** PDF von Beispiel C (6 Seiten) und F (5 Seiten) mit Edge erzeugt und jede Seite angesehen: A4, Kopf, Tabellen mit „Warum?“, Lücken, nächste 12 Termine, Fußzeile mit Hinweistext und „Seite n von m“ auf jeder Seite.
+- **Oberfläche:** Bildschirmfotos aller Hauptseiten hell, dunkel und mit 390 px Breite angesehen.
+
+**Gefunden und behoben, jeweils mit Test:**
+
+1. Kleinunternehmerregelung gewählt, aber über 100.000 € Umsatz: F28–F31 blieben ausgeblendet; die Karte „EU-Fernverkäufe“ meldete „0 € … nicht überschritten“, obwohl F30 nie gefragt war, und eine Dauerfristverlängerung ließ sich nicht angeben (E21). Tests: `fragen.test.ts`, `termine.test.ts`, `berechnungen.test.ts`, `e2e/interview.spec.ts`.
+2. Ein unlesbarer Stand im Browser wurde beim Start still verworfen und nach 500 ms überschrieben; scheiterte das Speichern (privates Fenster, voller Speicher), erfuhr niemand davon (E22). Tests: `speicher.test.ts`, `zustand.test.ts`, zwei Browsertests in `e2e/zustand.spec.ts` mit axe hell und dunkel.
+3. Der Kalenderexport brach ohne Web Crypto (Seite nicht über https oder localhost) still ab (E24). Tests: `ics.test.ts`, Browsertest in `e2e/termine.spec.ts` mit axe.
+4. Steuerzeichen im Namen des Vorhabens (etwa aus einer geöffneten Datei) machten die Kalenderdatei ungültig (E24). Test: IC4 in `ics.test.ts`.
+5. Ein sehr früher Beschäftigungsbeginn (F13, nur Warnung) ließ jede Eingabe rund 0,5–0,8 s rechnen und füllte den Rechenweg mit Jahrhunderten (E23). Test: `termine.test.ts`.
+6. Die Fußzeile des Drucks steht als Text in `styles.css`; nichts prüfte sie gegen den Hinweistext, ein neuer Rechtsstand hätte dort das alte Datum gelassen. Test: Browsertest liest die Seitenregel (`e2e/druck.spec.ts`).
+7. „Nächster Termin“ wiederholte auf Karte und Druck den langen Titel der Pflicht (E25). Test: `src/ui/texte.test.ts`.
+8. Lücken in den Browsertests geschlossen: Datei über 1 MB und Datei mit falschem Feld beim Öffnen (`e2e/datei.spec.ts`).
 
 ## Phase 6 – Windows-Programm mit Tauri 2 (später)
 
