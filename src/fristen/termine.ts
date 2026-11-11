@@ -379,6 +379,11 @@ export function termineFuer(pf: Pflicht, k: TerminKontext): Termin[] {
     .sort((a, b) => (a.faelligAm < b.faelligAm ? -1 : a.faelligAm > b.faelligAm ? 1 : 0))
 }
 
+/** Erster Termin ab `heute` (Liste nach Datum sortiert); null, wenn keiner mehr kommt. */
+export function naechsterTermin(termine: readonly Termin[], heute: Datum): Termin | null {
+  return termine.find((t) => t.faelligAm >= heute) ?? null
+}
+
 // Rechenweg für die Pflichtkarte ------------------------------------------------------------
 
 const UST_TEXT: Record<UstZeitraum, string> = { monat: 'monatlich', quartal: 'vierteljährlich', keine: 'keine Voranmeldung' }

@@ -2,7 +2,7 @@ import { beforeAll, describe, expect, it } from 'vitest'
 import xml from '../../regeln/pflichten.dmn?raw'
 import { beispiel } from '../modell/beispiele'
 import type { Beispiel, Profil } from '../modell/typen'
-import { aenderungenSeitSpeichern, bedingungText, gespeichertAus, horizont, istGueltig, vergleiche, werteAus } from './auswertung'
+import { aenderungenSeitSpeichern, bedingungText, gespeichertAus, horizont, istGueltig, nachZeitpunkt, vergleiche, werteAus } from './auswertung'
 import { ladeRegelwerk } from './dmn'
 import type { Ergebnis, Regelwerk } from './typen'
 
@@ -221,5 +221,23 @@ describe('Gültigkeit, Horizont, Neu-Markierung, Warnungen', () => {
     const mitAlterPflicht = { ...gespeichert, pflichten: [...gespeichert.pflichten.map((p) => (p.id === 'impressum' ? { ...p, stand: '2026-01-01' } : p)), { id: 'pflichtAus2025', stand: '2025-12-01' }] }
     expect(aenderungenSeitSpeichern(mitAlterPflicht, e)).toEqual({ neu: [], entfallen: ['pflichtAus2025'], geaendert: ['impressum'] })
     expect(aenderungenSeitSpeichern(null, e)).toEqual({ neu: [], entfallen: [], geaendert: [] })
+  })
+})
+
+describe('Gruppen für die Anzeige (5.3)', () => {
+  it('ordnet nach Zeitpunkt, dann nach nächstem Termin und Katalognummer', () => {
+    const gruppen = nachZeitpunkt(auswerten(beispiel('A').profil).pflichten, HEUTE)
+    expect(gruppen.map((g) => [g.titel, g.pflichten.map((p) => p.pflicht.nr)])).toEqual([
+      ['Vor dem Start', [1, 38, 39]],
+      ['In den ersten Wochen', [8, 2]],
+      ['Laufend', [17, 21, 24, 28, 29]],
+      ['Jährlich', [40, 18, 25]],
+    ])
+  })
+
+  it('stellt Pflichten ohne kommenden Termin hinter die mit Termin', () => {
+    const gruppen = nachZeitpunkt(auswerten(beispiel('A').profil).pflichten, '2027-03-01')
+    expect(gruppen[0].pflichten.map((p) => p.pflicht.nr)).toEqual([1, 38, 39])
+    expect(gruppen[1].pflichten.map((p) => p.pflicht.nr)).toEqual([2, 8])
   })
 })

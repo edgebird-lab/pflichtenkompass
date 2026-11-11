@@ -9,10 +9,10 @@
  * `heute` wird übergeben, nie intern gelesen.
  */
 import { datumText, monatsErster, plusMonate, plusTage } from '../fristen/datum'
-import { rechenweg, termineFuer, type TerminKontext } from '../fristen/termine'
+import { naechsterTermin, rechenweg, termineFuer, type TerminKontext } from '../fristen/termine'
 import { luecke } from '../katalog/luecken'
-import { pflicht } from '../katalog/pflichten'
-import { KATALOG_STAND, KATALOG_VERSION, type LueckeId, type Pflicht, type PflichtId } from '../katalog/typen'
+import { pflicht, ZEITPUNKTE } from '../katalog/pflichten'
+import { KATALOG_STAND, KATALOG_VERSION, type LueckeId, type Pflicht, type PflichtId, type Zeitpunkt } from '../katalog/typen'
 import { frageNummer } from '../modell/fragen'
 import { merkmale, merkmalInfo, wertText } from '../modell/merkmale'
 import { pruefeProfil } from '../modell/pruefung'
@@ -138,4 +138,20 @@ export function fragenText(fragen: readonly FrageId[]): string {
 export function bedingungText(b: Bedingung, mitFragen = false): string {
   const text = `${b.label}: ${wertText(b.merkmal, b.wert)}`
   return mitFragen ? `${text} (${fragenText(b.fragen)})` : text
+}
+
+/**
+ * Gruppen für die Anzeige (5.3): nach Zeitpunkt „Vor dem Start“, „In den ersten Wochen“,
+ * „Laufend“, „Jährlich“; innerhalb der Gruppe nach nächstem Termin ab `heute`, dann nach
+ * Katalognummer. Pflichten ohne kommenden Termin stehen hinter denen mit Termin.
+ */
+export function nachZeitpunkt(pflichten: readonly PflichtErgebnis[], heute: Datum): { zeitpunkt: Zeitpunkt; titel: string; pflichten: PflichtErgebnis[] }[] {
+  const schluessel = (e: PflichtErgebnis) => naechsterTermin(e.termine, heute)?.faelligAm ?? '9999-12-31'
+  return ZEITPUNKTE.map((z) => ({
+    zeitpunkt: z.id,
+    titel: z.titel,
+    pflichten: pflichten
+      .filter((e) => e.pflicht.zeitpunkt === z.id)
+      .sort((a, b) => (schluessel(a) < schluessel(b) ? -1 : schluessel(a) > schluessel(b) ? 1 : a.pflicht.nr - b.pflicht.nr)),
+  })).filter((g) => g.pflichten.length > 0)
 }
