@@ -18,7 +18,7 @@ Vor jedem Commit: `npm run lint`, `npm test`, `npm run build`, `npm run e2e` (lo
 - [x] **1.2** `src/modell/merkmale.ts` nach 6.2 mit Beschreibung aller 26 Merkmale (`MERKMALE`) und Anzeigetexten für „Warum?“ (`wertText`, Beträge über `src/modell/format.ts`). Geprüft: MM1–MM8 und Grenzfälle in `merkmale.test.ts`.
 - [x] **1.3** Katalog in `src/katalog/`: 40 Pflichten (`pflichten.ts`), 17 Quellen (`quellen.ts`), Normlinks und Normtexte (`normen.ts`); [docs/katalog.md](katalog.md) erzeugt mit `npm run doku` (`scripts/katalog-doku.mjs`, `src/katalog/doku.ts`). Geprüft: KA1–KA3, Nummern, Gruppen und Zeitpunkte wie 6.6, jede Norm mit der Quelle ihres Gesetzes, Doku aktuell (`katalog.test.ts`). Kurztexte aus den Begründungen der Regeln (6.5); interne Verweise wie „(O2)“ in Hinweisen als „nicht geprüft“ ausgeschrieben.
 - [x] **1.4** Lücken in `src/katalog/luecken.ts` (17, auch in [katalog.md](katalog.md)), Fragen F01–F32 mit Sichtbarkeit in `src/modell/fragen.ts`, [fragenkatalog.md](fragenkatalog.md) erzeugt (`src/modell/doku.ts`). Schrittliste nach `src/modell/schritte.ts` verschoben. Geprüft: sichtbare Fragen A 21, B 18, C 25, D 27, E 19, F 26 (von Hand gezählt), jede Bedingung aus 5.2 einzeln, Optionen gleich den Aufzählungen, Doku aktuell (`fragen.test.ts`, `luecken.test.ts`).
-- [ ] **1.5** `speicher.ts` (SP1–SP5).
+- [x] **1.5** `src/modell/speicher.ts`: Projektdatei lesen und schreiben (Prüfung mit Feldnamen, höchstens 1 MB, unbekannte Felder ignoriert, Notizen auf 500 Zeichen gekürzt), Browserspeicher mit try/catch, „Lokale Daten löschen“, Einstellungen. Geprüft: SP1–SP5 und Feldfehler in `speicher.test.ts`. Offen für 4.8: SP6 (Änderungshinweis).
 
 ## Phase 2 – DMN-Regelwerk
 
