@@ -4,7 +4,7 @@
  * Deutsche übersetzt; Treffer des Profils sind in DRD und Tabellen markiert. Das
  * bpmn.io-Wasserzeichen bleibt sichtbar (Lizenz, 7.1).
  */
-import NavigatedViewer from 'dmn-js/lib/NavigatedViewer'
+import NavigatedViewer, { type DmnAnsicht } from 'dmn-js/lib/NavigatedViewer'
 import 'dmn-js/dist/assets/diagram-js.css'
 import 'dmn-js/dist/assets/dmn-js-shared.css'
 import 'dmn-js/dist/assets/dmn-js-drd.css'
@@ -57,6 +57,15 @@ function drdLeinwand(v: NavigatedViewer): Leinwand | null {
   }
 }
 
+/** „drd“ oder die ID der Entscheidung, deren Tabelle offen ist. */
+function ansichtId(a: DmnAnsicht): string {
+  return a.type === 'drd' ? 'drd' : a.element.id
+}
+
+function findeAnsicht(v: NavigatedViewer, id: string): DmnAnsicht | undefined {
+  return v.getViews().find((x) => (id === 'drd' ? x.type === 'drd' : x.type === 'decisionTable' && x.element.id === id))
+}
+
 interface Box {
   x: number
   y: number
@@ -91,6 +100,7 @@ export function RegelAnsicht({ treffer, ansicht, onAnsicht }: RegelAnsichtProps)
   const behaelter = useRef<HTMLDivElement>(null)
   const viewer = useRef<NavigatedViewer | null>(null)
   const meldeAnsicht = useRef(onAnsicht)
+  const gewuenscht = useRef(ansicht)
   const [bereit, setBereit] = useState(false)
   const [fehler, setFehler] = useState<string | null>(null)
   const [aktiv, setAktiv] = useState('drd')
@@ -100,18 +110,32 @@ export function RegelAnsicht({ treffer, ansicht, onAnsicht }: RegelAnsichtProps)
   }, [onAnsicht])
 
   useEffect(() => {
+    gewuenscht.current = ansicht
+  }, [ansicht])
+
+  useEffect(() => {
     const c = behaelter.current
     if (!c) return
     const v = new NavigatedViewer({ container: c, drd: { additionalModules: [UEBERSETZUNG] }, decisionTable: { additionalModules: [UEBERSETZUNG] } })
     viewer.current = v
+    // Beim Import öffnet dmn-js von selbst den DRD. Das ist keine Wahl des Benutzers und darf eine
+    // schon getroffene Wahl (Knopf gedrückt, während dmn-js noch lädt) nicht überschreiben. dmn-js
+    // meldet „views.changed“ entprellt (setTimeout 0) mit der dann aktiven Ansicht, also auch erst
+    // nach dem Ende des Imports. Deshalb: vor dem Ende des Imports nichts melden und die gewünschte
+    // Ansicht direkt nach dem Import öffnen (Microtask, also vor der entprellten Meldung).
+    let importiert = false
     v.on('views.changed', ({ activeView }) => {
       if (!activeView) return
-      const id = activeView.type === 'drd' ? 'drd' : activeView.element.id
+      const id = ansichtId(activeView)
       setAktiv(id)
-      meldeAnsicht.current(id)
+      if (importiert) meldeAnsicht.current(id)
     })
     v.importXML(REGELN_XML)
       .then(() => {
+        importiert = true
+        const offen = v.getActiveView()
+        const ziel = findeAnsicht(v, gewuenscht.current)
+        if (ziel && (!offen || ansichtId(offen) !== gewuenscht.current)) void v.open(ziel)
         const canvas = drdLeinwand(v)
         if (canvas) zeigeGanz(canvas)
         setBereit(true)
@@ -123,11 +147,13 @@ export function RegelAnsicht({ treffer, ansicht, onAnsicht }: RegelAnsichtProps)
     }
   }, [])
 
-  // Gewünschte Ansicht öffnen (Knöpfe außerhalb der Leinwand)
+  // Gewünschte Ansicht öffnen (Knöpfe außerhalb der Leinwand); maßgeblich ist, was dmn-js gerade zeigt
   useEffect(() => {
     const v = viewer.current
-    if (!v || !bereit || ansicht === aktiv) return
-    const ziel = v.getViews().find((x) => (ansicht === 'drd' ? x.type === 'drd' : x.type === 'decisionTable' && x.element.id === ansicht))
+    if (!v || !bereit) return
+    const offen = v.getActiveView()
+    if (offen && ansichtId(offen) === ansicht) return
+    const ziel = findeAnsicht(v, ansicht)
     if (ziel) void v.open(ziel)
   }, [ansicht, aktiv, bereit])
 

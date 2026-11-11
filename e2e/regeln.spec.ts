@@ -102,12 +102,20 @@ test('Das Hauptbundle enthält dmn-js nicht; es lädt erst mit der Regelansicht'
 
 test('Eine Tabelle lässt sich wählen, während dmn-js noch lädt', async ({ page }) => {
   const fehler = sammleFehler(page)
+  // Den Teil mit dmn-js verzögern, damit der Klick sicher vor dem Import landet. Ohne Verzögerung
+  // traf der Test den Wettlauf nur auf einem ausgelasteten Rechner: Der Import öffnete den DRD
+  // und überschrieb die schon gewählte Tabelle.
+  await page.route(/\/RegelAnsicht-[^/]*\.js$/, async (route) => {
+    await new Promise((fertig) => setTimeout(fertig, 800))
+    await route.continue()
+  })
   await oeffne(page)
   await ladeBeispiel(page, 'A')
   await geheZu(page, 'Regeln')
   // sofort klicken, ohne auf den DRD zu warten
   await page.getByRole('button', { name: /^Steuern/ }).click()
   await expect(page.locator('.dmn-leinwand .tjs-table')).toBeVisible()
+  await expect(page.getByRole('button', { name: /^Steuern/ })).toHaveAttribute('aria-pressed', 'true')
   await expect(page.getByRole('heading', { level: 1 })).toHaveText('Regeln')
   expect(fehler).toEqual([])
 })
