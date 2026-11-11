@@ -32,7 +32,7 @@ In Arbeit, Version 0.1 entsteht. Erledigte und offene Schritte stehen in [docs/s
 | `src/ui` | React-Oberfläche |
 | `regeln` | `pflichten.dmn` (DMN 1.3) und ihr Prüfwert |
 | `e2e` | Browsertests mit Playwright und axe |
-| `docs` | [Spezifikation](docs/spezifikation.md), [Stand](docs/stand.md), [Entscheidungen](docs/entscheidungen.md), [Lizenzen](docs/lizenzen.md) |
+| `docs` | [Spezifikation](docs/spezifikation.md), [Stand](docs/stand.md), [Entscheidungen](docs/entscheidungen.md), [Pflichtenkatalog](docs/katalog.md), [Fragenkatalog](docs/fragenkatalog.md), [Lizenzen](docs/lizenzen.md) |
 
 Die Fachlogik kennt kein React und ist getestet; `heute` wird ihr immer übergeben.
 
@@ -47,7 +47,13 @@ npm test          # Unit-Tests (Vitest)
 npm run e2e       # Browsertests gegen den Produktions-Build (Port 4182, lokal mit Edge)
 npm run build     # Typprüfung und Produktions-Build
 npm run lint      # oxlint
+npm run doku      # docs/katalog.md und docs/fragenkatalog.md neu erzeugen
+npm run regeln:stand   # Prüfwert der Regeldatei prüfen; nach Änderungen mit --version … --stand …
 ```
+
+## Regeln als DMN 1.3
+
+Ob eine Pflicht gilt, entscheiden sieben Entscheidungstabellen in [`regeln/pflichten.dmn`](regeln/pflichten.dmn) (Hit Policy COLLECT, 67 Regeln, jede mit Begründung). Ihre Eingaben sind 26 Merkmale, die TypeScript aus den Antworten ableitet; die Fristen rechnet TypeScript danach. Die Einträge nutzen eine kleine, getestete Teilmenge von S-FEEL (`-`, Listen, `not(…)`, Vergleiche, Intervalle); alles andere lehnt der Lader ab. Beim Laden prüft die App die Datei (V1–V11): DMN-1.3-Namensraum, COLLECT, Ausgaben im Katalog, bekannte Merkmale und Typen, Begründung je Regel, eindeutige Regel-IDs, jede Pflicht und jede Lücke erreichbar. Ein Differenztest vergleicht die eigene Auswertung mit feelin über alle 570 Einträge der Datei.
 
 ## Datenschutz
 

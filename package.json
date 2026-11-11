@@ -13,7 +13,8 @@
     "lint": "oxlint",
     "preview": "vite preview",
     "e2e": "playwright test",
-    "doku": "node scripts/katalog-doku.mjs"
+    "doku": "node scripts/katalog-doku.mjs",
+    "regeln:stand": "node scripts/regeln-stand.mjs"
   },
   "dependencies": {
     "dmn-js": "^18.0.3",

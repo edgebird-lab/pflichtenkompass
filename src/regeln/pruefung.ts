@@ -1,8 +1,10 @@
 /**
  * Prüfungen des Regelwerks, die über eine einzelne Tabelle hinausgehen
- * (Spezifikation 6.10): Abdeckung aller Pflichten und Lücken (V9, V10) und
- * Vollständigkeit des Katalogs (V11). V1–V8 prüft der Lader in dmn.ts.
+ * (Spezifikation 6.10): Abdeckung aller Pflichten und Lücken (V9, V10),
+ * Vollständigkeit des Katalogs (V11) und Prüfwert der Datei (V12, nur in
+ * Tests und CI). V1–V8 prüft der Lader in dmn.ts.
  */
+import { mitLf, sha256Hex } from '../hash'
 import { LUECKEN } from '../katalog/luecken'
 import { PFLICHTEN } from '../katalog/pflichten'
 import { RECHTSQUELLEN } from '../katalog/quellen'
@@ -39,5 +41,29 @@ export function pruefeKatalog(pflichten: readonly Pflicht[] = PFLICHTEN, luecken
     if (p.gueltigAb && p.gueltigBis && p.gueltigAb > p.gueltigBis) melde(ort, `Gültig ab ${p.gueltigAb} liegt nach gültig bis ${p.gueltigBis}.`)
   }
   if (luecken.map((l) => l.id).join() !== LUECKE_IDS.join()) melde('Lücken', `Die Lückenliste muss genau die ${LUECKE_IDS.length} Lücken in der Reihenfolge der Nummern enthalten.`)
+  return fehler
+}
+
+/** Inhalt von regeln/stand.json. */
+export interface RegelnStand {
+  version: string
+  stand: string
+  sha256: { 'pflichten.dmn': string }
+}
+
+/**
+ * V12, nur in Tests und CI: Der SHA-256 der DMN-Datei (UTF-8, Zeilenenden auf LF
+ * vereinheitlicht) entspricht regeln/stand.json, und Version und Stand dort gleichen
+ * denen des Katalogs. Sonst wurde die Datei geändert, ohne die Version anzuheben.
+ */
+export async function pruefeStand(xml: string, stand: RegelnStand, katalog: { version: string; stand: string }): Promise<Regelfehler[]> {
+  const fehler: Regelfehler[] = []
+  const ist = await sha256Hex(mitLf(xml))
+  if (ist !== stand.sha256['pflichten.dmn']) {
+    fehler.push({ regel: 'V12', ort: 'regeln/pflichten.dmn', meldung: `Regeln geändert: Version und Stand anheben (npm run regeln:stand -- --version … --stand …). Prüfwert ${ist.slice(0, 12)}… statt ${stand.sha256['pflichten.dmn'].slice(0, 12)}….` })
+  }
+  if (stand.version !== katalog.version || stand.stand !== katalog.stand) {
+    fehler.push({ regel: 'V12', ort: 'regeln/stand.json', meldung: `Version ${stand.version} (Stand ${stand.stand}) passt nicht zum Katalog ${katalog.version} (Stand ${katalog.stand}).` })
+  }
   return fehler
 }
