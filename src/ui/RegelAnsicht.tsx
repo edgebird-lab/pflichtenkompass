@@ -43,6 +43,20 @@ function uebersetze(vorlage: string, ersatz?: Record<string, string>): string {
 /** Ersetzt den Übersetzungsdienst von diagram-js und table-js (Modul im didi-Format). */
 const UEBERSETZUNG = { translate: ['value', uebersetze] }
 
+/**
+ * Zeichenfläche des DRD, nur wenn der DRD gerade die aktive Ansicht ist. Wer schnell eine Tabelle
+ * wählt, während dmn-js noch lädt, wechselt die Ansicht vor dem nächsten Zeichnen; dann gibt es
+ * keine Zeichenfläche (diagram-js wirft sonst „No provider for canvas“).
+ */
+function drdLeinwand(v: NavigatedViewer): Leinwand | null {
+  if (v.getActiveView()?.type !== 'drd') return null
+  try {
+    return v.getActiveViewer()?.get<Leinwand>('canvas') ?? null
+  } catch {
+    return null
+  }
+}
+
 interface Box {
   x: number
   y: number
@@ -98,7 +112,7 @@ export function RegelAnsicht({ treffer, ansicht, onAnsicht }: RegelAnsichtProps)
     })
     v.importXML(REGELN_XML)
       .then(() => {
-        const canvas = v.getActiveViewer()?.get<Leinwand>('canvas')
+        const canvas = drdLeinwand(v)
         if (canvas) zeigeGanz(canvas)
         setBereit(true)
       })
@@ -121,7 +135,7 @@ export function RegelAnsicht({ treffer, ansicht, onAnsicht }: RegelAnsichtProps)
   useEffect(() => {
     const v = viewer.current
     if (!v || !bereit || aktiv !== 'drd') return
-    const canvas = v.getActiveViewer()?.get<Leinwand>('canvas')
+    const canvas = drdLeinwand(v)
     if (!canvas) return
     zeigeGanz(canvas)
     const ids = v.getViews().filter((x) => x.type === 'decisionTable').map((x) => x.element.id)

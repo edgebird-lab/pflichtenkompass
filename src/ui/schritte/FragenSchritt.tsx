@@ -9,7 +9,7 @@ export function FragenSchritt({ info }: { info: SchrittInfo }) {
   const fragen = FRAGEN.filter((f) => f.schritt === info.id && f.sichtbar(z.projekt.profil))
   return (
     <div className="schritt">
-      <h1 id="schritt-titel">{info.name}</h1>
+      <h1 id="schritt-titel" tabIndex={-1}>{info.name}</h1>
       <p className="leise">
         Schritt {info.nr} von 5 · {fragen.length === 1 ? '1 Frage' : `${fragen.length} Fragen`}; weitere erscheinen, wenn eine Antwort sie nötig macht.
       </p>

@@ -10,6 +10,7 @@ import { QUELLEN } from '../../katalog/quellen'
 import { KATALOG_STAND, KATALOG_VERSION, type LueckeId, type PflichtId } from '../../katalog/typen'
 import stand from '../../../regeln/stand.json'
 import { SCHRITTE } from '../../zustand'
+import { Fehlergrenze } from '../Fehlergrenze'
 import { useApp } from '../kontext'
 import { ExternerLink } from '../Normen'
 import { Weiterleiste } from './FragenSchritt'
@@ -34,7 +35,7 @@ export function RegelnSchritt() {
 
   return (
     <div className="schritt">
-      <h1 id="schritt-titel">Regeln</h1>
+      <h1 id="schritt-titel" tabIndex={-1}>Regeln</h1>
       <p className="einleitung">
         Ob eine Pflicht gilt, entscheiden sieben Entscheidungstabellen nach DMN 1.3 (Hit Policy COLLECT). Ihre Eingaben sind Merkmale, die die App aus den Antworten ableitet; die Fristen
         rechnet sie danach getrennt. Die Datei <code>regeln/pflichten.dmn</code> lässt sich mit dem Camunda Modeler oder auf demo.bpmn.io öffnen.
@@ -79,9 +80,11 @@ export function RegelnSchritt() {
         </div>
       )}
 
-      <Suspense fallback={<div className="dmn-laden">Regelansicht wird geladen …</div>}>
-        <RegelAnsicht treffer={trefferIds} ansicht={ansicht} onAnsicht={setAnsicht} />
-      </Suspense>
+      <Fehlergrenze titel="Die Regelansicht">
+        <Suspense fallback={<div className="dmn-laden">Regelansicht wird geladen …</div>}>
+          <RegelAnsicht treffer={trefferIds} ansicht={ansicht} onAnsicht={setAnsicht} />
+        </Suspense>
+      </Fehlergrenze>
       <p className="leise klein">Ziehen verschiebt die Übersicht, Strg und Mausrad zoomen. Ein Klick auf das Tabellensymbol einer Entscheidung öffnet ihre Tabelle; markierte Zeilen treffen zu.</p>
 
       {regelwerk && ergebnis && (

@@ -101,3 +101,14 @@ test('Schrittleiste und Start sind per Tastatur erreichbar', async ({ page }) =>
   await page.keyboard.press('Enter')
   await expect(page.getByRole('heading', { level: 1 })).toHaveText('Vorhaben')
 })
+
+test('Schmale Ansicht (390 px) ohne waagerechtes Scrollen in allen Schritten', async ({ page }) => {
+  await page.setViewportSize({ width: 390, height: 844 })
+  await oeffne(page)
+  await ladeBeispiel(page, 'C')
+  for (const s of SCHRITTE) {
+    await geheZu(page, s)
+    // Tabellen und die Regelansicht scrollen in ihrem eigenen Rahmen, die Seite selbst nicht
+    expect(await page.evaluate(() => document.documentElement.scrollWidth - document.documentElement.clientWidth), s).toBeLessThanOrEqual(0)
+  }
+})

@@ -97,9 +97,18 @@ function Hauptfenster() {
   const einstellungenZuruecksetzen = useCallback(() => setEinstellungen({ ...STANDARD_EINSTELLUNGEN }), [])
   const holeDateiFeld = useCallback(() => dateiFeld.current, [])
 
-  const datei = useDateiBefehle({ z, dispatch, ergebnis, heute, melde, dateiFeld: holeDateiFeld, einstellungenZuruecksetzen })
+  // Nach einem Schrittwechsel steht der Fokus auf der neuen Überschrift (oder auf einer Frage), nicht im Nichts
+  const fokusZiel = useRef<string | null>(null)
+  const ladeDispatch = useCallback((a: Parameters<typeof dispatch>[0]) => {
+    if (a.typ === 'laden' || a.typ === 'geloescht') fokusZiel.current = '#schritt-titel'
+    dispatch(a)
+  }, [])
+  const datei = useDateiBefehle({ z, dispatch: ladeDispatch, ergebnis, heute, melde, dateiFeld: holeDateiFeld, einstellungenZuruecksetzen })
 
-  const geheZu = useCallback((schritt: Schritt) => dispatch({ typ: 'schritt', schritt, ergebnis: ergebnisRef.current }), [])
+  const geheZu = useCallback((schritt: Schritt, fokus?: string) => {
+    fokusZiel.current = fokus ?? '#schritt-titel'
+    dispatch({ typ: 'schritt', schritt, ergebnis: ergebnisRef.current })
+  }, [])
 
   // Speichern im Browser, 500 ms nach der letzten Änderung; beim Verlassen der Seite sofort
   useEffect(() => {
@@ -135,7 +144,13 @@ function Hauptfenster() {
 
   useEffect(() => {
     window.scrollTo({ top: 0 })
-  }, [z.schritt])
+    const ziel = fokusZiel.current
+    fokusZiel.current = null
+    if (!ziel) return
+    const element = document.querySelector<HTMLElement>(ziel)
+    element?.focus()
+    if (ziel !== '#schritt-titel') element?.scrollIntoView({ block: 'center' })
+  }, [z.schritt, z.version])
 
   // Strg+S speichert als Datei, Strg+O öffnet (auch in Eingabefeldern)
   useEffect(() => {
@@ -234,6 +249,24 @@ function Kopfzeile({ meldung, onUeber }: { meldung: string; onUeber: () => void 
   const { einstellungen, setzeEinstellungen, datei } = useApp()
   const menue = useRef<HTMLDetailsElement>(null)
   const schliesse = () => menue.current?.removeAttribute('open')
+  useEffect(() => {
+    const taste = (e: KeyboardEvent) => {
+      const d = menue.current
+      if (e.key !== 'Escape' || !d?.open) return
+      d.removeAttribute('open')
+      d.querySelector('summary')?.focus()
+    }
+    const klick = (e: MouseEvent) => {
+      const d = menue.current
+      if (d?.open && !d.contains(e.target as Node)) d.removeAttribute('open')
+    }
+    document.addEventListener('keydown', taste)
+    document.addEventListener('click', klick)
+    return () => {
+      document.removeEventListener('keydown', taste)
+      document.removeEventListener('click', klick)
+    }
+  }, [])
   return (
     <header className="kopf">
       <div className="marke">

@@ -15,7 +15,7 @@ export function StartSchritt() {
 
   return (
     <div className="schritt">
-      <h1 id="schritt-titel">Pflichten-Kompass</h1>
+      <h1 id="schritt-titel" tabIndex={-1}>Pflichten-Kompass</h1>
       <p className="einleitung">
         Der Pflichten-Kompass zeigt Gründerinnen und Gründern, welche Anmeldungen, Meldungen und Fristen auf sie zukommen. Aus rund 20 Fragen entsteht eine begründete Pflichtenliste mit Frist,
         zuständiger Stelle, Rechtsgrundlage, Quelle und Stand. Die App läuft ohne Server und ohne KI; die Antworten bleiben auf diesem Rechner.

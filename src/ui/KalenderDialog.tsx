@@ -22,11 +22,18 @@ export function KalenderDialog({ offen, onSchliessen }: { offen: boolean; onSchl
   const [laeuft, setLaeuft] = useState(false)
   const dialog = useRef<HTMLDialogElement>(null)
 
+  const ausloeser = useRef<HTMLElement | null>(null)
   useEffect(() => {
     const d = dialog.current
     if (!d) return
-    if (offen && !d.open) d.showModal()
-    if (!offen && d.open) d.close()
+    if (offen && !d.open) {
+      ausloeser.current = document.activeElement instanceof HTMLElement ? document.activeElement : null
+      d.showModal()
+    }
+    if (!offen && d.open) {
+      d.close()
+      ausloeser.current?.focus()
+    }
   }, [offen])
 
   const eintraege = ergebnis ? exportEintraege(ergebnis, z.projekt.status, { nurOffene, vergangene: einstellungen.vergangeneExportieren, heute }) : []

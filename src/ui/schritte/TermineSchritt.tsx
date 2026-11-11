@@ -36,7 +36,7 @@ export function TermineSchritt() {
   if (!ergebnis) {
     return (
       <div className="schritt">
-        <h1 id="schritt-titel">Termine</h1>
+        <h1 id="schritt-titel" tabIndex={-1}>Termine</h1>
         <FehlendeAngaben />
         <Weiterleiste info={info} />
       </div>
@@ -50,7 +50,7 @@ export function TermineSchritt() {
 
   return (
     <div className="schritt">
-      <h1 id="schritt-titel">Termine</h1>
+      <h1 id="schritt-titel" tabIndex={-1}>Termine</h1>
       <p className="zusammenfassung">
         <strong>{zeilen.length === 1 ? '1 Termin' : `${zeilen.length} Termine`}</strong> von {datumText(ergebnis.horizont.von)} bis {datumText(ergebnis.horizont.bis)} ({einstellungen.horizontMonate}{' '}
         Monate ab dem Startmonat){vergangen > 0 && `, davon ${vergangen} vor heute`}.

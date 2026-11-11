@@ -59,7 +59,7 @@ export function ErgebnisSchritt() {
   if (!ergebnis) {
     return (
       <div className="schritt">
-        <h1 id="schritt-titel">Ergebnis</h1>
+        <h1 id="schritt-titel" tabIndex={-1}>Ergebnis</h1>
         <FehlendeAngaben />
         <Weiterleiste info={info} />
       </div>
@@ -75,7 +75,7 @@ export function ErgebnisSchritt() {
 
   return (
     <div className="schritt">
-      <h1 id="schritt-titel">Ergebnis</h1>
+      <h1 id="schritt-titel" tabIndex={-1}>Ergebnis</h1>
       <p className="zusammenfassung" data-testid="zusammenfassung">
         <strong>{n === 1 ? '1 Pflicht' : `${n} Pflichten`}</strong> und {l === 1 ? '1 Hinweis' : `${l} Hinweise`} auf nicht geprüfte Bereiche · Katalog {ergebnis.katalogVersion},
         Rechtsstand {datumText(ergebnis.stand)}

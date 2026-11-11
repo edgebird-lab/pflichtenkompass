@@ -25,7 +25,8 @@ export interface AppApi {
   /** Antwort setzen, mit den abhängigen Standardwerten aus 5.2. */
   aendere: (frage: FrageId, wert: Antwort) => void
   setzeStatus: (id: PflichtId, teil: Partial<Omit<PflichtStatus, 'geaendertAm'>>) => void
-  geheZu: (schritt: Schritt) => void
+  /** Wechselt den Schritt; danach steht der Fokus auf der Überschrift oder auf `fokus` (CSS-Selektor). */
+  geheZu: (schritt: Schritt, fokus?: string) => void
   /** Kurze Statusmeldung in der Kopfzeile */
   melde: (text: string) => void
   datei: DateiBefehle

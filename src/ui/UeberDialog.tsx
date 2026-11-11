@@ -14,11 +14,18 @@ const LIZENZEN: readonly [string, string, string][] = [
 
 export function UeberDialog({ offen, onSchliessen }: { offen: boolean; onSchliessen: () => void }) {
   const dialog = useRef<HTMLDialogElement>(null)
+  const ausloeser = useRef<HTMLElement | null>(null)
   useEffect(() => {
     const d = dialog.current
     if (!d) return
-    if (offen && !d.open) d.showModal()
-    if (!offen && d.open) d.close()
+    if (offen && !d.open) {
+      ausloeser.current = document.activeElement instanceof HTMLElement ? document.activeElement : null
+      d.showModal()
+    }
+    if (!offen && d.open) {
+      d.close()
+      ausloeser.current?.focus()
+    }
   }, [offen])
 
   return (

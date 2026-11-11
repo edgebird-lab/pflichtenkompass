@@ -99,3 +99,15 @@ test('Das Hauptbundle enthält dmn-js nicht; es lädt erst mit der Regelansicht'
   await expect(page.locator('.dmn-leinwand .djs-element').first()).toBeVisible()
   expect(geladen.some((u) => /RegelAnsicht-.*\.js$/.test(u))).toBe(true)
 })
+
+test('Eine Tabelle lässt sich wählen, während dmn-js noch lädt', async ({ page }) => {
+  const fehler = sammleFehler(page)
+  await oeffne(page)
+  await ladeBeispiel(page, 'A')
+  await geheZu(page, 'Regeln')
+  // sofort klicken, ohne auf den DRD zu warten
+  await page.getByRole('button', { name: /^Steuern/ }).click()
+  await expect(page.locator('.dmn-leinwand .tjs-table')).toBeVisible()
+  await expect(page.getByRole('heading', { level: 1 })).toHaveText('Regeln')
+  expect(fehler).toEqual([])
+})

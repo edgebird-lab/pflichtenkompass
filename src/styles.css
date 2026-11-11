@@ -114,6 +114,9 @@ textarea {
   outline: 2px solid var(--fokus);
   outline-offset: 2px;
 }
+h1[tabindex='-1']:focus {
+  outline: none;
+}
 
 .leise {
   color: var(--text-2);
@@ -789,8 +792,17 @@ textarea {
   align-items: center;
   padding: 8px 0;
 }
+.filter label {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  min-width: 0;
+  max-width: 100%;
+}
 .filter select {
   width: auto;
+  min-width: 0;
+  max-width: 100%;
 }
 .gruppe {
   margin-top: 1.4rem;
@@ -952,6 +964,11 @@ textarea {
 }
 .rechner select {
   width: auto;
+  max-width: 100%;
+}
+.rechner label {
+  min-width: 0;
+  max-width: 100%;
 }
 input.jahr {
   width: 6em;

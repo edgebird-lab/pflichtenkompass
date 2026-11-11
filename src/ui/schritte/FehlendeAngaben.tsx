@@ -1,6 +1,6 @@
 import { frage, frageNummer } from '../../modell/fragen'
 import { SCHRITTE } from '../../zustand'
-import { fokussiereFrage } from '../fokus'
+import { frageFokus } from '../fokus'
 import { useApp } from '../kontext'
 
 /** Statt eines Ergebnisses: was noch fehlt, mit Sprung zur Frage (6.9: „Ergebnis erst nach Antwort“). */
@@ -27,10 +27,7 @@ export function FehlendeAngaben() {
               <button
                 type="button"
                 className="knopf-link"
-                onClick={() => {
-                  geheZu(f.schritt)
-                  fokussiereFrage(m.frage)
-                }}
+                onClick={() => geheZu(f.schritt, frageFokus(m.frage))}
               >
                 Frage {frageNummer(m.frage)} im Schritt „{schritt?.name}“
               </button>
