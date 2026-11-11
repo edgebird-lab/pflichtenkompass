@@ -11,7 +11,8 @@ declare module 'dmn-moddle' {
   export interface ParseResult {
     rootElement: ModdleElement
     references: unknown[]
-    warnings: { message: string }[]
+    /** Nicht lesbare Teile; dmn-moddle überspringt sie (lax). `error` nennt den Grund, z. B. „duplicate ID <GR01>“. */
+    warnings: { message: string; error?: Error }[]
     elementsById: Record<string, ModdleElement>
   }
 
