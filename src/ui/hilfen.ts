@@ -10,21 +10,3 @@ export function ladeHerunter(dateiname: string, inhalt: string | Blob, typ = 'te
   a.remove()
   setTimeout(() => URL.revokeObjectURL(url), 2000)
 }
-
-/** Dateiname aus dem Namen des Vorhabens: „Café Müller & Söhne“ → „cafe-mueller-soehne“. */
-export function dateiname(name: string, rest: string, ersatz = 'vorhaben'): string {
-  const basis =
-    name
-      .toLocaleLowerCase('de-DE')
-      .replace(/ä/g, 'ae')
-      .replace(/ö/g, 'oe')
-      .replace(/ü/g, 'ue')
-      .replace(/ß/g, 'ss')
-      .normalize('NFD')
-      .replace(/[̀-ͯ]/g, '')
-      .replace(/[^a-z0-9]+/g, '-')
-      .replace(/^-|-$/g, '')
-      .slice(0, 60)
-      .replace(/-$/, '') || ersatz
-  return `${basis}${rest}`
-}

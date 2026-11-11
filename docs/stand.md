@@ -4,6 +4,8 @@ Checkliste aller Schritte aus Abschnitt 11 der [Spezifikation](spezifikation.md)
 
 Vor jedem Commit: `npm run lint`, `npm test`, `npm run build`, `npm run e2e` (lokal mit Edge, Port 4182).
 
+**Offen für Robin:** Kalenderimport in Outlook und Google Kalender von Hand prüfen (Schritt 3.4, R12).
+
 **Offen für Robin:** Das private GitHub-Repo ist noch nicht angelegt. `gh repo create` wurde am 11.11.2026 vom Berechtigungssystem der Claude-Sitzung abgelehnt; alle Commits liegen nur lokal. Nachholen mit `gh repo create edgebird-lab/pflichtenkompass --private --source . --remote origin` und `git push -u origin main`; danach läuft die CI (Lint, Test, Build) zum ersten Mal.
 
 ## Phase 0 – Gerüst
@@ -43,7 +45,7 @@ Vor jedem Commit: `npm run lint`, `npm test`, `npm run build`, `npm run e2e` (lo
 - [x] **3.1** `src/fristen/feiertage.ts` mit feiertagejs 1.5.1: `feiertage(jahr, land, modus)` „sicher“ (ohne Mariä Himmelfahrt in BY) und „möglich“ (plus 24.12., 31.12., Fronleichnam in SN/TH, Augsburger Friedensfest in BY), `istWerktag`, `istArbeitstag`, `naechsterWerktag`, `arbeitstageVor`, `arbeitstagVomMonatsende`, `fristNachEreignis`. `datum.ts` bleibt ohne Feiertage. Geprüft: DA1–DA10, BA1–BA7, Feiertagslisten je Land, Tage um die Zeitumstellung (`feiertage.test.ts`).
 - [x] **3.2** `src/fristen/berechnungen.ts`: `ustZeitraum` und `ustFaelligkeit` (6.8.4, Hinweise Befreiung, O4, Vorjahreswert), `lstZeitraum` und `lstZeitraumAusBasis` (6.8.5, Schätzung O11), `svFaelligkeit` (6.8.6), `eRechnungAb` (6.8.9), `aufbewahrenBis` (6.8.10), `geringfuegigkeitsgrenze` (6.8.11, ganzzahlig in Cent), `kleinunternehmerStatus` (6.8.12). Neu `src/modell/wirksam.ts`: ausgeblendete Antworten wirken nicht, F13 und F23 fallen auf F02 zurück. Geprüft: US1–US9, LS1–LS7, ER1–ER5, AU1–AU4, KU1–KU5, GG1–GG3 und Grenzfälle (`berechnungen.test.ts`).
 - [x] **3.3** `src/fristen/termine.ts`: `termineFuer(pflicht, kontext)` für alle Fristregeln aus 6.8.2–6.8.9 (Abgaben nach § 108 Abs. 3 AO verschoben, Zahlungen unverschoben mit „gesetzlich bis“, OSS ohne, SV einen Arbeitstag vor dem Nachweistag), Horizont-Filter, `rechenweg` für die Pflichtkarte. `werteAus` füllt `termine` und `rechenweg`, sobald F03 beantwortet ist. Ergänzungen E10–E13. Geprüft: TE1–TE12, Sondervorauszahlung und Antrag bei vierteljährlicher Abgabe, OSS über der Schwelle, VerpackDG-Übergang, ESt-Vorauszahlungen, eindeutige Schlüssel in A–F (`termine.test.ts`).
-- [ ] **3.4** `ics.ts` (IC1–IC8); Import in Outlook und Google Kalender von Hand.
+- [x] **3.4** `src/export/ics.ts`: `erzeugeIcs` nach 7.5 (CRLF, Faltung auf 75 Oktette ohne geteilte Zeichen, Escaping, UID aus Pflicht, Terminschlüssel und Profilschlüssel, VALARM nach Einstellung, Beschreibung mit Kurztext, Hinweis, Stelle, Normen, Quelle, Stand, „gesetzlich bis“ und Hinweis „Keine Rechts- oder Steuerberatung.“), `profilSchluessel`, `kalenderDateiname`, `exportEintraege` (nur offene, vergangene). `dateiname` liegt jetzt rein in `src/modell/format.ts`. Geprüft: IC1–IC8 und Auswahl (`ics.test.ts`). **Offen für Robin:** Datei aus Beispiel A von Hand in Outlook und Google Kalender importieren und notieren, ob die Erinnerung übernommen wird (R12); in der Sitzung gibt es keine Kalenderkonten.
 
 ## Phase 4 – Oberfläche
 

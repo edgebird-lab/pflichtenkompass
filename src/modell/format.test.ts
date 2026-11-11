@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { dateiname } from './hilfen'
+import { dateiname } from './format'
 
 describe('Dateinamen', () => {
   it('ersetzt Umlaute und Sonderzeichen', () => {
