@@ -33,12 +33,11 @@ Vor jedem Commit: `npm run lint`, `npm test`, `npm run build`, `npm run e2e` (lo
 
 ## Hinweise für den nächsten Durchgang (Phase 3 ff.)
 
-- **Zahlen:** 212 Unit-Tests in 17 Dateien und 6 Browsertests (Stand nach 2.6), alle grün.
+- **Zahlen:** 336 Unit-Tests in 24 Dateien und 31 Browsertests (Stand nach Phase 4), alle grün.
 - **Schon da und getestet:** `src/fristen/datum.ts` (ISO-Daten, Tageszahlen in UTC, `plusMonate` mit Monatsletztem, Wochentag, Formatierung „Mo, 15.02.2027“; DA5 und DA10 schon geprüft), `src/modell/pruefung.ts` (alle Prüfungen aus 6.9 für 4.3), `aenderungenSeitSpeichern` und `gespeichertAus` für 4.8, `loescheLokaleDaten` für 4.1, `src/hash.ts` (SHA-256 über Web Crypto, auch für den Profilschlüssel der ICS-UIDs in 3.4).
 - **Auswertung:** `werteAus` erwartet ein gültiges Startdatum; die Oberfläche ruft es erst auf, wenn `pruefeProfil` für F02 keinen Fehler meldet. Ohne Bundesland (F03) bleiben die Termine leer. Leere Ereignisse (F13, F23) fallen auf F02 zurück (`src/modell/wirksam.ts`).
-- **4.1–4.3:** Abhängige Standardwerte aus 5.2 (F11 und F17 „ja bei Gastronomie“, F13 und F23 „= F02“, F16 „ja“, F21 „ja bei Onlinehandel mit Privatkunden“, F24 „ja, wenn F22 ≠ keine“) setzt die Oberfläche, wenn die auslösende Antwort sich ändert; das Standardprofil (`src/modell/profil.ts`) enthält die Werte für das leere Profil.
-- **4.4:** Regel ST16 nimmt bei Handwerk mit Privatkunden einen Grundstücksbezug an; die Pflichtkarte „Rechnungen“ hat dafür einen Hinweis.
-- **4.7:** dmn-js-Zeilen tragen die Regel-ID in `data-row-id`; die Bedienung von dmn-js ist englisch („When“, „And“, „Hit policy“, „View DRD“) und braucht ein Übersetzungsmodul. Die Formen im DRD liegen ab y = 150, damit das Namensfeld von dmn-js oben links nichts verdeckt.
+- **Oberfläche:** Bildschirmfotos für Sichtprüfung und README mit `scripts/ansehen.mjs` (Vorschau auf Port 4182 vorher starten). Browsertests nutzen `e2e/hilfen.ts` (festes Datum 11.11.2026 über `page.clock`, Beispiel laden, axe, Tab-Navigation). Im Arbeitsordner keinen Vorschau-Server laufen lassen: `reuseExistingServer` würde sonst einen alten Build testen.
+- **Regelansicht:** dmn-js-Zeilen tragen die Regel-ID in `data-row-id`; die Formen im DRD liegen ab y = 150, damit das Namensfeld von dmn-js oben links nichts verdeckt (`zeigeGanz` in `RegelAnsicht.tsx`).
 
 ## Phase 3 – Fristen, Termine, Kalender
 
@@ -49,14 +48,14 @@ Vor jedem Commit: `npm run lint`, `npm test`, `npm run build`, `npm run e2e` (lo
 
 ## Phase 4 – Oberfläche
 
-- [ ] **4.1** Zustand, Autosave, Start mit Beispielen, Datei öffnen, Lokale Daten löschen.
-- [ ] **4.2** Schritte Vorhaben und Tätigkeit (F01–F11).
-- [ ] **4.3** Schritte Personal, Verkauf, Umsatz und Steuern (F12–F32) mit Prüfungen aus 6.9.
-- [ ] **4.4** Ergebnis (E2).
-- [ ] **4.5** Termine und Kalenderdialog (E3).
-- [ ] **4.6** Druckansicht (E4).
-- [ ] **4.7** Regelansicht mit dmn-js (E6).
-- [ ] **4.8** Datei speichern und öffnen mit Änderungshinweis (E5, SP6).
+- [x] **4.1** `src/zustand.ts` (Reducer mit Antworten, Status, Laden, Löschen, Schritt), Speichern im Browser 500 ms nach der letzten Eingabe und beim Verlassen der Seite, Startseite mit „Neu beginnen“, Beispielen A–F, „Datei öffnen“ und „Lokale Daten löschen“ (danach bleibt der Speicher leer, bis wieder etwas eingegeben wird), Rückfragen als Dialog (`src/ui/RueckfrageDialog.tsx` aus dem Prozesslotsen). Geprüft: `zustand.test.ts`, `e2e/zustand.spec.ts` (Beispiel laden, neu laden, Status bleibt; Speicher nach Löschen leer).
+- [x] **4.2** Fragen-Schritte aus `FRAGEN` (`src/ui/schritte/FragenSchritt.tsx`, `src/ui/FrageFeld.tsx`, `src/ui/Eingaben.tsx`): Label mit Fragenummer, Hilfe mit Normlinks, Radios, Checkboxen, Datumsfeld, Beträge in deutscher Schreibweise; Hilfe-Spalte je Schritt (`src/ui/Hilfe.tsx`); abhängige Standardwerte in `src/modell/antworten.ts` (E16). Geprüft: `antworten.test.ts` (A und D allein aus den Antworten von 9.3), `e2e/interview.spec.ts` (Bedingungen aus 5.2 per Klick).
+- [x] **4.3** Schritte Personal, Verkauf, Umsatz und Steuern mit den Prüfungen aus 6.9: Fehler rot mit `aria-invalid`, Pflichtangaben als ruhiger Hinweis, Warnungen gelb, alles über `aria-describedby` am Feld; Kleinunternehmerstatus in der Hilfe (E15). Geprüft: `e2e/interview.spec.ts` (Fehler und Warnungen am Feld), `format.test.ts` (Beträge lesen).
+- [x] **4.4** Ergebnis (`src/ui/schritte/ErgebnisSchritt.tsx`, `src/ui/Pflichtkarte.tsx`): Gruppen nach Zeitpunkt (`nachZeitpunkt`), Kasten „Nicht geprüft“ mit Sprungmarke, Pflichtkarte mit Frist, nächstem Termin, Stelle, Normlinks, Quellen mit Stand, Hinweisen, Rechenweg, „Warum?“, Status und Notiz (500 Zeichen, mit Hinweis gekürzt), Filter nach Gruppe und Status, Neu-Markierung (E14), Aufbewahrungsrechner, fehlende Angaben mit Sprung zur Frage. Geprüft: E2 und weitere Fälle in `e2e/ergebnis.spec.ts`.
+- [x] **4.5** Termine nach Monaten mit Datum, Termin, Zeitraum, Stelle, Art, „gesetzlich bis“ und Hinweis, vergangene grau und benannt; Kalenderdialog mit Horizont, Erinnerung, „nur offene“, „auch vor heute“ (E20). Geprüft: E3 und Dialog-Fälle in `e2e/termine.spec.ts`.
+- [x] **4.6** Druckansicht (`src/ui/Druckansicht.tsx`, Druck-CSS mit A4 hoch, Hinweis und „Seite n von m“ auf jeder Seite, E17). Geprüft: E4 in `e2e/druck.spec.ts`; PDF aus Edge mit Beispiel C erzeugt und angesehen (5 Seiten A4, Kopf, Tabellen, Fußzeile mit Hinweistext und Seitenzahl). Robin sollte das PDF noch selbst ansehen.
+- [x] **4.7** Regelansicht (`src/ui/schritte/RegelnSchritt.tsx`, lazy `src/ui/RegelAnsicht.tsx`): Kopf mit Katalog, Stand, Prüfwert, Regeln je Tabelle; DRD mit markierten Entscheidungen, Tabellen mit markierten Trefferzeilen, deutsche Bedienung, Knöpfe je Tabelle, Trefferliste, Quellen Q1–Q17, Wasserzeichen sichtbar (E18, E19). Geprüft: E6 und „Hauptbundle ohne dmn-js“ in `e2e/regeln.spec.ts`.
+- [x] **4.8** Menü „Projekt“ mit Neu, Öffnen (Strg+O, auch Ziehen ins Fenster), Als Datei speichern (Strg+S; setzt `gespeichert`), Drucken, Lokale Daten löschen, Über (Lizenzen); Änderungshinweis nach dem Öffnen mit neuen, entfallenen und geänderten Pflichten; fremde oder kaputte Dateien mit Meldung. Geprüft: E5, SP6 und Fehlerfälle in `e2e/datei.spec.ts`.
 
 ## Phase 5 – Qualität und Version 0.1
 

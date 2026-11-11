@@ -1,11 +1,12 @@
 /**
  * Schritt 2.3: Die DMN-Datei öffnet sich in dmn-js (wie auf demo.bpmn.io) mit DRD und
- * allen Tabellen. Geladen wird das fertige Bundle von dmn-js 18 in eine leere Seite;
- * die App selbst zeigt die Regeln erst ab Schritt 4.7.
+ * allen Tabellen; geprüft mit dem fertigen Bundle von dmn-js 18 in einer leeren Seite.
+ * Schritt 4.7, E6: die Regelansicht in der App.
  */
 import { expect, test } from '@playwright/test'
 import { readFileSync } from 'node:fs'
 import { fileURLToPath } from 'node:url'
+import { geheZu, ladeBeispiel, oeffne, sammleFehler } from './hilfen.ts'
 
 const pfad = (p: string) => fileURLToPath(new URL(`../${p}`, import.meta.url))
 const XML = readFileSync(pfad('regeln/pflichten.dmn'), 'utf8')
@@ -53,4 +54,48 @@ test('dmn-js zeigt den DRD mit 7 Entscheidungen und alle Tabellen mit 67 Regeln'
   // Die Zeilen tragen die Regel-ID im Attribut data-row-id (für die Trefferhervorhebung in 4.7)
   expect(tabellen[0][2]).toEqual(['GR01', 'GR02', 'GR03', 'GR04', 'GR05', 'GR06', 'GR07', 'GR08', 'GR09'])
   expect(fehler).toEqual([])
+})
+
+test('E6: Regelansicht in der App mit DRD, Treffern in „Steuern“, Wasserzeichen und ohne CSP-Meldung', async ({ page }) => {
+  const fehler = sammleFehler(page)
+  await oeffne(page)
+  await ladeBeispiel(page, 'A')
+  await geheZu(page, 'Regeln')
+  const leinwand = page.locator('.dmn-leinwand')
+  await expect(leinwand.locator('.djs-element[data-element-id^="Entscheidung_"]')).toHaveCount(7)
+  await expect(leinwand.locator('.djs-element.pk-hat-treffer')).toHaveCount(5) // A: alle außer Personal und Branchenpflichten
+  await expect(leinwand.locator('.bjs-powered-by')).toBeVisible()
+  await expect(page.locator('dl.stand')).toContainText('a03b1678b126')
+  await expect(page.locator('dl.stand')).toContainText('GR 9 · PE 7 · BR 1 · ST 16 · BU 11 · ON 3 · LU 20')
+
+  const steuern = page.getByRole('button', { name: /^Steuern/ })
+  const treffer = Number((await steuern.textContent())?.match(/\((\d+) Treffer\)/)?.[1])
+  expect(treffer).toBeGreaterThan(0)
+  await steuern.click()
+  await expect(steuern).toHaveAttribute('aria-pressed', 'true')
+  await expect(leinwand.locator('.tjs-table')).toBeVisible()
+  await expect(leinwand.locator('tr.pk-treffer')).toHaveCount(treffer)
+  await expect(leinwand.locator('.bjs-powered-by')).toBeVisible()
+  // Bedienung von dmn-js auf Deutsch
+  await expect(leinwand).toContainText('Trefferregel:')
+  await expect(leinwand.locator('th').filter({ hasText: 'Wenn' }).first()).toBeVisible()
+  await leinwand.getByRole('button', { name: 'Zur Übersicht (DRD)' }).click()
+  await expect(page.getByRole('button', { name: 'Übersicht (DRD)' })).toHaveAttribute('aria-pressed', 'true')
+
+  // Treffer auch als Liste, Quellen Q1–Q17
+  const liste = page.getByRole('region', { name: 'Zutreffende Regeln bei diesem Profil' })
+  await expect(liste).toContainText('GR01 Gewerbe anzeigen')
+  await expect(page.locator('table.quellen tbody tr')).toHaveCount(17)
+  expect(fehler).toEqual([])
+})
+
+test('Das Hauptbundle enthält dmn-js nicht; es lädt erst mit der Regelansicht', async ({ page }) => {
+  const geladen: string[] = []
+  page.on('request', (r) => geladen.push(r.url()))
+  await oeffne(page)
+  await ladeBeispiel(page, 'B')
+  expect(geladen.some((u) => /RegelAnsicht-.*\.js$/.test(u))).toBe(false)
+  await geheZu(page, 'Regeln')
+  await expect(page.locator('.dmn-leinwand .djs-element').first()).toBeVisible()
+  expect(geladen.some((u) => /RegelAnsicht-.*\.js$/.test(u))).toBe(true)
 })

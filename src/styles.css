@@ -375,7 +375,743 @@ textarea {
   align-items: center;
 }
 
-/* Druck: immer hell, ohne Bedienelemente (Druckansicht folgt in Schritt 4.6) */
+.knopf-klein {
+  min-height: 30px;
+  padding: 0 10px;
+  font-size: 0.88rem;
+}
+.knopf-gefahr {
+  color: var(--schlecht-text);
+}
+.knopf-link {
+  border: 0;
+  background: none;
+  padding: 0;
+  color: var(--akzent-text);
+  text-decoration: underline;
+  cursor: pointer;
+  font: inherit;
+}
+.knopf[aria-pressed='true'] {
+  background: var(--akzent-hauch);
+  border-color: var(--akzent);
+  color: var(--akzent-text);
+  font-weight: 600;
+}
+
+/* Zusätzliche Farben: Warnung, neu ------------------------------------------ */
+
+:root {
+  --warnung-text: #7a4f00;
+  --neu-text: #1d6b3a;
+  --neu-flaeche: #e3f4e8;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme='light']) {
+    --warnung-text: #f2c75c;
+    --neu-text: #7fd49b;
+    --neu-flaeche: #12301d;
+  }
+}
+:root[data-theme='dark'] {
+  --warnung-text: #f2c75c;
+  --neu-text: #7fd49b;
+  --neu-flaeche: #12301d;
+}
+
+a {
+  color: var(--akzent-text);
+}
+code {
+  font-family: ui-monospace, 'Cascadia Mono', Consolas, monospace;
+  font-size: 0.9em;
+}
+.nur-vorlesen {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+h3 {
+  font-size: 1rem;
+  margin: 0.9rem 0 0.3rem;
+}
+.liste-eng {
+  margin: 0.3rem 0;
+  padding-left: 1.2rem;
+}
+.liste-eng li + li {
+  margin-top: 2px;
+}
+
+/* Kopf: Meldung und Menü ------------------------------------------------------ */
+
+.meldung {
+  margin: 0;
+  font-size: 0.88rem;
+  color: var(--akzent-text);
+  min-width: 0;
+  max-width: 34ch;
+}
+.meldung:empty {
+  display: none;
+}
+.menue {
+  position: relative;
+}
+.menue summary {
+  list-style: none;
+}
+.menue summary::-webkit-details-marker {
+  display: none;
+}
+.menue-liste {
+  position: absolute;
+  right: 0;
+  top: calc(100% + 6px);
+  z-index: 20;
+  min-width: 250px;
+  display: flex;
+  flex-direction: column;
+  padding: 6px;
+  background: var(--karte);
+  border: 1px solid var(--linie);
+  border-radius: 10px;
+  box-shadow: 0 8px 24px rgba(11, 11, 11, 0.15);
+}
+.menue-liste button {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 16px;
+  text-align: left;
+  border: 0;
+  background: transparent;
+  padding: 8px 10px;
+  border-radius: 6px;
+  cursor: pointer;
+  color: var(--text);
+}
+.menue-liste button:hover {
+  background: var(--karte-2);
+}
+.menue-taste {
+  font-family: inherit;
+  font-size: 0.8rem;
+  color: var(--text-3);
+}
+.schrittleiste {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+}
+.schrittleiste ol {
+  flex: 1;
+  min-width: 0;
+}
+.zwischenstand {
+  margin: 0 20px 0 8px;
+  font-size: 0.88rem;
+  color: var(--text-2);
+  white-space: nowrap;
+}
+@media (max-width: 960px) {
+  .schrittleiste ol {
+    flex-basis: 100%;
+  }
+  .zwischenstand {
+    margin: 0 16px 6px;
+  }
+}
+
+/* Formular ------------------------------------------------------------------ */
+
+.formular {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+fieldset {
+  border: 0;
+  margin: 0;
+  padding: 0;
+  min-width: 0;
+}
+.feld {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  min-width: 0;
+}
+.feld > label,
+.feld > legend {
+  font-weight: 600;
+  padding: 0;
+}
+.feld > legend {
+  margin-bottom: 5px;
+}
+.feld > input,
+.feld > select,
+.feld > .zahl {
+  align-self: flex-start;
+}
+.normen-zeile {
+  display: block;
+  margin-top: 2px;
+}
+.frage-nr {
+  display: inline-block;
+  font-size: 0.78rem;
+  font-weight: 600;
+  color: var(--text-2);
+  background: var(--karte-2);
+  border-radius: 5px;
+  padding: 0 6px;
+  margin-right: 4px;
+  vertical-align: 1px;
+}
+.feld-hilfe {
+  margin: 0;
+  font-size: 0.86rem;
+  color: var(--text-2);
+}
+.feld-meldung,
+.feld-offen,
+.feld-warnung {
+  margin: 0;
+  font-size: 0.88rem;
+}
+.feld-meldung {
+  color: var(--schlecht-text);
+  font-weight: 600;
+}
+.feld-offen {
+  color: var(--text-2);
+  font-style: italic;
+}
+.feld-warnung {
+  color: var(--warnung-text);
+}
+.feld-fehler input,
+.feld-fehler select {
+  border-color: var(--status-kritisch);
+}
+input[type='text'],
+input[type='date'],
+textarea,
+select {
+  min-height: 36px;
+  padding: 6px 10px;
+  border: 1px solid var(--linie-stark);
+  border-radius: 7px;
+  background: var(--karte);
+  max-width: 100%;
+}
+input[type='text'] {
+  width: min(100%, 420px);
+}
+select {
+  width: min(100%, 420px);
+  cursor: pointer;
+}
+textarea {
+  width: 100%;
+  resize: vertical;
+}
+.optionen {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+.option {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 12px;
+  border: 1px solid var(--linie-stark);
+  border-radius: 8px;
+  background: var(--karte);
+  cursor: pointer;
+}
+.option input {
+  margin: 0;
+  accent-color: var(--knopf-haupt);
+}
+.option.an {
+  border-color: var(--akzent);
+  background: var(--akzent-hauch);
+  box-shadow: inset 0 0 0 1px var(--akzent);
+}
+.option:has(input:focus-visible) {
+  outline: 2px solid var(--fokus);
+  outline-offset: 2px;
+}
+.zahl {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+.zahl input[type='text'] {
+  width: 160px;
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+.zahl-einheit {
+  color: var(--text-2);
+}
+.weiterleiste {
+  justify-content: space-between;
+  margin-top: 1.2rem;
+}
+.weiterleiste .knopf-haupt {
+  margin-left: auto;
+}
+.haken {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 8px 0;
+}
+
+/* Start ------------------------------------------------------------------------ */
+
+.beispiele {
+  list-style: none;
+  margin: 8px 0 0;
+  padding: 0;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(230px, 1fr));
+  gap: 8px;
+}
+.beispiel-knopf {
+  width: 100%;
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  text-align: left;
+  padding: 10px 12px;
+  border: 1px solid var(--linie-stark);
+  border-radius: 9px;
+  background: var(--karte);
+  cursor: pointer;
+}
+.beispiel-knopf:hover {
+  border-color: var(--akzent);
+  background: var(--akzent-hauch);
+}
+.beispiel-knopf span:last-child {
+  display: flex;
+  flex-direction: column;
+}
+.beispiel-knopf small {
+  color: var(--text-2);
+}
+.beispiel-kennung {
+  flex: none;
+  display: inline-grid;
+  place-items: center;
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  background: var(--knopf-haupt);
+  color: #fff;
+  font-weight: 700;
+}
+
+/* Hinweise, Banner ------------------------------------------------------------ */
+
+.banner {
+  display: flex;
+  gap: 12px;
+  align-items: flex-start;
+  justify-content: space-between;
+  padding: 10px 14px;
+  border-radius: 8px;
+  border: 1px solid var(--linie-stark);
+  background: var(--karte);
+}
+.banner h2 {
+  font-size: 1rem;
+  margin: 0 0 4px;
+}
+.banner p,
+.banner ul {
+  margin: 0;
+}
+.banner ul {
+  padding-left: 1.2rem;
+}
+.banner-hinweis {
+  border-color: var(--akzent-rand);
+  background: var(--akzent-hauch);
+}
+.banner-warnung {
+  border-color: var(--hinweis-rand);
+  background: var(--hinweis-flaeche);
+  color: var(--text);
+}
+.banner-fehler {
+  border-color: var(--status-kritisch);
+}
+.kasten-luecken {
+  border: 1px solid var(--hinweis-rand);
+  border-left: 5px solid var(--status-warnung);
+  background: var(--hinweis-flaeche);
+  border-radius: var(--radius);
+  padding: 10px 14px;
+}
+.kasten-luecken p {
+  margin: 0;
+}
+.zusammenfassung {
+  font-size: 1.05rem;
+}
+.fehlend {
+  padding-left: 1.2rem;
+}
+.fehlend li + li {
+  margin-top: 4px;
+}
+
+/* Ergebnis ------------------------------------------------------------------------ */
+
+.filter {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px 20px;
+  align-items: center;
+  padding: 8px 0;
+}
+.filter select {
+  width: auto;
+}
+.gruppe {
+  margin-top: 1.4rem;
+}
+.gruppe > h2 {
+  border-bottom: 1px solid var(--linie);
+  padding-bottom: 4px;
+}
+.gruppe > * + * {
+  margin-top: 10px;
+}
+.pflicht-kopf {
+  display: flex;
+  gap: 10px;
+  align-items: flex-start;
+  justify-content: space-between;
+}
+.pflicht-kopf h3 {
+  margin: 0;
+  font-size: 1.05rem;
+}
+.pflicht-nr {
+  color: var(--text-2);
+}
+.pflicht-bearbeitet {
+  border-left: 4px solid var(--linie-stark);
+}
+.etiketten {
+  display: flex;
+  gap: 6px;
+  flex: none;
+}
+.etikett {
+  display: inline-block;
+  border-radius: 999px;
+  padding: 1px 9px;
+  font-size: 0.8rem;
+  font-weight: 600;
+  background: var(--karte-2);
+  color: var(--text-2);
+  border: 1px solid var(--linie-stark);
+}
+.etikett-neu {
+  background: var(--neu-flaeche);
+  color: var(--neu-text);
+  border-color: var(--neu-text);
+}
+.etikett-luecke {
+  background: var(--hinweis-flaeche);
+  color: var(--warnung-text);
+  border-color: var(--hinweis-rand);
+}
+.pflicht-daten {
+  display: grid;
+  gap: 4px;
+  margin: 8px 0;
+}
+.pflicht-daten > div {
+  display: grid;
+  grid-template-columns: 9.5rem minmax(0, 1fr);
+  gap: 10px;
+}
+.pflicht-daten dt {
+  color: var(--text-2);
+}
+.pflicht-daten dd {
+  margin: 0;
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+@media (max-width: 600px) {
+  .pflicht-daten > div {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 0;
+  }
+}
+.rechenweg,
+.hinweise {
+  margin: 6px 0;
+  padding-left: 1.2rem;
+  font-size: 0.92rem;
+}
+.rechenweg {
+  color: var(--akzent-text);
+}
+.hinweise {
+  color: var(--text-2);
+}
+.warum {
+  margin: 8px 0;
+  border-top: 1px dashed var(--linie);
+  padding-top: 6px;
+}
+.warum summary {
+  cursor: pointer;
+  font-weight: 600;
+  color: var(--akzent-text);
+  width: fit-content;
+}
+.warum-treffer {
+  margin: 6px 0 0 4px;
+  padding-left: 10px;
+  border-left: 3px solid var(--akzent-rand);
+}
+.warum-treffer ul {
+  margin: 2px 0;
+  padding-left: 1.2rem;
+}
+.status-zeile {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px 18px;
+  align-items: flex-start;
+  margin-top: 8px;
+  padding-top: 8px;
+  border-top: 1px solid var(--linie);
+}
+.status-zeile label {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  font-size: 0.9rem;
+  font-weight: 600;
+}
+.status-zeile select {
+  width: auto;
+}
+.status-zeile .notiz {
+  flex: 1 1 260px;
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+.status-zeile .notiz label {
+  font-size: 0.9rem;
+  font-weight: 600;
+}
+.rechner {
+  margin: 8px 0;
+  padding: 8px 12px;
+  border: 1px solid var(--linie);
+  border-radius: 8px;
+  background: var(--karte-2);
+}
+.rechner-titel {
+  margin: 0 0 4px;
+  font-weight: 600;
+}
+.rechner-felder {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 16px;
+}
+.rechner label {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  font-size: 0.88rem;
+}
+.rechner select {
+  width: auto;
+}
+input.jahr {
+  width: 6em;
+}
+
+/* Termine ------------------------------------------------------------------------- */
+
+.tabelle-rahmen {
+  overflow-x: auto;
+}
+table.termine,
+table.quellen {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.92rem;
+}
+.termine th,
+.termine td,
+.quellen th,
+.quellen td {
+  text-align: left;
+  vertical-align: top;
+  padding: 6px 8px;
+  border-bottom: 1px solid var(--linie);
+}
+.termine th,
+.quellen th {
+  font-size: 0.85rem;
+  color: var(--text-2);
+}
+.termine td.datum {
+  white-space: nowrap;
+  font-variant-numeric: tabular-nums;
+}
+.termine tr.vergangen td {
+  color: var(--text-3);
+}
+.termin-zusatz {
+  display: block;
+  font-size: 0.85rem;
+}
+.monat {
+  margin-top: 1.2rem;
+}
+.monat h2 {
+  font-size: 1.05rem;
+}
+
+/* Dialoge ----------------------------------------------------------------------------- */
+
+.dialog,
+.rueckfrage-dialog {
+  max-width: min(560px, calc(100vw - 32px));
+  padding: 20px 22px 18px;
+  border: 1px solid var(--linie-stark);
+  border-radius: var(--radius);
+  background: var(--karte);
+  color: var(--text);
+  box-shadow: 0 12px 40px rgba(11, 11, 11, 0.25);
+}
+.dialog::backdrop,
+.rueckfrage-dialog::backdrop {
+  background: rgba(11, 11, 11, 0.45);
+}
+.dialog h2,
+.rueckfrage-dialog h2 {
+  margin: 0 0 8px;
+  font-size: 1.15rem;
+}
+.dialog .feld {
+  margin: 12px 0;
+}
+.rueckfrage-dialog p {
+  margin: 0 0 16px;
+  color: var(--text-2);
+}
+.rueckfrage-dialog .knopfreihe,
+.dialog-knoepfe {
+  justify-content: flex-end;
+  margin-top: 12px;
+}
+
+/* Regeln ---------------------------------------------------------------------------------- */
+
+.arbeitsflaeche.breit {
+  grid-template-columns: minmax(0, 1fr);
+}
+.ansicht-wahl {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+.dmn-rahmen {
+  border: 1px solid var(--linie);
+  border-radius: var(--radius);
+  overflow: hidden;
+}
+/* dmn-js ist hell gestaltet; die Leinwand bleibt auch im Dunkelmodus hell */
+.dmn-leinwand {
+  color-scheme: light;
+  background: #ffffff;
+  color: #0b0b0b;
+  min-height: 200px;
+  overflow: auto;
+  position: relative;
+}
+.dmn-leinwand-drd {
+  height: 480px;
+}
+.dmn-leinwand .dmn-decision-table-container {
+  padding: 12px;
+}
+.dmn-leinwand tr.pk-treffer td {
+  background: #fff1b8 !important;
+}
+.dmn-leinwand tr.pk-treffer td:first-child {
+  box-shadow: inset 4px 0 0 #b07d00;
+  font-weight: 700;
+}
+.dmn-leinwand .djs-element.pk-hat-treffer .djs-visual > rect {
+  stroke: #1c5cab !important;
+  stroke-width: 3px !important;
+  fill: #e9f1fb !important;
+}
+.dmn-laden {
+  display: grid;
+  place-items: center;
+  min-height: 200px;
+  color: var(--text-2);
+}
+.treffer-tabelle h3 {
+  margin-top: 0.8rem;
+}
+
+/* Druck (Spezifikation 5.6): A4 hoch, immer hell, nur die Druckansicht ---------------------- */
+
+.druck {
+  display: none;
+}
+
+@page {
+  size: A4 portrait;
+  margin: 16mm 14mm 22mm;
+  @bottom-left {
+    content: 'Keine Rechtsberatung. Der Pflichten-Kompass zeigt häufige Pflichten nach dem Rechtsstand vom 11.11.2026. Er ist keine Rechts- oder Steuerberatung und nicht vollständig. Jede Pflicht vor dem Handeln an der genannten Quelle prüfen oder fachlich beraten lassen.';
+    font-size: 7pt;
+    color: #52514e;
+    vertical-align: top;
+    padding-top: 3mm;
+  }
+  @bottom-right {
+    content: 'Seite ' counter(page) ' von ' counter(pages);
+    font-size: 8pt;
+    color: #52514e;
+    vertical-align: top;
+    padding-top: 3mm;
+    width: 30mm;
+  }
+}
+
 @media print {
   /* gleiche Spezifität wie die Dunkel-Regeln oben, deshalb gewinnt die spätere */
   :root:not([data-theme='__']),
@@ -384,23 +1120,91 @@ textarea {
     --flaeche: #ffffff;
     --karte: #ffffff;
     --karte-2: #f1f0ec;
-    --linie: #e1e0d9;
-    --linie-stark: #c3c2b7;
+    --linie: #c3c2b7;
+    --linie-stark: #9a998f;
     --text: #0b0b0b;
-    --text-2: #52514e;
+    --text-2: #3d3c39;
+    --text-3: #52514e;
     --hinweis-flaeche: #ffffff;
     --schatten: none;
   }
-  body,
-  .app {
-    background: #fff !important;
+  html,
+  body {
+    background: #ffffff !important;
     color: #0b0b0b !important;
+    font-size: 9.5pt;
+  }
+  /* Mit Ergebnis druckt nur die Druckansicht; ohne Ergebnis die Seite ohne Bedienelemente */
+  body:has(.druck) .app {
+    display: none !important;
+  }
+  .druck {
+    display: block;
   }
   .kopf,
   .schrittleiste,
   .hilfe,
   .sprungmarke,
-  .knopfreihe {
+  .knopfreihe,
+  dialog {
     display: none !important;
+  }
+  .druck h1 {
+    font-size: 15pt;
+    margin: 0 0 6pt;
+  }
+  .druck h2 {
+    font-size: 11.5pt;
+    margin: 10pt 0 4pt;
+    break-after: avoid;
+  }
+  .druck-kopf dl {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 4pt 16pt;
+    margin: 0 0 6pt;
+  }
+  .druck-kopf dt {
+    font-size: 8pt;
+    color: #52514e;
+  }
+  .druck-kopf dd {
+    margin: 0;
+    font-weight: 600;
+  }
+  .druck-hinweis {
+    border: 1px solid #9a998f;
+    border-left: 4pt solid #fab219;
+    padding: 4pt 6pt;
+    margin: 6pt 0;
+  }
+  .druck table {
+    width: 100%;
+    border-collapse: collapse;
+  }
+  .druck th,
+  .druck td {
+    text-align: left;
+    vertical-align: top;
+    padding: 3pt 4pt;
+    border-bottom: 1px solid #c3c2b7;
+  }
+  .druck th {
+    font-size: 8pt;
+    color: #3d3c39;
+  }
+  .druck-pflicht {
+    break-inside: avoid;
+  }
+  .druck-pflicht tr:first-child td {
+    border-bottom: 0;
+  }
+  .druck-warum td {
+    font-size: 8pt;
+    color: #3d3c39;
+  }
+  .druck a {
+    color: inherit;
+    text-decoration: none;
   }
 }

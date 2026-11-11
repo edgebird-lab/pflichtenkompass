@@ -36,6 +36,8 @@ export default defineConfig({
   // Eigene Ports, weil auf diesem Rechner mehrere Apps parallel laufen (Prozesslotse: 4173)
   server: { port: 5182 },
   preview: { port: 4182, strictPort: true },
+  // dmn-js (Regelansicht) ist rund 680 kB groß und lädt nur bei Bedarf; das Hauptbundle bleibt kleiner
+  build: { chunkSizeWarningLimit: 800 },
   test: {
     include: ['src/**/*.test.ts'],
   },
