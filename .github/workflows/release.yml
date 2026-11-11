@@ -1,7 +1,10 @@
-name: Version als Entwurf
+name: Version veröffentlichen
 
-# Nur bei einem Tag wie v0.1.0 entsteht ein Release-ENTWURF mit Installer. Veröffentlicht wird
-# nichts: Das Repo bleibt privat, Releases gibt es erst nach Robins ausdrücklicher Freigabe.
+# Bei einem Tag wie v0.1.0 entsteht ein Release-ENTWURF mit dem Installer, zweimal angehängt:
+# mit Versionsnummer im Namen (von Tauri) und als Pflichten-Kompass-Setup.exe für den festen Link
+# https://github.com/edgebird-lab/pflichtenkompass/releases/latest/download/Pflichten-Kompass-Setup.exe
+# Die Notizen stehen in .github/release-notizen/<tag>.md (Pflicht, sonst bricht der Lauf ab).
+# Veröffentlicht wird von Hand nach Prüfung: gh release edit <tag> --draft=false --latest
 on:
   push:
     tags: ['v*']
@@ -15,6 +18,14 @@ jobs:
     timeout-minutes: 45
     steps:
       - uses: actions/checkout@v5
+      - name: Tag, Version und Release-Notizen passen zusammen
+        shell: pwsh
+        run: |
+          $version = (Get-Content package.json -Raw | ConvertFrom-Json).version
+          if ("v$version" -ne $env:GITHUB_REF_NAME) { throw "Tag $env:GITHUB_REF_NAME passt nicht zu package.json ($version)" }
+          $cargo = (Select-String -Path src-tauri/Cargo.toml -Pattern '^version = "(.+)"$' | Select-Object -First 1).Matches[0].Groups[1].Value
+          if ($cargo -ne $version) { throw "Cargo.toml hat $cargo, package.json $version" }
+          if (-not (Test-Path ".github/release-notizen/$env:GITHUB_REF_NAME.md")) { throw "Release-Notizen .github/release-notizen/$env:GITHUB_REF_NAME.md fehlen" }
       - uses: actions/setup-node@v5
         with:
           node-version: 24
@@ -27,11 +38,27 @@ jobs:
       - run: npm test
       - run: cargo test --manifest-path src-tauri/Cargo.toml
       - uses: tauri-apps/tauri-action@v1
+        id: tauri
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           tagName: ${{ github.ref_name }}
           releaseName: Pflichten-Kompass ${{ github.ref_name }}
-          releaseBody: Installer für Windows (pro Benutzer, ohne Admin-Rechte). Noch nicht signiert; SmartScreen fragt beim ersten Start nach. Keine Rechtsberatung.
+          releaseBody: Release-Notizen folgen im nächsten Schritt.
           releaseDraft: true
           prerelease: false
+      - name: Installer mit festem Namen anhängen und Release-Notizen setzen
+        shell: pwsh
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          ARTEFAKTE: ${{ steps.tauri.outputs.artifactPaths }}
+        run: |
+          $installer = @()
+          if ($env:ARTEFAKTE) { $pfade = $env:ARTEFAKTE | ConvertFrom-Json; $installer = @($pfade | Where-Object { $_ -like '*-setup.exe' }) }
+          if ($installer.Count -eq 0) { $installer = @(Get-ChildItem src-tauri/target/release/bundle/nsis/*-setup.exe | ForEach-Object FullName) }
+          if ($installer.Count -ne 1) { throw "Erwartet genau einen Installer, gefunden: $($installer -join ', ')" }
+          Copy-Item $installer[0] Pflichten-Kompass-Setup.exe
+          Get-Item $installer[0], Pflichten-Kompass-Setup.exe | Format-Table Name, Length
+          gh release upload $env:GITHUB_REF_NAME Pflichten-Kompass-Setup.exe --clobber --repo $env:GITHUB_REPOSITORY
+          gh release edit $env:GITHUB_REF_NAME --notes-file ".github/release-notizen/$env:GITHUB_REF_NAME.md" --repo $env:GITHUB_REPOSITORY
+          gh release view $env:GITHUB_REF_NAME --repo $env:GITHUB_REPOSITORY --json isDraft,assets --jq '{isDraft, assets: [.assets[] | {name, size}]}'

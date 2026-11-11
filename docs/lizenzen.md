@@ -1,6 +1,6 @@
 # Lizenzen der verwendeten Bibliotheken
 
-Versionen und Lizenzen nach `npm view <paket> version license` (11.11.2026), wie in Abschnitt 7.1 der [Spezifikation](spezifikation.md). Die Lizenz des Pflichten-Kompasses selbst ist noch nicht festgelegt (wie beim Prozesslotsen, offene Frage O14).
+Versionen und Lizenzen nach `npm view <paket> version license` (11.11.2026), wie in Abschnitt 7.1 der [Spezifikation](spezifikation.md). Für den Pflichten-Kompass selbst gilt: © 2026 Robin Olbricht – olbricht-digital. Alle Rechte vorbehalten. Die Programme dürfen kostenlos genutzt werden; eine offene Lizenz ist noch nicht gewählt (Entscheidung von Robin am 11.11.2026, offene Frage O14). Die Bestandteile unten stehen unter ihren eigenen Lizenzen.
 
 ## Im Programm
 

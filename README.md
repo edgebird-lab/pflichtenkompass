@@ -1,14 +1,24 @@
 # Pflichten-Kompass
 
-Zeigt Gründerinnen und Gründern, welche Anmeldungen, Meldungen und Fristen auf sie zukommen. Aus einem geführten Interview entsteht eine begründete Pflichtenliste mit Frist, zuständiger Stelle, Rechtsgrundlage, Quelle und Stand. Jede Pflicht nennt die Antworten, die sie ausgelöst haben, und die App sagt offen, welche Bereiche sie nicht geprüft hat. Die Regeln liegen als DMN-1.3-Entscheidungstabellen im Repo. Läuft im Browser oder als Windows-Programm, ohne Server und ohne KI.
+Zeigt Gründerinnen und Gründern, welche Anmeldungen, Meldungen und Fristen auf sie zukommen. Aus einem geführten Interview entsteht eine begründete Pflichtenliste mit Frist, zuständiger Stelle, Rechtsgrundlage, Quelle und Stand. Jede Pflicht nennt die Antworten, die sie ausgelöst haben, und die App sagt offen, welche Bereiche sie nicht geprüft hat. Dazu kommen ein Terminkalender mit den Feiertagen des Landes, ein Kalenderexport und eine Druckansicht. Die Regeln liegen als DMN-1.3-Entscheidungstabellen offen im Repo. Ein Windows-Programm ohne Server, ohne Konto und ohne KI; die Antworten bleiben auf dem eigenen Rechner.
 
-> **Keine Rechtsberatung.** Der Pflichten-Kompass zeigt häufige Pflichten nach dem Rechtsstand vom 11.11.2026. Er ist keine Rechts- oder Steuerberatung und nicht vollständig. Jede Pflicht vor dem Handeln an der genannten Quelle prüfen oder fachlich beraten lassen.
+> **Keine Rechts- oder Steuerberatung.** Der Pflichten-Kompass zeigt häufige Pflichten nach dem Rechtsstand vom 11.11.2026 (Regelkatalog 2026.11.0). Er ist keine Rechts- oder Steuerberatung und nicht vollständig. Jede Pflicht vor dem Handeln an der genannten Quelle prüfen oder fachlich beraten lassen.
+
+## Herunterladen
+
+**[Pflichten-Kompass für Windows herunterladen](https://github.com/edgebird-lab/pflichtenkompass/releases/latest/download/Pflichten-Kompass-Setup.exe)** (`Pflichten-Kompass-Setup.exe`, Version 0.1.0, rund 1,5 MB). Alle Versionen und Änderungen stehen unter [Releases](https://github.com/edgebird-lab/pflichtenkompass/releases).
+
+- **Voraussetzung:** Windows 10 oder 11 (64 Bit) mit der WebView2-Laufzeit von Microsoft. Windows 11 bringt sie mit, auf Windows 10 ist sie meist schon da; sonst lädt der Installer sie nach (dafür braucht er einmal Internet).
+- **Installation pro Benutzer, ohne Admin-Rechte:** Doppelklick auf die heruntergeladene Datei. Das Programm landet unter `%LOCALAPPDATA%\Pflichten-Kompass`, mit Eintrag im Startmenü, Verknüpfung auf dem Desktop und Dateizuordnung für `.pflichtenkompass`. Deinstallieren über Einstellungen → Apps.
+- **Nicht signiert:** Der Installer trägt noch keine Code-Signatur. Windows SmartScreen kann deshalb beim Start warnen („Der Computer wurde durch Windows geschützt“); über „Weitere Informationen“ und „Trotzdem ausführen“ geht es weiter.
+- **Kostenlos** und ohne Anmeldung; siehe [Rechte](#rechte).
+- **Regelkatalog:** Version 2026.11.0, Rechtsstand 11.11.2026. Ein neuer Rechtsstand kommt nur mit einer neuen Version des Programms; die App zeigt den Stand oben in jeder Ansicht und an jeder Pflicht.
 
 ![Ergebnis für eine Elektro-GmbH: Zusammenfassung, Hinweis, Kasten „Nicht geprüft“ und die erste Pflicht mit aufgeklapptem „Warum?“](docs/bilder/ergebnis.png)
 
 ## Stand
 
-Version 0.1.0, Phasen 0–5 umgesetzt und am 11.11.2026 kritisch geprüft: Regeln, Katalog und 71.264 Kalenderwerte eigenständig nachgerechnet, die Kalenderdatei mit einem fremden Parser gelesen, das PDF der Druckansicht Seite für Seite angesehen; elf Fehler und Lücken behoben, darunter zwei Abstürze (Liste in [docs/stand.md](docs/stand.md#prüfung-nach-phase-5-11112026)). Die fachliche Abnahme mit Robin (Schritt 5.4) steht noch aus; bis dahin gelten die Annahmen in [docs/entscheidungen.md](docs/entscheidungen.md). Seit dem 11.11.2026 gibt es den Pflichten-Kompass auch als [Windows-Programm](#windows-programm) (Phase 6) mit Installer, Dateizuordnung und PDF ohne Druckdialog; auf Robins Rechner ist es installiert. Offen sind der Kalenderimport in Outlook und Google Kalender von Hand und der Katalog 2027.01 (Phase 7). Das Repo ist privat auf GitHub; die CI prüft Lint, Tests und Build, bei Änderungen am Programmteil zusätzlich das Windows-Programm samt Installer. Die Planung steht in der [Spezifikation](docs/spezifikation.md).
+Version 0.1.0 vom 11.11.2026, die erste veröffentlichte Version. Vor der Veröffentlichung kritisch geprüft: Regeln, Katalog und 71.264 Kalenderwerte eigenständig nachgerechnet, die Kalenderdatei mit einem fremden Parser gelesen, das PDF der Druckansicht Seite für Seite angesehen; elf Fehler und Lücken behoben, darunter zwei Abstürze (Liste in [docs/stand.md](docs/stand.md#prüfung-nach-phase-5-11112026)). Die fachliche Abnahme an echten Gründungsprofilen (Schritt 5.4) steht noch aus; bis dahin gelten die Annahmen in [docs/entscheidungen.md](docs/entscheidungen.md). Offen sind außerdem der Kalenderimport in Outlook und Google Kalender von Hand und der Katalog 2027.01 mit Gewerbe- und Körperschaftsteuer, Datenschutz und Fernabsatz (Phase 7). Die CI prüft Lint, Tests und Build, bei Änderungen am Programmteil zusätzlich das Windows-Programm samt Installer. Die Planung steht in der [Spezifikation](docs/spezifikation.md).
 
 ## Was es kann
 
@@ -39,7 +49,7 @@ Dieselbe Oberfläche als installiertes Programm (Tauri 2 mit WebView2), gebaut a
 - **Menüleiste** „Datei“ (Neu beginnen, Öffnen, Speichern, Speichern unter, Kalender exportieren, Drucken, Als PDF speichern, Beenden) und „Hilfe“.
 - **Quellen und Normen** öffnen im Standardbrowser, nur mit https und nur für gesetze-im-internet.de, omg.org, rfc-editor.org und bpmn.io; das Programmfenster zeigt nie eine fremde Seite.
 - **Sicherheit:** Die Oberfläche hat keine allgemeinen Dateirechte. Gelesen und geschrieben wird nur, was der Benutzer selbst gewählt hat (Dialog, Doppelklick, ins Fenster gezogen), atomar über eine Hilfsdatei; geöffnet werden höchstens 1 MB. Es gilt dieselbe strenge CSP wie in der Web-App, nur mit der Verbindung zum Rust-Teil. Die Antworten liegen wie im Browser nur auf dem Rechner (Speicher von WebView2 unter `%LOCALAPPDATA%\de.olbricht-digital.pflichtenkompass`) und werden beim Schließen gesichert.
-- **Start:** Startseite nach rund 0,9 s, beim allerersten Start nach 1,4 s, weil WebView2 dann sein Profil anlegt (installierter Release-Build auf Robins Rechner; Debug-Build im Desktop-Test 1,1 s und 0,8 s).
+- **Start:** Startseite nach rund 0,9 s, beim allerersten Start nach 1,4 s, weil WebView2 dann sein Profil anlegt (installierter Release-Build auf einem Testrechner; Debug-Build im Desktop-Test 1,1 s und 0,8 s).
 
 ## Beispiele
 
@@ -121,11 +131,11 @@ Die Fachlogik kennt kein React und ist getestet; „heute“ wird ihr immer übe
 - **Unit-Tests (Vitest, 357 in 26 Dateien):** FEEL-Teilmenge mit Differenztest gegen feelin, Prüfung des Regelwerks, Golden Tests der Beispiele A–F und gezielte Regeltests, Merkmale, Katalog, Speichern, Feiertage, Berechnungen, Termine, Kalenderexport, Antworten, Anzeigetexte und Zustand; dazu die Regeln des Windows-Programms (Kennung, Dateizuordnung, CSP gleich der Web-App, Rechte nur für die eigenen Befehle, jede Quelle auf der Erlaubnisliste).
 - **Browsertests (Playwright, lokal mit Edge, 40):** E1 Beispiel A nur mit der Tastatur, E2 Beispiele A–F, E3 Kalenderexport, E4 Druckansicht samt Fußzeile, E5 Datei speichern und öffnen, E6 Regelansicht ohne CSP-Meldung, E7 axe in allen Schritten hell und dunkel; dazu Sichtbarkeit der Fragen, Meldungen am Feld, Speicher, Tastatur, schmale Ansicht und die Fehlerfälle: fremde, kaputte und zu große Dateien, unlesbarer oder gesperrter Browserspeicher, Kalenderexport ohne Web Crypto, unsinnige Jahre im Aufbewahrungsrechner.
 - **Windows-Programm:** `cargo test` (8 Tests: Dateiargumente, atomares Speichern, Binär- und zu große Dateien, Dateiarten, Endungen, Freigaben, Erlaubnisliste der Links, Navigationsschutz) und `npm run desktop:test` (56 Prüfpunkte am echten Programm ohne Installation: Start, Speichern unter und Speichern, Kalender, PDF in A4, Regelansicht mit dmn-js ohne CSP-Meldung, Quellenlink, abgelehnte Links, Pfade und Befehle, Navigationsschutz, Öffnen per Dialog, zweiter Start mit Datei, Sichern beim Schließen, Neustart mit Datei).
-- **CI** (GitHub Actions): Lint, Unit-Tests und Build; die Browsertests laufen vorerst nur lokal (Entscheidung E1). Bei Änderungen am Programmteil baut `windows.yml` auf Windows Programm und Installer, führt `cargo test` aus und prüft den Installer (still installieren, Startmenü, Desktop-Verknüpfung, Dateizuordnung, Datei per Doppelklick öffnen, deinstallieren; Protokoll als Artefakt). `release.yml` legt bei einem Versions-Tag nur einen Entwurf an.
+- **CI** (GitHub Actions): Lint, Unit-Tests und Build; die Browsertests laufen vorerst nur lokal (Entscheidung E1). Bei Änderungen am Programmteil baut `windows.yml` auf Windows Programm und Installer, führt `cargo test` aus und prüft den Installer (still installieren, Startmenü, Desktop-Verknüpfung, Dateizuordnung, Datei per Doppelklick öffnen, deinstallieren; Protokoll als Artefakt). `release.yml` baut bei einem Versions-Tag `v*` den Installer und hängt ihn zweimal an das Release: mit Versionsnummer im Namen und als `Pflichten-Kompass-Setup.exe` für den festen Download-Link; die Release-Notizen stehen in [`.github/release-notizen`](.github/release-notizen).
 
-## Starten
+## Selbst bauen und starten
 
-Mit Node 24 im Projektordner:
+Wer den fertigen Installer nicht nutzen will, startet die App aus dem Quelltext, auch als Web-App im Browser. Mit Node 24 im Projektordner:
 
 ```bash
 npm install
@@ -161,6 +171,8 @@ cargo test --manifest-path src-tauri/Cargo.toml                # Rust-Tests
 
 Bildschirmfotos: `npm run build`, dann `npx vite preview --port 4182 --strictPort` starten und `node scripts/readme-bilder.mjs` (README) oder `node scripts/ansehen.mjs <ordner>` (Rundgang) ausführen. Die Vorschau danach wieder beenden, sonst testen die Browsertests den alten Build weiter.
 
-## Lizenz
+## Rechte
 
-Noch nicht festgelegt. Die Bibliotheken und ihre Lizenzen stehen in [docs/lizenzen.md](docs/lizenzen.md). dmn-js steht unter der bpmn.io-Lizenz, die das bpmn.io-Wasserzeichen in der Anzeige vorschreibt; die Regelansicht lässt es sichtbar.
+© 2026 Robin Olbricht – olbricht-digital. Alle Rechte vorbehalten. Die Programme dürfen kostenlos genutzt werden; eine offene Lizenz ist noch nicht gewählt. Fremdbestandteile (bpmn.io/dmn-js u. a.) stehen unter ihren eigenen Lizenzen, siehe [docs/lizenzen.md](docs/lizenzen.md). dmn-js steht unter der bpmn.io-Lizenz, die das bpmn.io-Wasserzeichen in der Anzeige vorschreibt; die Regelansicht lässt es sichtbar.
+
+Die verlinkten Gesetzestexte stammen von gesetze-im-internet.de; die App enthält nur eigene Kurzfassungen und Verweise, keine Texte von Kammern, Verbänden oder Verlagen.
