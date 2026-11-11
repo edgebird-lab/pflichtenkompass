@@ -1,0 +1,68 @@
+# Stand der Arbeit
+
+Checkliste aller Schritte aus Abschnitt 11 der [Spezifikation](spezifikation.md). `- [x]` erledigt, `- [ ]` offen; die Notiz sagt, was geprüft ist und wo ein Nachfolger weitermacht. Annahmen und Abweichungen stehen in [entscheidungen.md](entscheidungen.md).
+
+Vor jedem Commit: `npm run lint`, `npm test`, `npm run build`, `npm run e2e` (lokal mit Edge, Port 4182).
+
+## Phase 0 – Gerüst
+
+- [x] **0.1** Projekt wie beim Prozesslotsen (Vite, React, TypeScript, Vitest, Playwright, oxlint, CI). Ports 4182 (Vorschau, E2E, `strictPort`) und 5182 (Dev). CSP als Meta-Tag nur im Build (Abschnitt 8). CI: Lint, Test, Build (ohne E2E, siehe Entscheidung E1).
+- [ ] **0.2** Plattformschicht, Schrittleiste, Hell/Dunkel, Startseite mit Hinweistext.
+- [ ] **0.3** CLAUDE.md, README-Gerüst, Lizenzhinweise, Doku verlinkt.
+
+## Phase 1 – Fachmodell und Katalog
+
+- [ ] **1.1** Typen aus Abschnitt 4, Standardprofil, Beispiele A–F.
+- [ ] **1.2** `merkmale.ts` nach 6.2 (MM1–MM8).
+- [ ] **1.3** Katalog: 40 Pflichten, 17 Quellen, Normlinks; `docs/katalog.md` (KA1–KA3).
+- [ ] **1.4** Lücken (17), Fragen F01–F32 mit Sichtbarkeit; `docs/fragenkatalog.md`.
+- [ ] **1.5** `speicher.ts` (SP1–SP5).
+
+## Phase 2 – DMN-Regelwerk
+
+- [ ] **2.1** FEEL-Teilmenge (FE1–FE26).
+- [ ] **2.2** Differenztests gegen feelin.
+- [ ] **2.3** `regeln/pflichten.dmn` mit 7 Tabellen und DRD (67 Regeln).
+- [ ] **2.4** Laden mit dmn-moddle, Prüfung V1–V11 (RV1–RV10).
+- [ ] **2.5** Auswertung (A–F, RT1–RT11).
+- [ ] **2.6** `regeln/stand.json`, `npm run regeln:stand`, V12 (KA6).
+
+## Phase 3 – Fristen, Termine, Kalender
+
+- [ ] **3.1** `datum.ts` und `feiertage.ts` (DA1–DA10, BA1–BA7).
+- [ ] **3.2** `berechnungen.ts` (US, LS, ER, AU, KU, GG).
+- [ ] **3.3** `termine.ts` (TE1–TE12).
+- [ ] **3.4** `ics.ts` (IC1–IC8); Import in Outlook und Google Kalender von Hand.
+
+## Phase 4 – Oberfläche
+
+- [ ] **4.1** Zustand, Autosave, Start mit Beispielen, Datei öffnen, Lokale Daten löschen.
+- [ ] **4.2** Schritte Vorhaben und Tätigkeit (F01–F11).
+- [ ] **4.3** Schritte Personal, Verkauf, Umsatz und Steuern (F12–F32) mit Prüfungen aus 6.9.
+- [ ] **4.4** Ergebnis (E2).
+- [ ] **4.5** Termine und Kalenderdialog (E3).
+- [ ] **4.6** Druckansicht (E4).
+- [ ] **4.7** Regelansicht mit dmn-js (E6).
+- [ ] **4.8** Datei speichern und öffnen mit Änderungshinweis (E5, SP6).
+
+## Phase 5 – Qualität und Version 0.1
+
+- [ ] **5.1** Browsertests E1 und E7.
+- [ ] **5.2** Barrierefreiheit und Tastatur.
+- [ ] **5.3** README mit Bildern, Version 0.1.0.
+- [ ] **5.4** Fachliche Abnahme mit Robin.
+
+## Phase 6 – Windows-Programm mit Tauri 2 (später)
+
+- [ ] **6.1** `src-tauri` übernehmen.
+- [ ] **6.2** Rust-Befehle, Capabilities, Opener, CSP.
+- [ ] **6.3** NSIS-Installer bauen, nicht lokal ausführen.
+- [ ] **6.4** Installer-Rauchtest nur in der CI.
+
+## Phase 7 – Katalog 2027.01 (später)
+
+- [ ] **7.1** O1, O2, O9, O11, O12, O16 klären.
+- [ ] **7.2** Gewerbe- und Körperschaftsteuer.
+- [ ] **7.3** Datenschutz-Grundpflichten.
+- [ ] **7.4** Fernabsatz-Grundpflichten.
+- [ ] **7.5** Linkprüfung, Katalog 2027.01.0.

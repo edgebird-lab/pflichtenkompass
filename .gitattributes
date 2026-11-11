@@ -1,0 +1,5 @@
+* text=auto eol=lf
+# Der SHA-256 der Regeln wird über LF-Text gebildet (Prüfung V12); ein Windows-Checkout darf die Datei nicht ändern
+*.dmn text eol=lf
+*.png binary
+*.jpg binary
