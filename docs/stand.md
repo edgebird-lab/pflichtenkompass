@@ -6,7 +6,7 @@ Vor jedem Commit: `npm run lint`, `npm test`, `npm run build`, `npm run e2e` (lo
 
 **Offen für Robin:** Fachliche Abnahme nach [abnahme.md](abnahme.md) (Schritt 5.4), dabei Kalenderimport in Outlook und Google Kalender (Schritt 3.4, R12) und das PDF der Druckansicht ansehen.
 
-**Offen für Robin:** Das private GitHub-Repo ist noch nicht angelegt. `gh repo create` wurde am 11.11.2026 vom Berechtigungssystem der Claude-Sitzung abgelehnt; alle Commits liegen nur lokal. Nachholen mit `gh repo create edgebird-lab/pflichtenkompass --private --source . --remote origin` und `git push -u origin main`; danach läuft die CI (Lint, Test, Build) zum ersten Mal.
+**Offen für Robin:** Das private GitHub-Repo ist noch nicht angelegt. `gh repo create` wurde am 11.11.2026 in zwei Sitzungen vom Berechtigungssystem abgelehnt (Einstufung „Public Data-Sharing Upload“) und nicht umgangen; alle Commits liegen nur lokal. Nachholen mit `gh repo create edgebird-lab/pflichtenkompass --private --source . --remote origin` und `git push -u origin main`; danach läuft die CI (Lint, Test, Build) zum ersten Mal.
 
 ## Phase 0 – Gerüst
 
