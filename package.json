@@ -12,7 +12,8 @@
     "test:watch": "vitest",
     "lint": "oxlint",
     "preview": "vite preview",
-    "e2e": "playwright test"
+    "e2e": "playwright test",
+    "doku": "node scripts/katalog-doku.mjs"
   },
   "dependencies": {
     "react": "^19.3.1",
