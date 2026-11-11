@@ -41,7 +41,7 @@ Vor jedem Commit: `npm run lint`, `npm test`, `npm run build`, `npm run e2e` (lo
 
 ## Phase 3 – Fristen, Termine, Kalender
 
-- [ ] **3.1** `datum.ts` und `feiertage.ts` (DA1–DA10, BA1–BA7).
+- [x] **3.1** `src/fristen/feiertage.ts` mit feiertagejs 1.5.1: `feiertage(jahr, land, modus)` „sicher“ (ohne Mariä Himmelfahrt in BY) und „möglich“ (plus 24.12., 31.12., Fronleichnam in SN/TH, Augsburger Friedensfest in BY), `istWerktag`, `istArbeitstag`, `naechsterWerktag`, `arbeitstageVor`, `arbeitstagVomMonatsende`, `fristNachEreignis`. `datum.ts` bleibt ohne Feiertage. Geprüft: DA1–DA10, BA1–BA7, Feiertagslisten je Land, Tage um die Zeitumstellung (`feiertage.test.ts`).
 - [ ] **3.2** `berechnungen.ts` (US, LS, ER, AU, KU, GG).
 - [ ] **3.3** `termine.ts` (TE1–TE12).
 - [ ] **3.4** `ics.ts` (IC1–IC8); Import in Outlook und Google Kalender von Hand.
