@@ -91,3 +91,25 @@ test('Ohne Pflichtangaben nennt das Ergebnis, was fehlt, und springt zur Frage',
   await expect(page.getByRole('heading', { level: 1 })).toHaveText('Vorhaben')
   await expect(page.getByLabel('In welchem Bundesland liegt der Betrieb?')).toBeFocused()
 })
+
+test('Aufbewahrungsrechner: Jahresende plus 8 oder 10 Jahre; unsinnige Jahre ohne Absturz', async ({ page }) => {
+  const fehler: string[] = []
+  page.on('pageerror', (e) => fehler.push(e.message))
+  await oeffne(page)
+  await ladeBeispiel(page, 'A')
+  const rechner = page.locator('article[data-pflicht="aufbewahrung"] .rechner')
+  // AU1: Buchungsbeleg 2026 → 31.12.2034; Bücher 2026 → 31.12.2036
+  await expect(rechner).toContainText('bis 31.12.2034')
+  await rechner.getByRole('combobox').selectOption('buecher')
+  await expect(rechner).toContainText('bis 31.12.2036')
+  // vorher warf die Datumsrechnung bei „0000“ oder „9999“, und die ganze Seite war leer
+  const jahr = rechner.getByRole('textbox')
+  for (const unsinn of ['0000', '9999']) {
+    await jahr.fill(unsinn)
+    await expect(rechner).toContainText('Jahr zwischen 1900 und 2999 angeben.')
+  }
+  await jahr.fill('2027')
+  await expect(rechner).toContainText('bis 31.12.2037')
+  await expect(page.getByRole('heading', { level: 1 })).toHaveText('Ergebnis')
+  expect(fehler).toEqual([])
+})

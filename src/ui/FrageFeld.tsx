@@ -7,7 +7,7 @@ import { datumText, istDatum } from '../fristen/datum'
 import { antwort } from '../modell/antworten'
 import { betragFeldText, leseAnzahl, leseBetrag } from '../modell/format'
 import { frageNummer } from '../modell/fragen'
-import { NAME_MAX, START_FRUEHESTENS, START_SPAETESTENS } from '../modell/profil'
+import { DATUM_FRUEHESTENS, DATUM_SPAETESTENS, NAME_MAX, START_FRUEHESTENS, START_SPAETESTENS } from '../modell/profil'
 import type { Frage, FrageId } from '../modell/typen'
 import { Feld, Gruppe, Haken, Radios, ZahlText, type FeldIds, type Meldungen } from './Eingaben'
 import { useApp } from './kontext'
@@ -148,8 +148,8 @@ function DatumFeld({ f, frage, wert, onFehler }: { f: FeldIds; frage: FrageId; w
       id={f.id}
       type="date"
       defaultValue={wert ?? ''}
-      min={pflicht ? START_FRUEHESTENS : undefined}
-      max={pflicht ? START_SPAETESTENS : undefined}
+      min={pflicht ? START_FRUEHESTENS : DATUM_FRUEHESTENS}
+      max={pflicht ? START_SPAETESTENS : DATUM_SPAETESTENS}
       aria-describedby={f.beschrieben}
       aria-invalid={f.ungueltig || undefined}
       onChange={(e) => {

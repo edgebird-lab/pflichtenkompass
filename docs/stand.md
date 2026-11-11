@@ -33,9 +33,9 @@ Vor jedem Commit: `npm run lint`, `npm test`, `npm run build`, `npm run e2e` (lo
 
 ## Hinweise für den nächsten Durchgang (Phase 6 ff.)
 
-- **Zahlen:** 347 Unit-Tests in 25 Dateien und 39 Browsertests (Stand nach der Prüfung vom 11.11.2026), alle grün.
+- **Zahlen:** 349 Unit-Tests in 25 Dateien und 40 Browsertests (Stand nach der Prüfung vom 11.11.2026), alle grün. Läuft der Rechner mit anderen Apps voll, scheitern Browsertests an Zeitlimits; dann `npm run e2e -- --workers=4` (so am 11.11.2026 grün, 2,1 min).
 - **Schon da und getestet:** `src/fristen/datum.ts` (ISO-Daten, Tageszahlen in UTC, `plusMonate` mit Monatsletztem, Wochentag, Formatierung „Mo, 15.02.2027“; DA5 und DA10 schon geprüft), `src/modell/pruefung.ts` (alle Prüfungen aus 6.9 für 4.3), `aenderungenSeitSpeichern` und `gespeichertAus` für 4.8, `loescheLokaleDaten` für 4.1, `src/hash.ts` (SHA-256 über Web Crypto, auch für den Profilschlüssel der ICS-UIDs in 3.4).
-- **Auswertung:** `werteAus` erwartet ein gültiges Startdatum; die Oberfläche ruft es erst auf, wenn `pruefeProfil` für F02 keinen Fehler meldet. Ohne Bundesland (F03) bleiben die Termine leer. Leere Ereignisse (F13, F23) fallen auf F02 zurück (`src/modell/wirksam.ts`).
+- **Auswertung:** `werteAus` erwartet ein gültiges Startdatum und Daten im Bereich der Prüfung (F13, F23: 1900–2099, E26); die Oberfläche ruft es erst auf, wenn `pruefeProfil` keinen Fehler meldet. Ohne Bundesland (F03) bleiben die Termine leer. Leere Ereignisse (F13, F23) fallen auf F02 zurück (`src/modell/wirksam.ts`).
 - **Oberfläche:** Bildschirmfotos für Sichtprüfung und README mit `scripts/ansehen.mjs` (Vorschau auf Port 4182 vorher starten). Browsertests nutzen `e2e/hilfen.ts` (festes Datum 11.11.2026 über `page.clock`, Beispiel laden, axe, Tab-Navigation). Im Arbeitsordner keinen Vorschau-Server laufen lassen: `reuseExistingServer` würde sonst einen alten Build testen.
 - **Regelansicht:** dmn-js-Zeilen tragen die Regel-ID in `data-row-id`; die Formen im DRD liegen ab y = 150, damit das Namensfeld von dmn-js oben links nichts verdeckt (`zeigeGanz` in `RegelAnsicht.tsx`).
 
@@ -79,14 +79,16 @@ Kritische Prüfung des gebauten Umfangs gegen die Spezifikation, mit eigenen Nac
 
 **Gefunden und behoben, jeweils mit Test:**
 
-1. Kleinunternehmerregelung gewählt, aber über 100.000 € Umsatz: F28–F31 blieben ausgeblendet; die Karte „EU-Fernverkäufe“ meldete „0 € … nicht überschritten“, obwohl F30 nie gefragt war, und eine Dauerfristverlängerung ließ sich nicht angeben (E21). Tests: `fragen.test.ts`, `termine.test.ts`, `berechnungen.test.ts`, `e2e/interview.spec.ts`.
-2. Ein unlesbarer Stand im Browser wurde beim Start still verworfen und nach 500 ms überschrieben; scheiterte das Speichern (privates Fenster, voller Speicher), erfuhr niemand davon (E22). Tests: `speicher.test.ts`, `zustand.test.ts`, zwei Browsertests in `e2e/zustand.spec.ts` mit axe hell und dunkel.
-3. Der Kalenderexport brach ohne Web Crypto (Seite nicht über https oder localhost) still ab (E24). Tests: `ics.test.ts`, Browsertest in `e2e/termine.spec.ts` mit axe.
-4. Steuerzeichen im Namen des Vorhabens (etwa aus einer geöffneten Datei) machten die Kalenderdatei ungültig (E24). Test: IC4 in `ics.test.ts`.
-5. Ein sehr früher Beschäftigungsbeginn (F13, nur Warnung) ließ jede Eingabe rund 0,5–0,8 s rechnen und füllte den Rechenweg mit Jahrhunderten (E23). Test: `termine.test.ts`.
-6. Die Fußzeile des Drucks steht als Text in `styles.css`; nichts prüfte sie gegen den Hinweistext, ein neuer Rechtsstand hätte dort das alte Datum gelassen. Test: Browsertest liest die Seitenregel (`e2e/druck.spec.ts`).
-7. „Nächster Termin“ wiederholte auf Karte und Druck den langen Titel der Pflicht (E25). Test: `src/ui/texte.test.ts`.
-8. Lücken in den Browsertests geschlossen: Datei über 1 MB und Datei mit falschem Feld beim Öffnen (`e2e/datei.spec.ts`).
+1. **Absturz:** Im Aufbewahrungsrechner auf der Pflichtkarte leerte ein Jahr wie „0000“ oder „9999“ die ganze Seite („Kein gültiges Datum: 8-12-31“). Jetzt gelten 1900–2999 mit Hinweis am Feld (E26). Tests: `berechnungen.test.ts`, Browsertest in `e2e/ergebnis.spec.ts`.
+2. **Absturz:** Eine elektronische Kasse mit Anschaffung im Dezember 9999 (getippt oder aus einer Projektdatei) ließ die Mitteilungsfrist ins Jahr 10000 laufen; die Auswertung warf, die Seite war leer. F13 und F23 gelten jetzt von 1900 bis 2099, sonst Fehler am Feld (E26). Test: `pruefung.test.ts`.
+3. Kleinunternehmerregelung gewählt, aber über 100.000 € Umsatz: F28–F31 blieben ausgeblendet; die Karte „EU-Fernverkäufe“ meldete „0 € … nicht überschritten“, obwohl F30 nie gefragt war, und eine Dauerfristverlängerung ließ sich nicht angeben (E21). Tests: `fragen.test.ts`, `termine.test.ts`, `berechnungen.test.ts`, `e2e/interview.spec.ts`.
+4. Ein unlesbarer Stand im Browser wurde beim Start still verworfen und nach 500 ms überschrieben; scheiterte das Speichern (privates Fenster, voller Speicher), erfuhr niemand davon (E22). Tests: `speicher.test.ts`, `zustand.test.ts`, zwei Browsertests in `e2e/zustand.spec.ts` mit axe hell und dunkel.
+5. Der Kalenderexport brach ohne Web Crypto (Seite nicht über https oder localhost) still ab (E24). Tests: `ics.test.ts`, Browsertest in `e2e/termine.spec.ts` mit axe.
+6. Steuerzeichen im Namen des Vorhabens (etwa aus einer geöffneten Datei) machten die Kalenderdatei ungültig (E24). Test: IC4 in `ics.test.ts`.
+7. Ein früher Beschäftigungsbeginn (F13, nur Warnung) ließ jede Eingabe jeden Monat seit F13 rechnen (01.01.1900: rund 0,1 s) und füllte den Rechenweg mit Jahrzehnten (E23). Test: `termine.test.ts`.
+8. Die Fußzeile des Drucks steht als Text in `styles.css`; nichts prüfte sie gegen den Hinweistext, ein neuer Rechtsstand hätte dort das alte Datum gelassen. Test: Browsertest liest die Seitenregel (`e2e/druck.spec.ts`).
+9. „Nächster Termin“ wiederholte auf Karte und Druck den langen Titel der Pflicht (E25). Test: `src/ui/texte.test.ts`.
+10. Lücken in den Browsertests geschlossen: Datei über 1 MB und Datei mit falschem Feld beim Öffnen (`e2e/datei.spec.ts`).
 
 ## Phase 6 – Windows-Programm mit Tauri 2 (später)
 

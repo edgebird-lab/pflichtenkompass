@@ -46,6 +46,8 @@ for (const schema of ['light', 'dark'] as const) {
   })
 
   test(`Dialoge ohne schwere Barrieren (${name})`, async ({ page }) => {
+    // drei axe-Prüfungen über der langen Terminliste: bei parallelen Tests auf einem ausgelasteten Rechner über 30 s
+    test.setTimeout(60_000)
     await page.emulateMedia({ colorScheme: schema })
     await oeffne(page)
     await ladeBeispiel(page, 'A')

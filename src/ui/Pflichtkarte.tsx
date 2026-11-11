@@ -4,7 +4,7 @@
  * Status und Notiz.
  */
 import { useId, useState } from 'react'
-import { AUFBEWAHRUNG, aufbewahrenBis, type AufbewahrungsArt } from '../fristen/berechnungen'
+import { AUFBEWAHRUNG, AUFBEWAHRUNG_JAHRE, aufbewahrenBis, leseAufbewahrungsjahr, type AufbewahrungsArt } from '../fristen/berechnungen'
 import { datumMitTag, datumText, jahrVon } from '../fristen/datum'
 import { naechsterTermin } from '../fristen/termine'
 import { quelle } from '../katalog/quellen'
@@ -46,7 +46,7 @@ function Aufbewahrungsrechner() {
   const [art, setArt] = useState<AufbewahrungsArt>('belege')
   const [jahr, setJahr] = useState(String(jahrVon(heute)))
   const id = useId()
-  const j = /^\d{4}$/.test(jahr) ? Number(jahr) : null
+  const j = leseAufbewahrungsjahr(jahr)
   return (
     <div className="rechner" role="group" aria-labelledby={`${id}-titel`}>
       <p id={`${id}-titel`} className="rechner-titel">
@@ -67,7 +67,9 @@ function Aufbewahrungsrechner() {
           Jahr der letzten Eintragung, Aufstellung oder Absendung <input type="text" inputMode="numeric" className="jahr" value={jahr} onChange={(e) => setJahr(e.target.value.trim())} />
         </label>
       </div>
-      <p aria-live="polite">{j !== null ? <strong>bis {datumText(aufbewahrenBis(art, j))}</strong> : 'Jahr vierstellig angeben.'}</p>
+      <p aria-live="polite">
+        {j !== null ? <strong>bis {datumText(aufbewahrenBis(art, j))}</strong> : `Jahr zwischen ${AUFBEWAHRUNG_JAHRE.von} und ${AUFBEWAHRUNG_JAHRE.bis} angeben.`}
+      </p>
     </div>
   )
 }

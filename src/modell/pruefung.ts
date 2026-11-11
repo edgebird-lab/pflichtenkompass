@@ -7,8 +7,8 @@ import { datumText, istDatum } from '../fristen/datum'
 import { betragText } from './format'
 import { frage } from './fragen'
 import { KLEINUNTERNEHMER_LAUFEND } from './merkmale'
-import { NAME_MAX, START_FRUEHESTENS, START_SPAETESTENS } from './profil'
-import type { FrageId, Profil } from './typen'
+import { DATUM_FRUEHESTENS, DATUM_SPAETESTENS, NAME_MAX, START_FRUEHESTENS, START_SPAETESTENS } from './profil'
+import type { Datum, FrageId, Profil } from './typen'
 
 export interface Meldung {
   frage: FrageId
@@ -34,6 +34,14 @@ export function pruefeProfil(p: Profil): Pruefergebnis {
     if (!Number.isFinite(wert)) fehler.push({ frage: id, text: 'Gültigen Betrag angeben.' })
     else if (!negativErlaubt && wert < 0) fehler.push({ frage: id, text: 'Betrag ab 0 angeben.' })
   }
+  /** F13 und F23: gültig und im Bereich 1900–2099 (E26); sonst rechnete die Fristlogik über das Jahr 9999 hinaus. */
+  const ereignisDatum = (id: FrageId, wert: Datum | null): boolean => {
+    if (wert === null || !sichtbar(id)) return false
+    if (!istDatum(wert)) fehler.push({ frage: id, text: 'Gültiges Datum angeben.' })
+    else if (wert < DATUM_FRUEHESTENS || wert > DATUM_SPAETESTENS) fehler.push({ frage: id, text: `Datum zwischen ${datumText(DATUM_FRUEHESTENS)} und ${datumText(DATUM_SPAETESTENS)} angeben.` })
+    else return true
+    return false
+  }
 
   if (p.name.length > NAME_MAX) fehler.push({ frage: 'F01', text: `Höchstens ${NAME_MAX} Zeichen.` })
   if (!istDatum(p.start)) fehler.push({ frage: 'F02', text: 'Gültiges Datum angeben.' })
@@ -47,12 +55,11 @@ export function pruefeProfil(p: Profil): Pruefergebnis {
   const pers = p.personal
   if (pers.vorhanden) {
     if (pers.svPflichtig + pers.minijobber === 0) fehler.push({ frage: 'F14', text: 'Mindestens eine Person angeben.' })
-    if (pers.beginn !== null && !istDatum(pers.beginn)) fehler.push({ frage: 'F13', text: 'Gültiges Datum angeben.' })
-    else if (pers.beginn !== null && istDatum(p.start) && pers.beginn < p.start) {
+    if (ereignisDatum('F13', pers.beginn) && pers.beginn !== null && istDatum(p.start) && pers.beginn < p.start) {
       warnungen.push({ frage: 'F13', text: `Die Beschäftigung beginnt am ${datumText(pers.beginn)}, vor der Tätigkeit am ${datumText(p.start)}.` })
     }
   }
-  if (sichtbar('F23') && p.kasseAnschaffung !== null && !istDatum(p.kasseAnschaffung)) fehler.push({ frage: 'F23', text: 'Gültiges Datum angeben.' })
+  ereignisDatum('F23', p.kasseAnschaffung)
 
   betrag('F18', pers.lohnsteuerJeMonat)
   betrag('F25', p.steuern.umsatzErstesJahr)

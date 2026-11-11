@@ -8,7 +8,7 @@ Zeigt Gründerinnen und Gründern, welche Anmeldungen, Meldungen und Fristen auf
 
 ## Stand
 
-Version 0.1.0, Phasen 0–5 umgesetzt und am 11.11.2026 kritisch geprüft: Regeln, Katalog und 71.264 Kalenderwerte eigenständig nachgerechnet, die Kalenderdatei mit einem fremden Parser gelesen, das PDF der Druckansicht Seite für Seite angesehen; acht Fehler und Lücken behoben (Liste in [docs/stand.md](docs/stand.md#prüfung-nach-phase-5-11112026)). Die fachliche Abnahme mit Robin (Schritt 5.4) steht noch aus; bis dahin gelten die Annahmen in [docs/entscheidungen.md](docs/entscheidungen.md). Offen sind außerdem der Kalenderimport in Outlook und Google Kalender von Hand, das Windows-Programm (Phase 6) und der Katalog 2027.01 (Phase 7). Das Repo liegt bisher nur lokal; die CI ist deshalb noch nie gelaufen. Die Planung steht in der [Spezifikation](docs/spezifikation.md).
+Version 0.1.0, Phasen 0–5 umgesetzt und am 11.11.2026 kritisch geprüft: Regeln, Katalog und 71.264 Kalenderwerte eigenständig nachgerechnet, die Kalenderdatei mit einem fremden Parser gelesen, das PDF der Druckansicht Seite für Seite angesehen; zehn Fehler und Lücken behoben, darunter zwei Abstürze (Liste in [docs/stand.md](docs/stand.md#prüfung-nach-phase-5-11112026)). Die fachliche Abnahme mit Robin (Schritt 5.4) steht noch aus; bis dahin gelten die Annahmen in [docs/entscheidungen.md](docs/entscheidungen.md). Offen sind außerdem der Kalenderimport in Outlook und Google Kalender von Hand, das Windows-Programm (Phase 6) und der Katalog 2027.01 (Phase 7). Das Repo liegt bisher nur lokal; die CI ist deshalb noch nie gelaufen. Die Planung steht in der [Spezifikation](docs/spezifikation.md).
 
 ## Was es kann
 
@@ -105,8 +105,8 @@ Die Fachlogik kennt kein React und ist getestet; „heute“ wird ihr immer übe
 
 ## Tests
 
-- **Unit-Tests (Vitest, 347 in 25 Dateien):** FEEL-Teilmenge mit Differenztest gegen feelin, Prüfung des Regelwerks, Golden Tests der Beispiele A–F und gezielte Regeltests, Merkmale, Katalog, Speichern, Feiertage, Berechnungen, Termine, Kalenderexport, Antworten, Anzeigetexte und Zustand.
-- **Browsertests (Playwright, lokal mit Edge, 39):** E1 Beispiel A nur mit der Tastatur, E2 Beispiele A–F, E3 Kalenderexport, E4 Druckansicht samt Fußzeile, E5 Datei speichern und öffnen, E6 Regelansicht ohne CSP-Meldung, E7 axe in allen Schritten hell und dunkel; dazu Sichtbarkeit der Fragen, Meldungen am Feld, Speicher, Tastatur, schmale Ansicht und die Fehlerfälle: fremde, kaputte und zu große Dateien, unlesbarer oder gesperrter Browserspeicher, Kalenderexport ohne Web Crypto.
+- **Unit-Tests (Vitest, 349 in 25 Dateien):** FEEL-Teilmenge mit Differenztest gegen feelin, Prüfung des Regelwerks, Golden Tests der Beispiele A–F und gezielte Regeltests, Merkmale, Katalog, Speichern, Feiertage, Berechnungen, Termine, Kalenderexport, Antworten, Anzeigetexte und Zustand.
+- **Browsertests (Playwright, lokal mit Edge, 40):** E1 Beispiel A nur mit der Tastatur, E2 Beispiele A–F, E3 Kalenderexport, E4 Druckansicht samt Fußzeile, E5 Datei speichern und öffnen, E6 Regelansicht ohne CSP-Meldung, E7 axe in allen Schritten hell und dunkel; dazu Sichtbarkeit der Fragen, Meldungen am Feld, Speicher, Tastatur, schmale Ansicht und die Fehlerfälle: fremde, kaputte und zu große Dateien, unlesbarer oder gesperrter Browserspeicher, Kalenderexport ohne Web Crypto, unsinnige Jahre im Aufbewahrungsrechner.
 - **CI** (GitHub Actions): Lint, Unit-Tests und Build; die Browsertests laufen vorerst nur lokal (Entscheidung E1).
 
 ## Entwickeln

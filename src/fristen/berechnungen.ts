@@ -120,6 +120,17 @@ export function aufbewahrenBis(art: AufbewahrungsArt, jahr: number): Datum {
   return datum(jahr + eintrag.jahre, 12, 31)
 }
 
+/** Jahre, die der Rechner auf der Pflichtkarte annimmt; außerhalb läge das Ergebnis vor 1000 oder nach 9999. */
+export const AUFBEWAHRUNG_JAHRE = { von: 1900, bis: 2999 } as const
+
+/** Jahr aus dem Eingabefeld des Rechners: vier Ziffern im Bereich 1900–2999, sonst null (vorher stürzte „0000“ die Seite ab). */
+export function leseAufbewahrungsjahr(text: string): number | null {
+  const t = text.trim()
+  if (!/^\d{4}$/.test(t)) return null
+  const jahr = Number(t)
+  return jahr >= AUFBEWAHRUNG_JAHRE.von && jahr <= AUFBEWAHRUNG_JAHRE.bis ? jahr : null
+}
+
 // 6.8.11 Geringfügigkeitsgrenze -----------------------------------------------------------
 
 /** § 8 Abs. 1a SGB IV: Mindestlohn × 130 / 3, auf volle Euro aufgerundet; ganzzahlig in Cent gerechnet. */

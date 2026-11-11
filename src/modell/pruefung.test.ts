@@ -74,4 +74,21 @@ describe('Eingabeprüfungen (6.9)', () => {
     expect(fehlerAn(mitA((p) => (p.name = 'x'.repeat(81))))).toEqual(['F01'])
     expect(fehlerAn(mitA((p) => (p.name = 'x'.repeat(80))))).toEqual([])
   })
+
+  it('begrenzt Beschäftigungsbeginn und Kassenanschaffung auf 1900–2099 (E26)', () => {
+    // vorher: Kasse im Dezember 9999 → Mitteilungsfrist im Jahr 10000 → Ausnahme beim Rechnen, leere Seite
+    const text = 'Datum zwischen 01.01.1900 und 31.12.2099 angeben.'
+    const kasse = (d: string) => mitA((p) => Object.assign(p, { kasse: 'elektronisch', kasseAnschaffung: d }))
+    expect(kasse('9999-12-15').fehler).toEqual([{ frage: 'F23', text }])
+    expect(kasse('2100-01-01').fehler).toEqual([{ frage: 'F23', text }])
+    expect(kasse('2099-12-31').fehler).toEqual([])
+    expect(kasse('1900-01-01').fehler).toEqual([])
+    const beginn = (d: string) => mitA((p) => (p.personal = { ...p.personal, vorhanden: true, svPflichtig: 1, beginn: d }))
+    expect(beginn('1899-12-31')).toEqual({ fehler: [{ frage: 'F13', text }], warnungen: [] })
+    // im Bereich, aber vor dem Start: nur die Warnung aus 6.9
+    expect(beginn('1900-01-01').fehler).toEqual([])
+    expect(beginn('1900-01-01').warnungen.map((w) => w.frage)).toEqual(['F13'])
+    // ausgeblendet (ohne elektronische Kasse) wird nicht geprüft
+    expect(mitA((p) => (p.kasseAnschaffung = '9999-12-15')).fehler).toEqual([])
+  })
 })

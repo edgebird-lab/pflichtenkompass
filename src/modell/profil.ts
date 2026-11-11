@@ -7,6 +7,9 @@ import type { Datum, Profil } from './typen'
 /** Zulässiger Beginn der Tätigkeit (F02); Bestandsunternehmen vor 2026 sind in 0.1 nicht vorgesehen (O15). */
 export const START_FRUEHESTENS: Datum = '2026-01-01'
 export const START_SPAETESTENS: Datum = '2030-12-31'
+/** Plausible Daten für Beschäftigungsbeginn (F13) und Kassenanschaffung (F23); Prüfung in pruefung.ts (E26). */
+export const DATUM_FRUEHESTENS: Datum = '1900-01-01'
+export const DATUM_SPAETESTENS: Datum = '2099-12-31'
 /** Höchstlänge des Namens (F01) und einer Notiz (6.9). */
 export const NAME_MAX = 80
 export const NOTIZ_MAX = 500

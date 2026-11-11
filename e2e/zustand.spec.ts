@@ -89,6 +89,8 @@ test('Unlesbarer Stand im Browser: Hinweis statt stillem Überschreiben', async 
 })
 
 test('Ohne Speichern im Browser läuft die App weiter und sagt es', async ({ page }) => {
+  // zwei axe-Prüfungen über dem Ergebnis: bei parallelen Tests mehr Zeit
+  test.setTimeout(60_000)
   await page.addInitScript(() => {
     Storage.prototype.setItem = () => {
       throw new DOMException('Speicher voll', 'QuotaExceededError')

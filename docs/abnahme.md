@@ -33,5 +33,5 @@
 ## Weitere Punkte für Robin
 
 - Eigene Kurzfassungen in Hilfetexten fachlich durchsehen, besonders F04 (Rechtsformen), F12 (Geschäftsführung), F15 (Geringfügigkeit) und die Hilfe-Spalte je Schritt (`src/ui/Hilfe.tsx`).
-- Annahmen E1–E25 in [entscheidungen.md](entscheidungen.md) bestätigen oder ändern, besonders E21 aus der Prüfung vom 11.11.2026 (bei Kleinunternehmerregelung über 100.000 € fragt die App auch F28–F31); die übrigen offenen Fragen O1, O2, O5–O8 und O11–O16 bleiben für Phase 7.
+- Annahmen E1–E26 in [entscheidungen.md](entscheidungen.md) bestätigen oder ändern, besonders E21 und E26 aus der Prüfung vom 11.11.2026 (bei Kleinunternehmerregelung über 100.000 € fragt die App auch F28–F31; F13 und F23 nur von 1900 bis 2099); die übrigen offenen Fragen O1, O2, O5–O8 und O11–O16 bleiben für Phase 7.
 - Privates GitHub-Repo anlegen und pushen (siehe [stand.md](stand.md)); danach läuft die CI.

@@ -17,6 +17,7 @@ import {
   HINWEIS_UST_O4,
   HINWEIS_UST_VORJAHR,
   kleinunternehmerStatus,
+  leseAufbewahrungsjahr,
   lstZeitraum,
   lstZeitraumAusBasis,
   svFaelligkeit,
@@ -166,6 +167,12 @@ describe('Aufbewahrung bis (AU1–AU4)', () => {
   it('AU2: Jahresabschluss 2026, aufgestellt 2027 → 31.12.2037', () => expect(aufbewahrenBis('buecher', 2027)).toBe('2037-12-31'))
   it('AU3: empfangener Geschäftsbrief 2026 → 31.12.2032', () => expect(aufbewahrenBis('briefe', 2026)).toBe('2032-12-31'))
   it('AU4: Rechnung 2026 → 31.12.2034', () => expect(aufbewahrenBis('belege', 2026)).toBe('2034-12-31'))
+  it('Rechner auf der Pflichtkarte nimmt nur Jahre von 1900 bis 2999 (vorher stürzte „0000“ die Seite ab)', () => {
+    expect(['2026', ' 2026 ', '1900', '2999'].map(leseAufbewahrungsjahr)).toEqual([2026, 2026, 1900, 2999])
+    expect(['0000', '0991', '1899', '3000', '9999', '26', '2026a', '', '20 26'].map(leseAufbewahrungsjahr)).toEqual(Array(9).fill(null))
+    expect(aufbewahrenBis('buecher', 2999)).toBe('3009-12-31')
+    expect(aufbewahrenBis('briefe', 1900)).toBe('1906-12-31')
+  })
 })
 
 describe('Kleinunternehmerprüfung (KU1–KU5)', () => {
