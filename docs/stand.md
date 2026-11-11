@@ -4,7 +4,7 @@ Checkliste aller Schritte aus Abschnitt 11 der [Spezifikation](spezifikation.md)
 
 Vor jedem Commit: `npm run lint`, `npm test`, `npm run build`, `npm run e2e` (lokal mit Edge, Port 4182).
 
-**Offen für Robin:** Kalenderimport in Outlook und Google Kalender von Hand prüfen (Schritt 3.4, R12).
+**Offen für Robin:** Fachliche Abnahme nach [abnahme.md](abnahme.md) (Schritt 5.4), dabei Kalenderimport in Outlook und Google Kalender (Schritt 3.4, R12) und das PDF der Druckansicht ansehen.
 
 **Offen für Robin:** Das private GitHub-Repo ist noch nicht angelegt. `gh repo create` wurde am 11.11.2026 vom Berechtigungssystem der Claude-Sitzung abgelehnt; alle Commits liegen nur lokal. Nachholen mit `gh repo create edgebird-lab/pflichtenkompass --private --source . --remote origin` und `git push -u origin main`; danach läuft die CI (Lint, Test, Build) zum ersten Mal.
 
@@ -31,9 +31,9 @@ Vor jedem Commit: `npm run lint`, `npm test`, `npm run build`, `npm run e2e` (lo
 - [x] **2.5** Auswertung `src/regeln/auswertung.ts` nach 6.1 (`werteAus`: Merkmale, Treffer mit erfüllten Bedingungen, Gruppierung nach Ausgabe, Sortierung nach Katalognummer, Gültigkeit mit Warnung, Neu-Markierung; Termine bleiben bis Phase 3 leer). Eingabeprüfungen aus 6.9 in `src/modell/pruefung.ts` (ihre Warnungen stehen im Ergebnis). Geprüft: Beispiele A–F (Pflichten und Lücken wie 9.3, D: PE03 mit „Beschäftigte: 3“, Rechnungen C/B/E), RT1–RT11, Gültigkeit, Horizont, Neu-Markierung (`auswertung.test.ts`, `pruefung.test.ts`). Vorgezogen: Änderungshinweis als reine Funktion (`aenderungenSeitSpeichern`, `gespeichertAus`) mit SP6 auf Funktionsebene; die Anzeige folgt in 4.8.
 - [x] **2.6** [`regeln/stand.json`](../regeln/stand.json) mit Version, Stand und SHA-256 über den LF-Text; `npm run regeln:stand` (`scripts/regeln-stand.mjs`) prüft und verlangt nach einer Änderung neue Version und neuen Stand; V12 als `pruefeStand` in `src/regeln/pruefung.ts`, nur in Tests und CI. Einstieg für die App: `src/regeln/regelwerk.ts` (`ladeMitgeliefertesRegelwerk`). Geprüft: KA6 grün, nach Änderung der Datei rot, CRLF-Kopie grün, Version passend zum Katalog (`stand.test.ts`); Skript von Hand gegen geänderte Datei geprüft.
 
-## Hinweise für den nächsten Durchgang (Phase 3 ff.)
+## Hinweise für den nächsten Durchgang (Phase 6 ff.)
 
-- **Zahlen:** 336 Unit-Tests in 24 Dateien und 31 Browsertests (Stand nach Phase 4), alle grün.
+- **Zahlen:** 337 Unit-Tests in 24 Dateien und 35 Browsertests (Stand nach Phase 5), alle grün.
 - **Schon da und getestet:** `src/fristen/datum.ts` (ISO-Daten, Tageszahlen in UTC, `plusMonate` mit Monatsletztem, Wochentag, Formatierung „Mo, 15.02.2027“; DA5 und DA10 schon geprüft), `src/modell/pruefung.ts` (alle Prüfungen aus 6.9 für 4.3), `aenderungenSeitSpeichern` und `gespeichertAus` für 4.8, `loescheLokaleDaten` für 4.1, `src/hash.ts` (SHA-256 über Web Crypto, auch für den Profilschlüssel der ICS-UIDs in 3.4).
 - **Auswertung:** `werteAus` erwartet ein gültiges Startdatum; die Oberfläche ruft es erst auf, wenn `pruefeProfil` für F02 keinen Fehler meldet. Ohne Bundesland (F03) bleiben die Termine leer. Leere Ereignisse (F13, F23) fallen auf F02 zurück (`src/modell/wirksam.ts`).
 - **Oberfläche:** Bildschirmfotos für Sichtprüfung und README mit `scripts/ansehen.mjs` (Vorschau auf Port 4182 vorher starten). Browsertests nutzen `e2e/hilfen.ts` (festes Datum 11.11.2026 über `page.clock`, Beispiel laden, axe, Tab-Navigation). Im Arbeitsordner keinen Vorschau-Server laufen lassen: `reuseExistingServer` würde sonst einen alten Build testen.
@@ -59,10 +59,10 @@ Vor jedem Commit: `npm run lint`, `npm test`, `npm run build`, `npm run e2e` (lo
 
 ## Phase 5 – Qualität und Version 0.1
 
-- [ ] **5.1** Browsertests E1 und E7.
-- [ ] **5.2** Barrierefreiheit und Tastatur.
-- [ ] **5.3** README mit Bildern, Version 0.1.0.
-- [ ] **5.4** Fachliche Abnahme mit Robin.
+- [x] **5.1** E1 (Beispiel A über den Assistenten nur mit der Tastatur, `e2e/interview.spec.ts`) und E7 (axe in allen neun Schritten hell und dunkel, leer und mit Beispiel C samt dmn-js-Tabelle, dazu die drei Dialoge; jedes sichtbare Feld hat einen Namen; `e2e/barrierefreiheit.spec.ts`). Alle E-Tests lokal mit Edge grün. In der CI (Chrome) nicht gelaufen: Es gibt noch kein Repo, und die CI prüft nach E1 nur Lint, Test und Build.
+- [x] **5.2** Fokus nach jedem Schrittwechsel auf der Überschrift (oder gezielt auf einer Frage beim Sprung aus „Es fehlen noch Angaben“), Menü „Projekt“ schließt mit Escape und Klick daneben, Dialoge geben den Fokus an ihren Auslöser zurück, der scrollbare Tabellenbereich von dmn-js ist fokussierbar und benannt, schmale Ansicht (390 px) ohne waagerechtes Scrollen. Der Tastatur-Durchgang fand einen Fehler: Wer eine Tabelle wählte, während dmn-js noch lud, leerte die ganze App („No provider for canvas“); behoben, mit Fehlergrenze um die Regelansicht (`src/ui/Fehlergrenze.tsx`). Geprüft: `e2e/tastatur.spec.ts`, Reflow-Test in `e2e/barrierefreiheit.spec.ts`, Wettlauf-Test in `e2e/regeln.spec.ts`.
+- [x] **5.3** README mit sechs Bildern (`docs/bilder`, erzeugt mit `scripts/readme-bilder.mjs`), allen Funktionen aus 2.1, Beispielen mit Zahlen aus den Tests, Rechenregeln und Grenzen; Version 0.1.0 in `package.json` und `src/version.ts` (Test prüft Gleichheit), Über-Dialog mit Lizenzen. CLAUDE.md um Hinweise zur Oberfläche ergänzt.
+- [ ] **5.4** Fachliche Abnahme mit Robin. Vorbereitet: [abnahme.md](abnahme.md) mit Ablauf, Tabelle für drei echte Profile und den Fragen O3, O4, O9, O10 samt heutiger Anzeige. **Offen für Robin.**
 
 ## Phase 6 – Windows-Programm mit Tauri 2 (später)
 
