@@ -57,7 +57,8 @@ export type TerminArt = 'handlung' | 'abgabe' | 'zahlung' | 'abgabeUndZahlung'
 
 export interface Termin {
   pflichtId: PflichtId
-  titel: string // z. B. „Umsatzsteuer-Voranmeldung Januar 2027“
+  /** Handlung ohne Zeitraum, z. B. „Umsatzsteuer-Voranmeldung“; Anzeige und Kalender setzen „Titel – Zeitraum“ zusammen (Entscheidung E10). */
+  titel: string
   /** Konservatives Datum für Liste und Kalender; nie später als das gesetzliche Fristende. */
   faelligAm: Datum
   /** Späteres gesetzliches Fristende, falls abweichend (§ 108 Abs. 3 AO oder Nachweistag der SV, 6.8.6); sonst null. */
@@ -65,6 +66,11 @@ export interface Termin {
   zeitraum: string | null // „Januar 2027“, „1. Quartal 2027“, „2027“
   art: TerminArt
   hinweis: string | null
+  /**
+   * Eindeutig je Pflicht, z. B. „2027-01“, „2027-Q1“ oder „sondervorauszahlung-2027“; Teil der
+   * Kalender-UID (7.5: „zeitraumschlüssel oder datum“). Ergänzung zur Spezifikation (Entscheidung E10).
+   */
+  schluessel: string
 }
 
 export interface Bedingung {
@@ -86,6 +92,8 @@ export interface PflichtErgebnis {
   treffer: readonly Treffer[]
   termine: readonly Termin[]
   neu: boolean
+  /** Wie die App die Termine rechnet, z. B. „2027: monatlich“ (Ergänzung zur Spezifikation, Entscheidung E10). */
+  rechenweg: readonly string[]
 }
 export interface LueckenErgebnis {
   luecke: Luecke

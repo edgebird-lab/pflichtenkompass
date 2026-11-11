@@ -85,12 +85,20 @@ describe('Beispiele A–F (9.3, Golden Tests)', () => {
     expect(d.luecken.find((l) => l.luecke.id === 'datenschutz')?.treffer.map((t) => t.regel)).toEqual(['LU06', 'LU07'])
   })
 
-  it('trägt Katalogversion, Stand, Berechnungstag und Horizont ein', () => {
+  it('trägt Katalogversion, Stand, Berechnungstag, Horizont und Termine ein', () => {
     const e = auswerten(beispiel('A').profil)
     expect([e.katalogVersion, e.stand, e.berechnetAm]).toEqual(['2026.11.0', '2026-11-11', HEUTE])
     expect(e.horizont).toEqual({ von: '2027-01-01', bis: '2028-12-31' })
     expect(e.warnungen).toEqual([])
-    expect(e.pflichten.every((p) => p.termine.length === 0 && !p.neu)).toBe(true)
+    expect(e.pflichten.some((p) => p.neu)).toBe(false)
+    // TE1: 31 Termine; die Einzelheiten prüft fristen/termine.test.ts
+    expect(e.pflichten.flatMap((p) => p.termine)).toHaveLength(31)
+  })
+
+  it('rechnet ohne Bundesland noch keine Termine', () => {
+    const e = auswerten({ ...beispiel('A').profil, bundesland: null })
+    expect(e.pflichten.flatMap((p) => p.termine)).toEqual([])
+    expect(e.pflichten.flatMap((p) => p.rechenweg)).toEqual([])
   })
 })
 

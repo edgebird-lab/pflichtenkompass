@@ -4,11 +4,12 @@
  *   2. Merkmale → Treffer: jede Regel jeder Tabelle; eine Regel trifft, wenn alle Einträge erfüllt sind
  *   3. Treffer → Pflichten und Lücken, gruppiert nach Ausgabe, sortiert nach Katalognummer (COLLECT ist ungeordnet)
  *   4. Gültigkeit: Pflichten mit gueltigBis vor dem Start oder gueltigAb nach dem Horizontende entfallen mit Warnung
- *   5. Termine (Phase 3, fristen/termine.ts) – bis dahin leer
+ *   5. Termine je Pflicht und Fristregel (fristen/termine.ts); ohne Bundesland noch keine
  *   6. Neu-Markierung im Vergleich mit dem vorigen Ergebnis
  * `heute` wird übergeben, nie intern gelesen.
  */
 import { datumText, monatsErster, plusMonate, plusTage } from '../fristen/datum'
+import { rechenweg, termineFuer, type TerminKontext } from '../fristen/termine'
 import { luecke } from '../katalog/luecken'
 import { pflicht } from '../katalog/pflichten'
 import { KATALOG_STAND, KATALOG_VERSION, type LueckeId, type Pflicht, type PflichtId } from '../katalog/typen'
@@ -71,6 +72,8 @@ export function werteAus(regelwerk: Regelwerk, profil: Profil, optionen: Auswert
   const zeitraum = horizont(profil.start, optionen.horizontMonate)
   const warnungen = pruefeProfil(profil).warnungen.map((w) => w.text)
   const vorher = optionen.vorher ? new Set(optionen.vorher.pflichten.map((p) => p.pflicht.id)) : null
+  // Termine brauchen die Feiertage des Landes (F03); bis zur Antwort bleibt die Liste leer
+  const kontext: TerminKontext | null = profil.bundesland ? { profil, land: profil.bundesland, horizont: zeitraum } : null
 
   const pflichten: PflichtErgebnis[] = []
   for (const [id, treffer] of gruppiere<PflichtId>(alle.filter((x) => x.art === 'pflicht'))) {
@@ -83,7 +86,13 @@ export function werteAus(regelwerk: Regelwerk, profil: Profil, optionen: Auswert
       )
       continue
     }
-    pflichten.push({ pflicht: p, treffer, termine: [], neu: vorher !== null && !vorher.has(id) })
+    pflichten.push({
+      pflicht: p,
+      treffer,
+      termine: kontext ? termineFuer(p, kontext) : [],
+      neu: vorher !== null && !vorher.has(id),
+      rechenweg: kontext ? rechenweg(id, kontext) : [],
+    })
   }
   pflichten.sort((a, b) => a.pflicht.nr - b.pflicht.nr)
 
