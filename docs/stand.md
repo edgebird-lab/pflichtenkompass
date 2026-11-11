@@ -29,6 +29,16 @@ Vor jedem Commit: `npm run lint`, `npm test`, `npm run build`, `npm run e2e` (lo
 - [x] **2.5** Auswertung `src/regeln/auswertung.ts` nach 6.1 (`werteAus`: Merkmale, Treffer mit erfüllten Bedingungen, Gruppierung nach Ausgabe, Sortierung nach Katalognummer, Gültigkeit mit Warnung, Neu-Markierung; Termine bleiben bis Phase 3 leer). Eingabeprüfungen aus 6.9 in `src/modell/pruefung.ts` (ihre Warnungen stehen im Ergebnis). Geprüft: Beispiele A–F (Pflichten und Lücken wie 9.3, D: PE03 mit „Beschäftigte: 3“, Rechnungen C/B/E), RT1–RT11, Gültigkeit, Horizont, Neu-Markierung (`auswertung.test.ts`, `pruefung.test.ts`). Vorgezogen: Änderungshinweis als reine Funktion (`aenderungenSeitSpeichern`, `gespeichertAus`) mit SP6 auf Funktionsebene; die Anzeige folgt in 4.8.
 - [x] **2.6** [`regeln/stand.json`](../regeln/stand.json) mit Version, Stand und SHA-256 über den LF-Text; `npm run regeln:stand` (`scripts/regeln-stand.mjs`) prüft und verlangt nach einer Änderung neue Version und neuen Stand; V12 als `pruefeStand` in `src/regeln/pruefung.ts`, nur in Tests und CI. Einstieg für die App: `src/regeln/regelwerk.ts` (`ladeMitgeliefertesRegelwerk`). Geprüft: KA6 grün, nach Änderung der Datei rot, CRLF-Kopie grün, Version passend zum Katalog (`stand.test.ts`); Skript von Hand gegen geänderte Datei geprüft.
 
+## Hinweise für den nächsten Durchgang (Phase 3 ff.)
+
+- **Zahlen:** 212 Unit-Tests in 17 Dateien und 6 Browsertests (Stand nach 2.6), alle grün.
+- **Schon da und getestet:** `src/fristen/datum.ts` (ISO-Daten, Tageszahlen in UTC, `plusMonate` mit Monatsletztem, Wochentag, Formatierung „Mo, 15.02.2027“; DA5 und DA10 schon geprüft), `src/modell/pruefung.ts` (alle Prüfungen aus 6.9 für 4.3), `aenderungenSeitSpeichern` und `gespeichertAus` für 4.8, `loescheLokaleDaten` für 4.1, `src/hash.ts` (SHA-256 über Web Crypto, auch für den Profilschlüssel der ICS-UIDs in 3.4).
+- **3.1:** feiertagejs 1.5.1 ist noch nicht installiert (`npm install feiertagejs@^1.5.1`). Werktage und Feiertage gehören nach `src/fristen/feiertage.ts`; `datum.ts` bleibt ohne Feiertage.
+- **3.3:** `werteAus` liefert `termine: []`; dort `termine.ts` anschließen. `werteAus` erwartet ein gültiges Startdatum; die Oberfläche ruft es erst auf, wenn `pruefeProfil` für F02 keinen Fehler meldet. Ereignisse ohne Antwort (F13, F23 leer) auf F02 zurückfallen lassen (Standard aus 5.2).
+- **4.1–4.3:** Abhängige Standardwerte aus 5.2 (F11 und F17 „ja bei Gastronomie“, F13 und F23 „= F02“, F16 „ja“, F21 „ja bei Onlinehandel mit Privatkunden“, F24 „ja, wenn F22 ≠ keine“) setzt die Oberfläche, wenn die auslösende Antwort sich ändert; das Standardprofil (`src/modell/profil.ts`) enthält die Werte für das leere Profil.
+- **4.4:** Regel ST16 nimmt bei Handwerk mit Privatkunden einen Grundstücksbezug an; die Pflichtkarte „Rechnungen“ hat dafür einen Hinweis.
+- **4.7:** dmn-js-Zeilen tragen die Regel-ID in `data-row-id`; die Bedienung von dmn-js ist englisch („When“, „And“, „Hit policy“, „View DRD“) und braucht ein Übersetzungsmodul. Die Formen im DRD liegen ab y = 150, damit das Namensfeld von dmn-js oben links nichts verdeckt.
+
 ## Phase 3 – Fristen, Termine, Kalender
 
 - [ ] **3.1** `datum.ts` und `feiertage.ts` (DA1–DA10, BA1–BA7).

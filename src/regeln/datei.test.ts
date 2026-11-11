@@ -6,7 +6,7 @@ import { DmnModdle, type ModdleElement } from 'dmn-moddle'
 import { describe, expect, it } from 'vitest'
 import xml from '../../regeln/pflichten.dmn?raw'
 
-type El = ModdleElement & Record<string, any> // eslint-disable-line @typescript-eslint/no-explicit-any
+type El = ModdleElement & Record<string, any>
 
 async function lies() {
   const { rootElement, warnings } = await new DmnModdle().fromXML(xml)

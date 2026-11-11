@@ -19,7 +19,7 @@ test('dmn-js zeigt den DRD mit 7 Entscheidungen und alle Tabellen mit 67 Regeln'
   await page.addScriptTag({ path: pfad('node_modules/dmn-js/dist/dmn-navigated-viewer.production.min.js') })
 
   const drd = await page.evaluate(async (xml) => {
-    const w = window as unknown as { DmnJS: new (o: object) => any; viewer: any } // eslint-disable-line @typescript-eslint/no-explicit-any
+    const w = window as unknown as { DmnJS: new (o: object) => any; viewer: any }
     w.viewer = new w.DmnJS({ container: '#dmn' })
     const { warnings } = await w.viewer.importXML(xml)
     const register = w.viewer.getActiveViewer().get('elementRegistry')
@@ -31,7 +31,7 @@ test('dmn-js zeigt den DRD mit 7 Entscheidungen und alle Tabellen mit 67 Regeln'
   await expect(page.locator('.bjs-powered-by')).toBeVisible()
 
   const tabellen = await page.evaluate(async () => {
-    const viewer = (window as unknown as { viewer: any }).viewer // eslint-disable-line @typescript-eslint/no-explicit-any
+    const viewer = (window as unknown as { viewer: any }).viewer
     const ergebnis: [string, number, string[]][] = []
     for (const ansicht of viewer.getViews().filter((v: { type: string }) => v.type === 'decisionTable')) {
       await viewer.open(ansicht)
