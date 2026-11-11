@@ -15,7 +15,7 @@ Vor jedem Commit: `npm run lint`, `npm test`, `npm run build`, `npm run e2e` (lo
 ## Phase 1 – Fachmodell und Katalog
 
 - [x] **1.1** Typen aus Abschnitt 4 (`src/modell/typen.ts`, `src/katalog/typen.ts`, `src/regeln/typen.ts`), Standardprofil (`src/modell/profil.ts`), Beispiele A–F (`src/modell/beispiele.ts`). Geprüft: Typprüfung ohne Fehler, `beispiele.test.ts` (Standardwerte aus 5.2, Werte aus 9.3, frische Kopien).
-- [ ] **1.2** `merkmale.ts` nach 6.2 (MM1–MM8).
+- [x] **1.2** `src/modell/merkmale.ts` nach 6.2 mit Beschreibung aller 26 Merkmale (`MERKMALE`) und Anzeigetexten für „Warum?“ (`wertText`, Beträge über `src/modell/format.ts`). Geprüft: MM1–MM8 und Grenzfälle in `merkmale.test.ts`.
 - [ ] **1.3** Katalog: 40 Pflichten, 17 Quellen, Normlinks; `docs/katalog.md` (KA1–KA3).
 - [ ] **1.4** Lücken (17), Fragen F01–F32 mit Sichtbarkeit; `docs/fragenkatalog.md`.
 - [ ] **1.5** `speicher.ts` (SP1–SP5).
