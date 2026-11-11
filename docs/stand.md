@@ -22,7 +22,7 @@ Vor jedem Commit: `npm run lint`, `npm test`, `npm run build`, `npm run e2e` (lo
 
 ## Phase 2 – DMN-Regelwerk
 
-- [ ] **2.1** FEEL-Teilmenge (FE1–FE26).
+- [x] **2.1** FEEL-Teilmenge in `src/regeln/feel.ts`: eigener Parser nach der Grammatik in 6.4 (`parseEintrag`, `parseLiterale`), Typprüfung für V6 (`pruefeTyp`), Auswertung (`erfuellt`; null oder falscher Typ zur Laufzeit wirft). Geprüft: FE1–FE26 und weitere Randfälle in `feel.test.ts`. Leere Intervalle sind auch `(1..1)` und `[1..1)`, nicht nur `von > bis` (Entscheidung E8).
 - [ ] **2.2** Differenztests gegen feelin.
 - [ ] **2.3** `regeln/pflichten.dmn` mit 7 Tabellen und DRD (67 Regeln).
 - [ ] **2.4** Laden mit dmn-moddle, Prüfung V1–V11 (RV1–RV10).
