@@ -3,9 +3,25 @@
  * heller Hintergrund auch im Dunkelmodus, Bedienelemente ausgeblendet.
  */
 import { expect, test } from '@playwright/test'
+import { HINWEISTEXT } from '../src/katalog/hinweis.ts'
 import { geheZu, ladeBeispiel, oeffne } from './hilfen.ts'
 
 const HINWEIS = 'Der Pflichten-Kompass zeigt häufige Pflichten nach dem Rechtsstand vom 11.11.2026. Er ist keine Rechts- oder Steuerberatung und nicht vollständig.'
+
+test('Fußzeile jeder Druckseite: derselbe Hinweistext wie in der App und die Seitenzahl (5.6)', async ({ page }) => {
+  // Die Fußzeile steht als Text in styles.css (@page); ohne diesen Test bliebe nach einem neuen Rechtsstand das alte Datum im Druck
+  await oeffne(page)
+  const seitenregel = await page.evaluate(() =>
+    [...document.styleSheets]
+      .flatMap((s) => [...s.cssRules])
+      .filter((r) => r.constructor.name === 'CSSPageRule')
+      .map((r) => r.cssText)
+      .join('\n'),
+  )
+  expect(seitenregel).toContain(`@bottom-left { content: "Keine Rechtsberatung. ${HINWEISTEXT}"`)
+  expect(seitenregel).toContain('@bottom-right { content: "Seite " counter(page) " von " counter(pages)')
+  expect(seitenregel).toMatch(/size: a4;/)
+})
 
 test('E4: Druckansicht mit Hinweis, allen Pflichten und hellem Hintergrund', async ({ page }) => {
   await page.emulateMedia({ colorScheme: 'dark' })

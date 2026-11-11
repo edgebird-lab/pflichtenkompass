@@ -44,6 +44,24 @@ describe('Zustand der Oberfläche', () => {
     expect(z.vorher?.pflichten).toHaveLength(2)
   })
 
+  it('überschreibt einen unlesbaren Stand im Browser erst nach der nächsten Eingabe', () => {
+    const z0 = startZustand(neuesProjekt(HEUTE), 'start', 'Dateiformat 2 wird nicht unterstützt.')
+    expect([z0.speichern, z0.unlesbar]).toEqual([false, 'Dateiformat 2 wird nicht unterstützt.'])
+    // Schrittwechsel ist keine Eingabe
+    const z1 = reduziere(z0, { typ: 'schritt', schritt: 'vorhaben', ergebnis: null })
+    expect([z1.speichern, z1.unlesbar]).toEqual([false, 'Dateiformat 2 wird nicht unterstützt.'])
+    for (const a of [
+      { typ: 'antwort', frage: 'F01', wert: 'Laden' },
+      { typ: 'status', id: 'impressum', teil: { bearbeitung: 'erledigt' }, heute: HEUTE },
+      { typ: 'laden', projekt: neuesProjekt(HEUTE), schritt: 'ergebnis' },
+    ] as const) {
+      expect([reduziere(z1, a).speichern, reduziere(z1, a).unlesbar], a.typ).toEqual([true, null])
+    }
+    // „Lokale Daten löschen“ entfernt den Stand ohnehin; danach kein Hinweis mehr
+    expect(reduziere(z1, { typ: 'geloescht', projekt: neuesProjekt(HEUTE) }).unlesbar).toBeNull()
+    expect(startZustand(neuesProjekt(HEUTE)).speichern).toBe(true)
+  })
+
   it('hält den gespeicherten Stand fest', () => {
     const gespeichert = { katalogVersion: '2026.11.0', am: HEUTE, pflichten: [{ id: 'impressum', stand: '2026-11-11' }] }
     expect(reduziere(startZustand(neuesProjekt(HEUTE)), { typ: 'gespeichert', gespeichert }).projekt.gespeichert).toEqual(gespeichert)

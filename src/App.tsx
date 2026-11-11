@@ -3,7 +3,7 @@ import { ausOrtszeit, datumText } from './fristen/datum'
 import { HINWEISTEXT } from './katalog/hinweis'
 import { KATALOG_STAND, KATALOG_VERSION } from './katalog/typen'
 import { pruefeProfil } from './modell/pruefung'
-import { ladeAusBrowser, ladeEinstellungen, neuesProjekt, speichereEinstellungen, speichereImBrowser, STANDARD_EINSTELLUNGEN } from './modell/speicher'
+import { ladeAusBrowser, ladeEinstellungen, neuesProjekt, speichereEinstellungen, speichereImBrowser, STANDARD_EINSTELLUNGEN, type BrowserStand } from './modell/speicher'
 import type { Datum, Einstellungen } from './modell/typen'
 import { plattform } from './plattform'
 import { werteAus } from './regeln/auswertung'
@@ -31,8 +31,12 @@ const THEMEN: { wert: Einstellungen['thema']; text: string }[] = [
 /** Speichern im Browser 500 ms nach der letzten Eingabe (7.4). */
 const SPEICHERN_NACH_MS = 500
 
-function erstZustand(heute: Datum) {
-  return startZustand(ladeAusBrowser() ?? neuesProjekt(heute))
+/**
+ * Start mit dem Stand aus dem Browser. Lässt er sich nicht lesen, beginnt die App leer, überschreibt
+ * ihn aber erst mit der nächsten Eingabe (wie nach „Lokale Daten löschen“) und sagt das.
+ */
+function erstZustand({ heute, stand }: { heute: Datum; stand: BrowserStand }) {
+  return startZustand(stand.projekt ?? neuesProjekt(heute), 'start', stand.fehler)
 }
 
 export default function App() {
@@ -46,7 +50,9 @@ export default function App() {
 function Hauptfenster() {
   // „heute“ einmal beim Start in Ortszeit; die Fachlogik bekommt es übergeben
   const [heute] = useState(() => ausOrtszeit(new Date()))
-  const [z, dispatch] = useReducer(reduziere, heute, erstZustand)
+  const [z, dispatch] = useReducer(reduziere, null, () => erstZustand({ heute, stand: ladeAusBrowser() }))
+  // Hinweis, wenn das Speichern im Browser scheitert (privates Fenster, Speicher gesperrt oder voll)
+  const [speicherFehler, setSpeicherFehler] = useState(false)
   const [einstellungen, setEinstellungen] = useState(ladeEinstellungen)
   const [regelwerk, setRegelwerk] = useState<Regelwerk | null>(null)
   const [regelFehler, setRegelFehler] = useState<string | null>(null)
@@ -110,10 +116,11 @@ function Hauptfenster() {
     dispatch({ typ: 'schritt', schritt, ergebnis: ergebnisRef.current })
   }, [])
 
-  // Speichern im Browser, 500 ms nach der letzten Änderung; beim Verlassen der Seite sofort
+  // Speichern im Browser, 500 ms nach der letzten Änderung; beim Verlassen der Seite sofort.
+  // Scheitert es (privates Fenster, Speicher gesperrt oder voll), steht ein Hinweis da.
   useEffect(() => {
     if (!z.speichern) return
-    const t = window.setTimeout(() => speichereImBrowser(z.projekt), SPEICHERN_NACH_MS)
+    const t = window.setTimeout(() => setSpeicherFehler(!speichereImBrowser(z.projekt)), SPEICHERN_NACH_MS)
     return () => window.clearTimeout(t)
   }, [z.projekt, z.speichern])
   useEffect(() => {
@@ -223,6 +230,26 @@ function Hauptfenster() {
         <Kopfzeile meldung={meldung} onUeber={() => setUeber(true)} />
         <input ref={dateiFeld} type="file" accept=".pflichtenkompass,.json,application/json" hidden onChange={dateiGewaehlt} />
         <Schrittleiste />
+        {(z.unlesbar || speicherFehler) && (
+          <div className="speicher-hinweise">
+            {z.unlesbar && (
+              <div className="banner banner-warnung" role="alert">
+                <p>
+                  Der gespeicherte Stand in diesem Browser ließ sich nicht lesen ({z.unlesbar.replace(/\.$/, '')}) und wurde nicht geladen. Er bleibt unverändert, bis eine Antwort eingegeben, ein Beispiel geladen
+                  oder eine Datei geöffnet wird.
+                </p>
+              </div>
+            )}
+            {speicherFehler && (
+              <div className="banner banner-warnung" role="alert">
+                <p>
+                  Dieser Browser lässt kein Speichern zu (privates Fenster, gesperrter oder voller Speicher). Die Antworten gehen beim Schließen verloren; „Als Datei speichern“ (Strg+S) sichert
+                  sie.
+                </p>
+              </div>
+            )}
+          </div>
+        )}
         <main id="inhalt" className={`arbeitsflaeche${z.schritt === 'regeln' ? ' breit' : ''}`}>
           <section className="inhalt" aria-labelledby="schritt-titel" key={`${z.schritt}-${z.version}`}>
             {z.schritt === 'start' && <StartSchritt />}

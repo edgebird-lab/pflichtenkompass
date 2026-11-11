@@ -100,6 +100,8 @@ test('4.3: Fehler und Warnungen stehen am Feld', async ({ page }) => {
   await klein.getByRole('radio', { name: 'ja' }).check()
   await expect(klein).toHaveAccessibleDescription(/nicht anwendbar/)
   await expect(page.getByRole('complementary', { name: 'Hilfe' })).toContainText('nicht anwendbar')
+  // Die App rechnet ohne die Regelung; deshalb bleibt auch die Frage nach der Dauerfristverlängerung (E21)
+  await expect(page.getByRole('group', { name: /Dauerfristverlängerung beantragt/ })).toBeVisible()
 
   // Ohne Fehler: Ergebnis mit Warnung oben
   await geheZu(page, 'Tätigkeit')

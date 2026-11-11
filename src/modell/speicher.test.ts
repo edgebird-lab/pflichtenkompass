@@ -166,16 +166,22 @@ describe('Browserspeicher', () => {
 
   it('speichert und lädt das Projekt', () => {
     const daten = stubSpeicher()
-    expect(ladeAusBrowser()).toBeNull()
+    expect(ladeAusBrowser()).toEqual({ projekt: null, fehler: null })
     expect(speichereImBrowser(projektD())).toBe(true)
     expect(daten.has(PROJEKT_SCHLUESSEL)).toBe(true)
-    expect(ladeAusBrowser()).toEqual(projektD())
+    expect(ladeAusBrowser()).toEqual({ projekt: projektD(), fehler: null })
   })
 
-  it('verwirft einen beschädigten Speicherstand', () => {
+  it('meldet einen beschädigten oder fremden Speicherstand, statt ihn still zu verwerfen', () => {
     const daten = stubSpeicher()
     daten.set(PROJEKT_SCHLUESSEL, '{"app":"pflichtenkompass","formatVersion":1}')
-    expect(ladeAusBrowser()).toBeNull()
+    expect(ladeAusBrowser()).toEqual({ projekt: null, fehler: 'profil: fehlt oder ist kein Objekt.' })
+    daten.set(PROJEKT_SCHLUESSEL, JSON.stringify({ ...projektD(), formatVersion: 2 }))
+    expect(ladeAusBrowser()).toEqual({ projekt: null, fehler: 'Dateiformat 2 wird nicht unterstützt.' })
+    daten.set(PROJEKT_SCHLUESSEL, '{abgeschnitten')
+    expect(ladeAusBrowser()).toEqual({ projekt: null, fehler: 'Die Datei ist kein gültiges JSON.' })
+    // der Stand bleibt unangetastet
+    expect(daten.get(PROJEKT_SCHLUESSEL)).toBe('{abgeschnitten')
   })
 
   it('„Lokale Daten löschen“ entfernt Projekt und Einstellungen', () => {
@@ -191,7 +197,7 @@ describe('Browserspeicher', () => {
   it('läuft weiter, wenn der Speicher gesperrt ist', () => {
     stubSpeicher(true)
     expect(speichereImBrowser(projektD())).toBe(false)
-    expect(ladeAusBrowser()).toBeNull()
+    expect(ladeAusBrowser()).toEqual({ projekt: null, fehler: null })
     expect(loescheLokaleDaten()).toBe(false)
     expect(ladeEinstellungen()).toEqual(STANDARD_EINSTELLUNGEN)
     expect(() => speichereEinstellungen(STANDARD_EINSTELLUNGEN)).not.toThrow()

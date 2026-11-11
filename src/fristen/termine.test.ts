@@ -125,6 +125,27 @@ describe('Beispiel C, Horizont 01.04.2027–31.03.2029 (TE5–TE11)', () => {
     expect(von(c, 'beitragsnachweis')).toHaveLength(24) // April 2027 bis März 2029
   })
 
+  it('Beschäftigung lange vor dem Start (F13 nur mit Warnung): Termine nur im Horizont, Rechnung bleibt schnell', () => {
+    // vorher rechnete die App jeden Monat und jedes Jahr ab F13 durch: rund 0,5–0,8 s je Auswertung bei F13 = 01.01.1000
+    const frueh = mit('C', (x) => {
+      x.personal.beginn = '1000-01-01'
+    })
+    const t0 = performance.now()
+    for (let i = 0; i < 5; i++) alleTermine(frueh)
+    expect(performance.now() - t0).toBeLessThan(1000)
+    const liste = alleTermine(frueh)
+    // SV: dieselben 24 Monate wie mit Beginn am Start, weil der Termin eines Monats in diesem Monat liegt
+    expect(von(liste, 'beitragsnachweis')).toEqual(von(c, 'beitragsnachweis'))
+    // Lohnsteuer ab Vorjahreswert unbekannt monatlich; März 2027 ist am Sa, 10.04.2027 dran (gesetzlich bis Mo, 12.04.)
+    const anmeldungen = von(liste, 'lohnsteuer').filter((t) => t.titel === 'Lohnsteuer-Anmeldung')
+    expect(anmeldungen[0]).toMatchObject({ zeitraum: 'März 2027', faelligAm: '2027-04-10', gesetzlichBis: '2027-04-12' })
+    expect(von(liste, 'lohnsteuer').filter((t) => t.titel !== 'Lohnsteuer-Anmeldung').map((t) => [t.zeitraum, t.faelligAm])).toEqual([
+      ['2027', '2028-02-29'],
+      ['2028', '2029-02-28'],
+    ])
+    expect(rechenweg('lohnsteuer', kontext(frueh))).toEqual(['Anmeldungszeitraum: 2026 monatlich, 2027 monatlich, 2028 monatlich, 2029 monatlich.'])
+  })
+
   it('TE9: Jahresabschluss und Offenlegung', () => {
     expect(von(c, 'jahresabschluss').map((t) => [t.zeitraum, t.faelligAm])).toEqual([
       ['2027', '2028-03-31'],
@@ -223,6 +244,20 @@ describe('Weitere Fristregeln', () => {
     expect(oss.every((t) => t.gesetzlichBis === null && t.art === 'abgabeUndZahlung')).toBe(true)
     expect(rechenweg('euFernverkauf', kontext(p))[0]).toContain('über der Schwelle')
     expect(rechenweg('euFernverkauf', kontext(beispiel('A').profil))[0]).toContain('nicht überschritten')
+  })
+
+  it('Kleinunternehmerregelung gewählt, aber über 100.000 €: F30 und F31 wirken (E21)', () => {
+    // vorher blieben F30 und F31 ausgeblendet: keine OSS-Termine, „0 € … nicht überschritten“, keine Dauerfrist
+    const p = mit('A', (x) => {
+      Object.assign(x.steuern, { kleinunternehmer: true, umsatzErstesJahr: 150_000, euFernverkaeufe: 12_000, dauerfristverlaengerung: true })
+    })
+    const liste = alleTermine(p)
+    expect(tage(von(liste, 'euFernverkauf'))).toEqual(['2027-04-30', '2027-07-31', '2027-10-31', '2028-01-31', '2028-04-30', '2028-07-31', '2028-10-31'])
+    expect(rechenweg('euFernverkauf', kontext(p))[0]).toContain('12.000 € je Jahr liegen über der Schwelle')
+    // Januar 2027 mit Dauerfristverlängerung am Mi, 10.03.2027; Sondervorauszahlung am Abgabetag der ersten Voranmeldung
+    const ust = von(liste, 'ustVoranmeldung')
+    expect(ust.find((t) => t.zeitraum === 'Januar 2027')?.faelligAm).toBe('2027-03-10')
+    expect(ust.find((t) => t.schluessel === 'sondervorauszahlung-2027')?.faelligAm).toBe('2027-02-10')
   })
 
   it('setzt den Übergang nach § 68 VerpackDG nur bei Start vor dem 12.08.2026', () => {

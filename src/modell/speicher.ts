@@ -226,12 +226,28 @@ export function neuesProjekt(heute: Datum): Projekt {
 
 // Browser-Speicher ---------------------------------------------------------------
 
-export function ladeAusBrowser(): Projekt | null {
+/**
+ * Gespeicherter Stand im Browser. `fehler` nennt den Grund, wenn ein Stand da ist, sich aber nicht
+ * lesen lässt (beschädigt oder aus einem anderen Dateiformat); die App überschreibt ihn dann nicht
+ * ungefragt. Ist der Speicher gesperrt, gilt er als leer.
+ */
+export interface BrowserStand {
+  projekt: Projekt | null
+  fehler: string | null
+}
+
+export function ladeAusBrowser(): BrowserStand {
+  let text: string | null | undefined
   try {
-    const text = globalThis.localStorage?.getItem(PROJEKT_SCHLUESSEL)
-    return text ? leseProjektText(text) : null
+    text = globalThis.localStorage?.getItem(PROJEKT_SCHLUESSEL)
   } catch {
-    return null
+    return { projekt: null, fehler: null }
+  }
+  if (!text) return { projekt: null, fehler: null }
+  try {
+    return { projekt: leseProjektText(text), fehler: null }
+  } catch (e) {
+    return { projekt: null, fehler: e instanceof Formatfehler ? e.message : 'Der Inhalt ist nicht lesbar.' }
   }
 }
 

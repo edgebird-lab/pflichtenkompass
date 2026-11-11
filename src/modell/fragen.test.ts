@@ -132,6 +132,16 @@ describe('Sichtbarkeit (5.2)', () => {
     expect(sichtbar('F31', mit({ steuern: { kleinunternehmer: true } }))).toBe(false)
   })
 
+  it('F28–F31 auch bei F27 = ja, wenn die Regelung wegen über 100.000 € Umsatz nicht wirkt (E21)', () => {
+    const grenze = { start: '2026-12-01', kunden: { unternehmenInland: true, privatEu: true }, steuern: { kleinunternehmer: true, umsatzErstesJahr: 100_000 } }
+    const darueber = { ...grenze, steuern: { kleinunternehmer: true, umsatzErstesJahr: 100_000.01 } }
+    const ids = ['F28', 'F29', 'F30', 'F31'] as const
+    // genau 100.000 €: Regelung wirkt, die Fragen bleiben ausgeblendet
+    expect(ids.map((id) => sichtbar(id, mit(grenze)))).toEqual([false, false, false, false])
+    // 100.000,01 €: die App rechnet ohne die Regelung, also gelten auch diese Fragen
+    expect(ids.map((id) => sichtbar(id, mit(darueber)))).toEqual([true, true, true, true])
+  })
+
   it('F32 nur bei Einzelunternehmen und GbR', () => {
     expect((['einzelunternehmen', 'gbr', 'ug', 'gmbh'] as const).map((r) => sichtbar('F32', mit({ rechtsform: r })))).toEqual([true, true, false, false])
   })

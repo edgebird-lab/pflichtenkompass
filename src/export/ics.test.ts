@@ -1,8 +1,9 @@
 /**
  * Kalenderexport nach RFC 5545 (Spezifikation 7.5, Tests IC1–IC8 aus 9.9).
  */
-import { beforeAll, describe, expect, it } from 'vitest'
+import { afterEach, beforeAll, describe, expect, it, vi } from 'vitest'
 import xml from '../../regeln/pflichten.dmn?raw'
+import { OHNE_WEB_CRYPTO, sha256Hex } from '../hash'
 import { pflicht } from '../katalog/pflichten'
 import { KATALOG_VERSION } from '../katalog/typen'
 import { beispiel } from '../modell/beispiele'
@@ -107,6 +108,14 @@ describe('Kalenderdatei (IC1–IC8)', () => {
     expect(escapeText('Müller, Söhne; Co\nKG')).toBe('Müller\\, Söhne\\; Co\\nKG')
   })
 
+  it('IC4: Steuerzeichen aus einer Projektdatei fallen weg, Tab bleibt (RFC 5545, 3.3.11)', () => {
+    // der Name kann aus einer geöffneten Datei stammen; Steuerzeichen machen die Kalenderdatei ungültig
+    expect(escapeText('A\u0007B\tC\u001bD\u007fE\u0000F')).toBe('AB\tCDEF')
+    const ics = erzeugeIcs(optionen([MAERZ], { vorhaben: 'Café\u0008 Nord\u000c' }))
+    expect([...ics].some((z) => (z.codePointAt(0) ?? 0) < 0x20 && !'\r\n'.includes(z))).toBe(false)
+    expect(ereignisse(ics)[0].get('SUMMARY')).toBe('[Café Nord] Umsatzsteuer-Voranmeldung – März 2027')
+  })
+
   it('IC5: gleiche UIDs bei erneutem Export, andere bei anderem Profil', async () => {
     const a = beispiel('A').profil
     const eintraege = exportEintraege(auswerten(a), {}, { nurOffene: false, vergangene: false, heute: HEUTE })
@@ -164,5 +173,18 @@ describe('Auswahl für den Export (5.4)', () => {
   it('benennt die Datei nach Vorhaben und Datum', () => {
     expect(kalenderDateiname('Café Müller', '2026-11-11')).toBe('pflichten-cafe-mueller-2026-11-11.ics')
     expect(kalenderDateiname('', '2026-11-11')).toBe('pflichten-vorhaben-2026-11-11.ics')
+  })
+})
+
+describe('Profilschlüssel und SHA-256', () => {
+  afterEach(() => vi.unstubAllGlobals())
+
+  it('rechnet SHA-256 nach dem Prüfbeispiel aus FIPS 180-2 („abc“)', async () => {
+    expect(await sha256Hex('abc')).toBe('ba7816bf8f01cfea414140de5dae2223b00361a396177a9cb410ff61f20015ad')
+  })
+
+  it('meldet verständlich, wenn Web Crypto fehlt (Seite ohne https oder localhost)', async () => {
+    vi.stubGlobal('crypto', {})
+    await expect(profilSchluessel(beispiel('A').profil)).rejects.toThrow(OHNE_WEB_CRYPTO)
   })
 })

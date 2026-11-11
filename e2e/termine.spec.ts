@@ -3,7 +3,7 @@
  */
 import { expect, test } from '@playwright/test'
 import { readFileSync } from 'node:fs'
-import { geheZu, ladeBeispiel, oeffne } from './hilfen.ts'
+import { geheZu, ladeBeispiel, oeffne, pruefeAxe } from './hilfen.ts'
 
 test('Terminliste nach Monaten mit „gesetzlich bis“', async ({ page }) => {
   await oeffne(page)
@@ -58,4 +58,25 @@ test('Kalenderdialog: 12 Monate, ohne Erinnerung, nur offene Pflichten', async (
   expect(ics).not.toContain('VALARM')
   // die Einstellung gilt auch für die Liste
   await expect(page.locator('.zusammenfassung')).toContainText('(12 Monate ab dem Startmonat)')
+})
+
+test('Kalenderexport ohne Web Crypto: Meldung im Dialog statt stillem Abbruch', async ({ page }) => {
+  // wie eine Seite, die über http mit fremder Adresse statt über localhost läuft
+  await page.addInitScript(() => Object.defineProperty(Crypto.prototype, 'subtle', { get: () => undefined, configurable: true }))
+  await oeffne(page)
+  await ladeBeispiel(page, 'A')
+  await geheZu(page, 'Termine')
+  await page.getByRole('button', { name: 'Kalender exportieren …' }).click()
+  const dialog = page.getByRole('dialog', { name: 'Kalender exportieren' })
+  let heruntergeladen = false
+  page.on('download', () => (heruntergeladen = true))
+  await dialog.getByRole('button', { name: 'Exportieren' }).click()
+  await expect(dialog.getByRole('alert')).toContainText('Die Kalenderdatei konnte nicht erstellt werden: Der Browser bietet hier keine Prüfsummen an')
+  await expect(dialog).toBeVisible()
+  expect(heruntergeladen).toBe(false)
+  await pruefeAxe(page, 'Kalenderdialog mit Fehlermeldung')
+  // nach Schließen und erneutem Öffnen ist die alte Meldung weg
+  await dialog.getByRole('button', { name: 'Abbrechen' }).click()
+  await page.getByRole('button', { name: 'Kalender exportieren …' }).click()
+  await expect(dialog.getByRole('alert')).toHaveCount(0)
 })

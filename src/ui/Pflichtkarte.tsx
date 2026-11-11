@@ -15,7 +15,7 @@ import { bedingungText } from '../regeln/auswertung'
 import type { PflichtErgebnis, Treffer } from '../regeln/typen'
 import { useApp } from './kontext'
 import { ExternerLink, Normen } from './Normen'
-import { BEARBEITUNG_TEXT, terminText } from './texte'
+import { BEARBEITUNG_TEXT, terminZusatz } from './texte'
 
 export function Warum({ treffer, id }: { treffer: readonly Treffer[]; id: string }) {
   return (
@@ -104,7 +104,7 @@ export function Pflichtkarte({ e }: { e: PflichtErgebnis }) {
             <dd>
               <strong>{datumMitTag(naechster.faelligAm)}</strong>
               {naechster.gesetzlichBis && <> (gesetzlich bis {datumMitTag(naechster.gesetzlichBis)})</>}
-              {terminText(naechster) !== p.titel && `: ${terminText(naechster)}`}
+              {terminZusatz(naechster, p.titel)}
               {e.termine.length > 1 && <span className="leise"> · {e.termine.length} Termine im Zeitraum</span>}
             </dd>
           </div>

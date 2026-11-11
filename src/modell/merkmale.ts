@@ -21,6 +21,14 @@ export function kaufmaennischGefragt(p: Profil): boolean {
   return istPersonenform(p.rechtsform) && p.taetigkeit === 'gewerblich'
 }
 
+/**
+ * Wirkt die Kleinunternehmerregelung? F27 = ja und F25 höchstens 100.000 € (6.2, 6.9). Über der Grenze
+ * rechnet die App ohne die Regelung; dann gelten auch die Fragen F28–F31 („F27 = nein“, Entscheidung E21).
+ */
+export function kleinunternehmerWirksam(p: Profil): boolean {
+  return p.steuern.kleinunternehmer && p.steuern.umsatzErstesJahr <= KLEINUNTERNEHMER_LAUFEND
+}
+
 /** Lohnsteuerabzug (6.2); steuert auch die Sichtbarkeit von F18. */
 export function hatLohnsteuerabzug(p: Profil): boolean {
   const pers = p.personal
@@ -55,7 +63,7 @@ export function merkmale(p: Profil): Merkmale {
     verpackungen: p.verpackungen,
     kasse: p.kasse,
     bargeld: p.bargeld,
-    kleinunternehmer: p.steuern.kleinunternehmer && umsatz <= KLEINUNTERNEHMER_LAUFEND,
+    kleinunternehmer: kleinunternehmerWirksam(p),
     hgbBefreit: p.rechtsform === 'einzelunternehmen' && kaufmann && umsatz <= GRENZE_UMSATZ && gewinn <= GRENZE_GEWINN,
     ao141Grenze: p.taetigkeit === 'gewerblich' && (umsatz > GRENZE_UMSATZ || gewinn > GRENZE_GEWINN),
     umsatzErstesJahr: umsatz,

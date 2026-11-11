@@ -12,7 +12,7 @@ import { BUNDESLAND_NAMEN } from '../modell/fragen'
 import { bedingungText, nachZeitpunkt } from '../regeln/auswertung'
 import type { Ergebnis, Treffer } from '../regeln/typen'
 import { useApp } from './kontext'
-import { BEARBEITUNG_TEXT, rechtsformText, terminText } from './texte'
+import { BEARBEITUNG_TEXT, rechtsformText, terminText, terminZusatz } from './texte'
 
 function warumZeile(treffer: readonly Treffer[]): string {
   return treffer.map((t) => `${t.begruendung}${t.bedingungen.length ? ` (${t.bedingungen.map((b) => bedingungText(b, true)).join(' · ')})` : ''}`).join(' | ')
@@ -94,7 +94,7 @@ export function Druckansicht({ ergebnis }: { ergebnis: Ergebnis }) {
                           <br />
                           Nächster Termin: {datumMitTag(t.faelligAm)}
                           {t.gesetzlichBis && ` (gesetzlich bis ${datumMitTag(t.gesetzlichBis)})`}
-                          {terminText(t) !== e.pflicht.titel && `, ${terminText(t)}`}
+                          {terminZusatz(t, e.pflicht.titel)}
                         </>
                       )}
                     </td>

@@ -250,6 +250,15 @@ h1[tabindex='-1']:focus {
   max-width: 1240px;
   margin: 0 auto;
 }
+/* Hinweise zum Browserspeicher über dem Inhalt (unlesbarer Stand, Speichern gescheitert) */
+.speicher-hinweise {
+  display: grid;
+  gap: 8px;
+  width: 100%;
+  max-width: 1240px;
+  margin: 14px auto 0;
+  padding: 0 20px;
+}
 .inhalt {
   min-width: 0;
 }
@@ -1160,6 +1169,7 @@ table.quellen {
   }
   .kopf,
   .schrittleiste,
+  .speicher-hinweise,
   .hilfe,
   .sprungmarke,
   .knopfreihe,

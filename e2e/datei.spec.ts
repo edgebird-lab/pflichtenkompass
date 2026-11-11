@@ -77,4 +77,16 @@ test('Fremde oder kaputte Dateien werden mit Meldung abgelehnt', async ({ page }
 
   await oeffneDatei(page, 'kaputt.pflichtenkompass', '{ "app": "pflichtenkompass", ')
   await expect(page.getByRole('dialog')).toContainText('kein gültiges JSON')
+  await page.getByRole('dialog').getByRole('button', { name: 'Schließen' }).click()
+
+  // falsche Felder: Meldung mit Feldname, die App bleibt beim bisherigen Stand
+  await oeffneDatei(page, 'feld.pflichtenkompass', JSON.stringify({ app: 'pflichtenkompass', formatVersion: 1, profil: {} }))
+  await expect(page.getByRole('dialog', { name: '„feld.pflichtenkompass“ nicht geöffnet' })).toContainText('profil.personal: fehlt oder ist kein Objekt.')
+  await page.getByRole('dialog').getByRole('button', { name: 'Schließen' }).click()
+
+  // über 1 MB: abgelehnt, bevor die Datei gelesen wird
+  await oeffneDatei(page, 'gross.pflichtenkompass', ' '.repeat(1024 * 1024 + 1))
+  await expect(page.getByRole('dialog', { name: '„gross.pflichtenkompass“ nicht geöffnet' })).toContainText('größer als 1 MB')
+  await page.getByRole('dialog').getByRole('button', { name: 'Schließen' }).click()
+  await expect(page.getByRole('heading', { level: 1 })).toHaveText('Pflichten-Kompass')
 })

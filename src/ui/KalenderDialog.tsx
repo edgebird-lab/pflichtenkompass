@@ -20,6 +20,7 @@ export function KalenderDialog({ offen, onSchliessen }: { offen: boolean; onSchl
   const { z, heute, ergebnis, einstellungen, setzeEinstellungen, melde } = useApp()
   const [nurOffene, setNurOffene] = useState(true)
   const [laeuft, setLaeuft] = useState(false)
+  const [fehler, setFehler] = useState<string | null>(null)
   const dialog = useRef<HTMLDialogElement>(null)
 
   const ausloeser = useRef<HTMLElement | null>(null)
@@ -28,6 +29,7 @@ export function KalenderDialog({ offen, onSchliessen }: { offen: boolean; onSchl
     if (!d) return
     if (offen && !d.open) {
       ausloeser.current = document.activeElement instanceof HTMLElement ? document.activeElement : null
+      setFehler(null)
       d.showModal()
     }
     if (!offen && d.open) {
@@ -41,6 +43,7 @@ export function KalenderDialog({ offen, onSchliessen }: { offen: boolean; onSchl
   const exportieren = async () => {
     if (!ergebnis) return
     setLaeuft(true)
+    setFehler(null)
     try {
       const p = z.projekt.profil
       const ics = erzeugeIcs({
@@ -54,6 +57,9 @@ export function KalenderDialog({ offen, onSchliessen }: { offen: boolean; onSchl
       const ort = await plattform.speichernUnter(kalenderDateiname(p.name, heute), ics, 'kalender')
       if (ort) melde(`Kalender exportiert: ${ort.name} (${eintraege.length} Termine)`)
       onSchliessen()
+    } catch (e) {
+      // Der Dialog bleibt offen und sagt, was schiefging (vorher scheiterte der Export still)
+      setFehler(`Die Kalenderdatei konnte nicht erstellt werden: ${e instanceof Error ? e.message : String(e)}`)
     } finally {
       setLaeuft(false)
     }
@@ -105,6 +111,11 @@ export function KalenderDialog({ offen, onSchliessen }: { offen: boolean; onSchl
       <p className="leise klein">
         Manche Kalender übernehmen die Erinnerung beim Import nicht oder setzen eine eigene. Nach dem Import kurz prüfen; wie sich Outlook und Google Kalender verhalten, ist noch nicht geprüft.
       </p>
+      {fehler && (
+        <p className="feld-meldung" role="alert">
+          {fehler}
+        </p>
+      )}
       <div className="knopfreihe dialog-knoepfe">
         <button type="button" className="knopf" onClick={onSchliessen}>
           Abbrechen

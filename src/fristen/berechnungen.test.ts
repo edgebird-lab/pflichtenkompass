@@ -84,9 +84,12 @@ describe('Umsatzsteuer-Voranmeldungszeitraum (US1–US9)', () => {
     expect(ustFaelligkeit('2027-01-31', true)).toBe('2027-03-10')
     expect(ustFaelligkeit('2026-12-31', false)).toBe('2027-01-10') // 4. Quartal 2026
   })
-  it('ignoriert eine ausgeblendete Zahllast (F29 nur bei F27 = nein)', () => {
+  it('wertet F29 auch bei F27 = ja, wenn die Regelung über 100.000 € nicht wirkt (E21)', () => {
+    // F29 ist dann sichtbar; 1.500 € Zahllast → vierteljährlich mit Hinweis auf die Befreiung
     const p = profil({ start: '2026-03-01', steuern: { kleinunternehmer: true, umsatzErstesJahr: 150_000, ustErstesJahr: 1_500 } })
-    expect(ustZeitraum(2026, p)).toEqual({ zeitraum: 'monat', hinweis: null })
+    expect(ustZeitraum(2026, p)).toEqual({ zeitraum: 'quartal', hinweis: HINWEIS_UST_BEFREIUNG })
+    // genau 100.000 €: die Regelung wirkt, keine Voranmeldung
+    expect(ustZeitraum(2026, { ...p, steuern: { ...p.steuern, umsatzErstesJahr: 100_000 } }).zeitraum).toBe('keine')
   })
   it('kennt vor dem Gründungsjahr keinen Zeitraum', () => {
     expect(ustZeitraum(2026, profil({ start: '2027-01-15' })).zeitraum).toBe('keine')

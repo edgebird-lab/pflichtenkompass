@@ -36,9 +36,19 @@ export interface IcsOptionen {
   katalogVersion: string
 }
 
-/** TEXT-Wert escapen (RFC 5545, 3.3.11): `\` `;` `,` und Zeilenumbruch; CR entfällt. */
+/** Steuerzeichen außer Tab und Zeilenumbruch sind in TEXT nicht erlaubt (RFC 5545, 3.3.11: TSAFE-CHAR). */
+function ohneSteuerzeichen(s: string): string {
+  return [...s]
+    .filter((z) => {
+      const c = z.codePointAt(0) ?? 0
+      return c === 0x09 || c === 0x0a || (c >= 0x20 && c !== 0x7f)
+    })
+    .join('')
+}
+
+/** TEXT-Wert escapen (RFC 5545, 3.3.11): `\` `;` `,` und Zeilenumbruch; CR und andere Steuerzeichen entfallen. */
 export function escapeText(s: string): string {
-  return s.replace(/\r/g, '').replace(/\\/g, '\\\\').replace(/;/g, '\\;').replace(/,/g, '\\,').replace(/\n/g, '\\n')
+  return ohneSteuerzeichen(s.replace(/\r/g, '')).replace(/\\/g, '\\\\').replace(/;/g, '\\;').replace(/,/g, '\\,').replace(/\n/g, '\\n')
 }
 
 function oktette(zeichen: string): number {

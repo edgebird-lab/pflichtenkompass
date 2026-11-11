@@ -5,7 +5,7 @@
  */
 import type { Gesetz, NormVerweis } from '../katalog/typen'
 import { jahrVon } from '../fristen/datum'
-import { hatLohnsteuerabzug, kaufmaennischGefragt } from './merkmale'
+import { hatLohnsteuerabzug, kaufmaennischGefragt, kleinunternehmerWirksam } from './merkmale'
 import type { Bundesland, Frage, FrageId, Profil } from './typen'
 
 const n = (gesetz: Gesetz, paragraf: string, detail?: string): NormVerweis => ({ gesetz, paragraf, ...(detail ? { detail } : {}) })
@@ -33,7 +33,12 @@ export const BUNDESLAND_NAMEN: Readonly<Record<Bundesland, string>> = {
 export const SOFORTMELDE_BEREICHE =
   'Bau; Gaststätten und Beherbergung; Personenbeförderung; Spedition, Transport, Logistik einschließlich plattformbasierter Lieferdienste; Schausteller; Gebäudereinigung; Messebau; Fleischwirtschaft (ohne Fleischerhandwerk); Prostitution; Wach- und Sicherheit; Friseur und Kosmetik'
 
-const ohneKleinunternehmer = (p: Profil) => !p.steuern.kleinunternehmer
+/**
+ * „F27 = nein“ in 5.2 heißt: ohne Kleinunternehmerregelung. Dazu zählt auch F27 = ja mit einem Umsatz
+ * über 100.000 €, denn dann rechnet die App ohne die Regelung (6.9; Entscheidung E21).
+ */
+const ohneKleinunternehmer = (p: Profil) => !kleinunternehmerWirksam(p)
+const OHNE_KU = 'ohne Kleinunternehmerregelung (F27 = nein oder F25 über 100.000 €)'
 
 export const FRAGEN: readonly Frage[] = [
   // Schritt 1: Vorhaben ------------------------------------------------------------
@@ -420,7 +425,7 @@ export const FRAGEN: readonly Frage[] = [
     typ: 'betrag',
     pflicht: false,
     sichtbar: (p) => p.start <= '2026-12-31' && ohneKleinunternehmer(p) && p.kunden.unternehmenInland,
-    sichtbarText: 'F02 ≤ 31.12.2026, F27 = nein und Kunden: Unternehmen in Deutschland',
+    sichtbarText: `F02 ≤ 31.12.2026, ${OHNE_KU} und Kunden: Unternehmen in Deutschland`,
     standardText: 'leer (dann ab 2027)',
   },
   {
@@ -432,7 +437,7 @@ export const FRAGEN: readonly Frage[] = [
     typ: 'betrag',
     pflicht: false,
     sichtbar: (p) => jahrVon(p.start) === 2026 && ohneKleinunternehmer(p),
-    sichtbarText: 'F02 im Jahr 2026 und F27 = nein',
+    sichtbarText: `F02 im Jahr 2026 und ${OHNE_KU}`,
     standardText: 'leer (dann monatlich)',
   },
   {
@@ -444,7 +449,7 @@ export const FRAGEN: readonly Frage[] = [
     typ: 'betrag',
     pflicht: false,
     sichtbar: (p) => p.kunden.privatEu && ohneKleinunternehmer(p),
-    sichtbarText: 'Kunden: Privatleute in anderen EU-Staaten und F27 = nein',
+    sichtbarText: `Kunden: Privatleute in anderen EU-Staaten und ${OHNE_KU}`,
     standardText: '0',
   },
   {
@@ -456,7 +461,7 @@ export const FRAGEN: readonly Frage[] = [
     typ: 'janein',
     pflicht: false,
     sichtbar: ohneKleinunternehmer,
-    sichtbarText: 'F27 = nein',
+    sichtbarText: OHNE_KU,
     standardText: 'nein',
   },
   {

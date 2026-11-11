@@ -16,7 +16,7 @@ import type { Bundesland, Datum, Profil } from '../modell/typen'
 import { wirksam } from '../modell/wirksam'
 import type { Termin, TerminArt } from '../regeln/typen'
 import { eRechnungAb, lstZeitraum, svFaelligkeit, ustFaelligkeit, ustZeitraum, type LstZeitraum, type UstZeitraum } from './berechnungen'
-import { datum, datumText, jahrVon, MONATE, monatsErster, monatsLetzter, plusMonate, plusTage, tageImMonat, zerlege } from './datum'
+import { datum, datumText, jahrVon, maxDatum, MONATE, monatsErster, monatsLetzter, plusMonate, plusTage, tageImMonat, zerlege } from './datum'
 import { fristNachEreignis, naechsterWerktag } from './feiertage'
 
 export interface TerminKontext {
@@ -150,10 +150,19 @@ function beschaeftigungsbeginn(p: Profil): Datum {
   return wirksam(p).beschaeftigungsbeginn ?? p.start
 }
 
+/**
+ * Erstes Jahr mit Lohnsteuerterminen im Horizont: Ein Jahr Y bringt Termine bis Anfang März Y+1
+ * (Anmeldung am 10.01., Bescheinigung Ende Februar). Ältere Jahre fallen ohnehin heraus; ohne die
+ * Grenze rechnete ein sehr früher Beschäftigungsbeginn (F13) Jahrhunderte durch.
+ */
+function erstesLohnsteuerjahr(k: TerminKontext): number {
+  return Math.max(jahrVon(beschaeftigungsbeginn(k.profil)), jahrVon(k.horizont.von) - 1)
+}
+
 function lohnsteuer(k: TerminKontext): Termin[] {
   const p = k.profil
   const beginn = beschaeftigungsbeginn(p)
-  return jahreBis(jahrVon(beginn), k.horizont).flatMap((jahr) => {
+  return jahreBis(erstesLohnsteuerjahr(k), k.horizont).flatMap((jahr) => {
     const { zeitraum, hinweis } = lstZeitraum(jahr, p)
     return perioden(jahr, zeitraum)
       .filter((per) => per.bis >= beginn)
@@ -162,7 +171,7 @@ function lohnsteuer(k: TerminKontext): Termin[] {
 }
 
 function lohnsteuerbescheinigung(k: TerminKontext): Termin[] {
-  return jahreBis(jahrVon(beschaeftigungsbeginn(k.profil)), k.horizont).map((jahr) =>
+  return jahreBis(erstesLohnsteuerjahr(k), k.horizont).map((jahr) =>
     abgabe('lohnsteuer', monatsLetzter(datum(jahr + 1, 2, 1)), k.land, { titel: 'Lohnsteuerbescheinigung übermitteln', zeitraum: String(jahr), art: 'abgabe', schluessel: `bescheinigung-${jahr}` }),
   )
 }
@@ -170,7 +179,8 @@ function lohnsteuerbescheinigung(k: TerminKontext): Termin[] {
 function svBeitrag(k: TerminKontext): Termin[] {
   const beginn = beschaeftigungsbeginn(k.profil)
   const termine: Termin[] = []
-  for (let erster = monatsErster(beginn); erster <= k.horizont.bis; erster = plusMonate(erster, 1)) {
+  // Der Termin eines Monats liegt in diesem Monat; Monate vor dem Horizont bringen keinen Termin
+  for (let erster = maxDatum(monatsErster(beginn), monatsErster(k.horizont.von)); erster <= k.horizont.bis; erster = plusMonate(erster, 1)) {
     const { jahr, monat: m } = zerlege(erster)
     const sv = svFaelligkeit(jahr, m, k.land)
     termine.push({
@@ -402,7 +412,7 @@ export function rechenweg(id: Pflicht['id'], k: TerminKontext): string[] {
       ]
     }
     case 'lohnsteuer': {
-      const jahre = jahreBis(jahrVon(beschaeftigungsbeginn(p)), k.horizont)
+      const jahre = jahreBis(erstesLohnsteuerjahr(k), k.horizont)
       return [
         `Anmeldungszeitraum: ${jahre
           .map((j) => {
