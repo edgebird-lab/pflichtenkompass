@@ -1,0 +1,2638 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions xmlns="https://www.omg.org/spec/DMN/20191111/MODEL/" xmlns:dmndi="https://www.omg.org/spec/DMN/20191111/DMNDI/" xmlns:dc="http://www.omg.org/spec/DMN/20180521/DC/" xmlns:di="http://www.omg.org/spec/DMN/20180521/DI/" id="Pflichten" name="Pflichten-Kompass 2026.11.0" namespace="https://olbricht-digital.de/pflichtenkompass/regeln">
+  <description>Regeln des Pflichten-Kompasses, Katalog 2026.11.0, Rechtsstand 11.11.2026. Keine Rechts- oder Steuerberatung. Hit Policy COLLECT; die Eingaben sind die Merkmale aus src/modell/merkmale.ts. Nach jeder Änderung Version und Stand anheben und npm run regeln:stand ausführen.</description>
+  <inputData id="Merkmale" name="Merkmale">
+    <variable id="Merkmale_Variable" name="Merkmale" />
+  </inputData>
+  <decision id="Entscheidung_Gruendung" name="Gründung und Anmeldung">
+    <informationRequirement id="IR_Gruendung">
+      <requiredInput href="#Merkmale" />
+    </informationRequirement>
+    <decisionTable id="Tabelle_Gruendung" hitPolicy="COLLECT">
+      <input id="GR_E1" label="Rechtsform">
+        <inputExpression id="GR_E1_A" typeRef="string">
+          <text>Merkmale.rechtsform</text>
+        </inputExpression>
+        <inputValues id="GR_E1_W">
+          <text>"einzelunternehmen","gbr","ug","gmbh"</text>
+        </inputValues>
+      </input>
+      <input id="GR_E2" label="Tätigkeit">
+        <inputExpression id="GR_E2_A" typeRef="string">
+          <text>Merkmale.taetigkeit</text>
+        </inputExpression>
+        <inputValues id="GR_E2_W">
+          <text>"gewerblich","freiberuflich"</text>
+        </inputValues>
+      </input>
+      <input id="GR_E3" label="Kaufmann nach HGB">
+        <inputExpression id="GR_E3_A" typeRef="boolean">
+          <text>Merkmale.kaufmann</text>
+        </inputExpression>
+      </input>
+      <input id="GR_E4" label="Eingetragene Personengesellschaft">
+        <inputExpression id="GR_E4_A" typeRef="boolean">
+          <text>Merkmale.personengesellschaftEingetragen</text>
+        </inputExpression>
+      </input>
+      <input id="GR_E5" label="Handwerk">
+        <inputExpression id="GR_E5_A" typeRef="string">
+          <text>Merkmale.handwerk</text>
+        </inputExpression>
+        <inputValues id="GR_E5_W">
+          <text>"keins","zulassungspflichtig","zulassungsfrei","handwerksaehnlich","unklar"</text>
+        </inputValues>
+      </input>
+      <output id="GR_A" label="Pflicht" name="pflicht" typeRef="string">
+        <outputValues id="GR_A_W">
+          <text>"gewerbeanzeige","steuerlicheErfassung","handelsregister","handelsregisterGmbh","transparenzregister","handwerksrolle","handwerkAnzeige","berufsgenossenschaft"</text>
+        </outputValues>
+      </output>
+      <annotation name="Begründung" />
+      <rule id="GR01">
+        <inputEntry id="GR01_E1">
+          <text>-</text>
+        </inputEntry>
+        <inputEntry id="GR01_E2">
+          <text>"gewerblich"</text>
+        </inputEntry>
+        <inputEntry id="GR01_E3">
+          <text>-</text>
+        </inputEntry>
+        <inputEntry id="GR01_E4">
+          <text>-</text>
+        </inputEntry>
+        <inputEntry id="GR01_E5">
+          <text>-</text>
+        </inputEntry>
+        <outputEntry id="GR01_A">
+          <text>"gewerbeanzeige"</text>
+        </outputEntry>
+        <annotationEntry>
+          <text>Wer ein stehendes Gewerbe beginnt, zeigt es gleichzeitig an.</text>
+        </annotationEntry>
+      </rule>
+      <rule id="GR02">
+        <inputEntry id="GR02_E1">
+          <text>-</text>
+        </inputEntry>
+        <inputEntry id="GR02_E2">
+          <text>-</text>
+        </inputEntry>
+        <inputEntry id="GR02_E3">
+          <text>-</text>
+        </inputEntry>
+        <inputEntry id="GR02_E4">
+          <text>-</text>
+        </inputEntry>
+        <inputEntry id="GR02_E5">
+          <text>-</text>
+        </inputEntry>
+        <outputEntry id="GR02_A">
+          <text>"steuerlicheErfassung"</text>
+        </outputEntry>
+        <annotationEntry>
+          <text>Jede Betriebseröffnung und jede freiberufliche Tätigkeit wird dem Finanzamt mitgeteilt.</text>
+        </annotationEntry>
+      </rule>
+      <rule id="GR03">
+        <inputEntry id="GR03_E1">
+          <text>"einzelunternehmen","gbr"</text>
+        </inputEntry>
+        <inputEntry id="GR03_E2">
+          <text>"gewerblich"</text>
+        </inputEntry>
+        <inputEntry id="GR03_E3">
+          <text>true</text>
+        </inputEntry>
+        <inputEntry id="GR03_E4">
+          <text>-</text>
+        </inputEntry>
+        <inputEntry id="GR03_E5">
+          <text>-</text>
+        </inputEntry>
+        <outputEntry id="GR03_A">
+          <text>"handelsregister"</text>
+        </outputEntry>
+        <annotationEntry>
+          <text>Ein Handelsgewerbe macht zum Kaufmann oder zur OHG; beide gehören ins Handelsregister.</text>
+        </annotationEntry>
+      </rule>
+      <rule id="GR04">
+        <inputEntry id="GR04_E1">
+          <text>"ug","gmbh"</text>
+        </inputEntry>
+        <inputEntry id="GR04_E2">
+          <text>-</text>
+        </inputEntry>
+        <inputEntry id="GR04_E3">
+          <text>-</text>
+        </inputEntry>
+        <inputEntry id="GR04_E4">
+          <text>-</text>
+        </inputEntry>
+        <inputEntry id="GR04_E5">
+          <text>-</text>
+        </inputEntry>
+        <outputEntry id="GR04_A">
+          <text>"handelsregisterGmbh"</text>
+        </outputEntry>
+        <annotationEntry>
+          <text>Die Gesellschaft besteht als solche erst mit der Eintragung.</text>
+        </annotationEntry>
+      </rule>
+      <rule id="GR05">
+        <inputEntry id="GR05_E1">
+          <text>"ug","gmbh"</text>
+        </inputEntry>
+        <inputEntry id="GR05_E2">
+          <text>-</text>
+        </inputEntry>
+        <inputEntry id="GR05_E3">
+          <text>-</text>
+        </inputEntry>
+        <inputEntry id="GR05_E4">
+          <text>-</text>
+        </inputEntry>
+        <inputEntry id="GR05_E5">
+          <text>-</text>
+        </inputEntry>
+        <outputEntry id="GR05_A">
+          <text>"transparenzregister"</text>
+        </outputEntry>
+        <annotationEntry>
+          <text>UG und GmbH sind juristische Personen des Privatrechts.</text>
+        </annotationEntry>
+      </rule>
+      <rule id="GR06">
+        <inputEntry id="GR06_E1">
+          <text>"gbr"</text>
+        </inputEntry>
+        <inputEntry id="GR06_E2">
+          <text>-</text>
+        </inputEntry>
+        <inputEntry id="GR06_E3">
+          <text>-</text>
+        </inputEntry>
+        <inputEntry id="GR06_E4">
+          <text>true</text>
+        </inputEntry>
+        <inputEntry id="GR06_E5">
+          <text>-</text>
+        </inputEntry>
+        <outputEntry id="GR06_A">
+          <text>"transparenzregister"</text>
+        </outputEntry>
+        <annotationEntry>
+          <text>Eingetragene Personengesellschaften melden ihre wirtschaftlich Berechtigten.</text>
+        </annotationEntry>
+      </rule>
+      <rule id="GR07">
+        <inputEntry id="GR07_E1">
+          <text>-</text>
+        </inputEntry>
+        <inputEntry id="GR07_E2">
+          <text>-</text>
+        </inputEntry>
+        <inputEntry id="GR07_E3">
+          <text>-</text>
+        </inputEntry>
+        <inputEntry id="GR07_E4">
+          <text>-</text>
+        </inputEntry>
+        <inputEntry id="GR07_E5">
+          <text>"zulassungspflichtig"</text>
+        </inputEntry>
+        <outputEntry id="GR07_A">
+          <text>"handwerksrolle"</text>
+        </outputEntry>
+        <annotationEntry>
+          <text>Ein zulassungspflichtiges Handwerk darf nur mit Eintragung betrieben werden.</text>
+        </annotationEntry>
+      </rule>
+      <rule id="GR08">
+        <inputEntry id="GR08_E1">
+          <text>-</text>
+        </inputEntry>
+        <inputEntry id="GR08_E2">
+          <text>-</text>
+        </inputEntry>
+        <inputEntry id="GR08_E3">
+          <text>-</text>
+        </inputEntry>
+        <inputEntry id="GR08_E4">
+          <text>-</text>
+        </inputEntry>
+        <inputEntry id="GR08_E5">
+          <text>"zulassungsfrei","handwerksaehnlich"</text>
+        </inputEntry>
+        <outputEntry id="GR08_A">
+          <text>"handwerkAnzeige"</text>
+        </outputEntry>
+        <annotationEntry>
+          <text>Der Beginn eines zulassungsfreien oder handwerksähnlichen Gewerbes ist anzuzeigen.</text>
+        </annotationEntry>
+      </rule>
+      <rule id="GR09">
+        <inputEntry id="GR09_E1">
+          <text>-</text>
+        </inputEntry>
+        <inputEntry id="GR09_E2">
+          <text>-</text>
+        </inputEntry>
+        <inputEntry id="GR09_E3">
+          <text>-</text>
+        </inputEntry>
+        <inputEntry id="GR09_E4">
+          <text>-</text>
+        </inputEntry>
+        <inputEntry id="GR09_E5">
+          <text>-</text>
+        </inputEntry>
+        <outputEntry id="GR09_A">
+          <text>"berufsgenossenschaft"</text>
+        </outputEntry>
+        <annotationEntry>
+          <text>Jedes Unternehmen meldet sich binnen einer Woche beim Unfallversicherungsträger.</text>
+        </annotationEntry>
+      </rule>
+    </decisionTable>
+  </decision>
+  <decision id="Entscheidung_Personal" name="Personal">
+    <informationRequirement id="IR_Personal">
+      <requiredInput href="#Merkmale" />
+    </informationRequirement>
+    <decisionTable id="Tabelle_Personal" hitPolicy="COLLECT">
+      <input id="PE_E1" label="Beschäftigte">
+        <inputExpression id="PE_E1_A" typeRef="number">
+          <text>Merkmale.beschaeftigte</text>
+        </inputExpression>
+      </input>
+      <input id="PE_E2" label="Minijobs">
+        <inputExpression id="PE_E2_A" typeRef="number">
+          <text>Merkmale.minijobber</text>
+        </inputExpression>
+      </input>
+      <input id="PE_E3" label="Lohnsteuerabzug">
+        <inputExpression id="PE_E3_A" typeRef="boolean">
+          <text>Merkmale.lohnsteuerabzug</text>
+        </inputExpression>
+      </input>
+      <input id="PE_E4" label="Bereich mit Sofortmeldepflicht">
+        <inputExpression id="PE_E4_A" typeRef="boolean">
+          <text>Merkmale.sofortmeldeBranche</text>
+        </inputExpression>
+      </input>
+      <output id="PE_A" label="Pflicht" name="pflicht" typeRef="string">
+        <outputValues id="PE_A_W">
+          <text>"betriebsnummer","svAnmeldung","sofortmeldung","beitragsnachweis","lohnunterlagen","lohnsteuer","arbeitszeitMinijob"</text>
+        </outputValues>
+      </output>
+      <annotation name="Begründung" />
+      <rule id="PE01">
+        <inputEntry id="PE01_E1">
+          <text>&gt; 0</text>
+        </inputEntry>
+        <inputEntry id="PE01_E2">
+          <text>-</text>
+        </inputEntry>
+        <inputEntry id="PE01_E3">
+          <text>-</text>
+        </inputEntry>
+        <inputEntry id="PE01_E4">
+          <text>-</text>
+        </inputEntry>
+        <outputEntry id="PE01_A">
+          <text>"betriebsnummer"</text>
+        </outputEntry>
+        <annotationEntry>
+          <text>Wer Beschäftigte meldet, braucht eine Betriebsnummer.</text>
+        </annotationEntry>
+      </rule>
+      <rule id="PE02">
+        <inputEntry id="PE02_E1">
+          <text>&gt; 0</text>
+        </inputEntry>
+        <inputEntry id="PE02_E2">
+          <text>-</text>
+        </inputEntry>
+        <inputEntry id="PE02_E3">
+          <text>-</text>
+        </inputEntry>
+        <inputEntry id="PE02_E4">
+          <text>-</text>
+        </inputEntry>
+        <outputEntry id="PE02_A">
+          <text>"svAnmeldung"</text>
+        </outputEntry>
+        <annotationEntry>
+          <text>Versicherte Beschäftigte werden bei Beginn gemeldet.</text>
+        </annotationEntry>
+      </rule>
+      <rule id="PE03">
+        <inputEntry id="PE03_E1">
+          <text>&gt; 0</text>
+        </inputEntry>
+        <inputEntry id="PE03_E2">
+          <text>-</text>
+        </inputEntry>
+        <inputEntry id="PE03_E3">
+          <text>-</text>
+        </inputEntry>
+        <inputEntry id="PE03_E4">
+          <text>true</text>
+        </inputEntry>
+        <outputEntry id="PE03_A">
+          <text>"sofortmeldung"</text>
+        </outputEntry>
+        <annotationEntry>
+          <text>In bestimmten Bereichen ist der Beginn spätestens bei Arbeitsaufnahme zu melden.</text>
+        </annotationEntry>
+      </rule>
+      <rule id="PE04">
+        <inputEntry id="PE04_E1">
+          <text>&gt; 0</text>
+        </inputEntry>
+        <inputEntry id="PE04_E2">
+          <text>-</text>
+        </inputEntry>
+        <inputEntry id="PE04_E3">
+          <text>-</text>
+        </inputEntry>
+        <inputEntry id="PE04_E4">
+          <text>-</text>
+        </inputEntry>
+        <outputEntry id="PE04_A">
+          <text>"beitragsnachweis"</text>
+        </outputEntry>
+        <annotationEntry>
+          <text>Beiträge werden monatlich nachgewiesen und gezahlt.</text>
+        </annotationEntry>
+      </rule>
+      <rule id="PE05">
+        <inputEntry id="PE05_E1">
+          <text>&gt; 0</text>
+        </inputEntry>
+        <inputEntry id="PE05_E2">
+          <text>-</text>
+        </inputEntry>
+        <inputEntry id="PE05_E3">
+          <text>-</text>
+        </inputEntry>
+        <inputEntry id="PE05_E4">
+          <text>-</text>
+        </inputEntry>
+        <outputEntry id="PE05_A">
+          <text>"lohnunterlagen"</text>
+        </outputEntry>
+        <annotationEntry>
+          <text>Für jede beschäftigte Person sind Lohnkonto und Entgeltunterlagen zu führen.</text>
+        </annotationEntry>
+      </rule>
+      <rule id="PE06">
+        <inputEntry id="PE06_E1">
+          <text>-</text>
+        </inputEntry>
+        <inputEntry id="PE06_E2">
+          <text>-</text>
+        </inputEntry>
+        <inputEntry id="PE06_E3">
+          <text>true</text>
+        </inputEntry>
+        <inputEntry id="PE06_E4">
+          <text>-</text>
+        </inputEntry>
+        <outputEntry id="PE06_A">
+          <text>"lohnsteuer"</text>
+        </outputEntry>
+        <annotationEntry>
+          <text>Einbehaltene Lohnsteuer wird angemeldet, abgeführt und bescheinigt.</text>
+        </annotationEntry>
+      </rule>
+      <rule id="PE07">
+        <inputEntry id="PE07_E1">
+          <text>-</text>
+        </inputEntry>
+        <inputEntry id="PE07_E2">
+          <text>&gt; 0</text>
+        </inputEntry>
+        <inputEntry id="PE07_E3">
+          <text>-</text>
+        </inputEntry>
+        <inputEntry id="PE07_E4">
+          <text>-</text>
+        </inputEntry>
+        <outputEntry id="PE07_A">
+          <text>"arbeitszeitMinijob"</text>
+        </outputEntry>
+        <annotationEntry>
+          <text>Für Minijobs ist die tägliche Arbeitszeit aufzuzeichnen.</text>
+        </annotationEntry>
+      </rule>
+    </decisionTable>
+  </decision>
+  <decision id="Entscheidung_Branchen" name="Branchenpflichten">
+    <informationRequirement id="IR_Branchen">
+      <requiredInput href="#Merkmale" />
+    </informationRequirement>
+    <decisionTable id="Tabelle_Branchen" hitPolicy="COLLECT">
+      <input id="BR_E1" label="Umgang mit Lebensmitteln">
+        <inputExpression id="BR_E1_A" typeRef="boolean">
+          <text>Merkmale.lebensmittel</text>
+        </inputExpression>
+      </input>
+      <output id="BR_A" label="Pflicht" name="pflicht" typeRef="string">
+        <outputValues id="BR_A_W">
+          <text>"infektionsschutz"</text>
+        </outputValues>
+      </output>
+      <annotation name="Begründung" />
+      <rule id="BR01">
+        <inputEntry id="BR01_E1">
+          <text>true</text>
+        </inputEntry>
+        <outputEntry id="BR01_A">
+          <text>"infektionsschutz"</text>
+        </outputEntry>
+        <annotationEntry>
+          <text>Wer mit bestimmten Lebensmitteln arbeitet, braucht eine Belehrung nach § 43 IfSG.</text>
+        </annotationEntry>
+      </rule>
+    </decisionTable>
+  </decision>
+  <decision id="Entscheidung_Steuern" name="Steuern">
+    <informationRequirement id="IR_Steuern">
+      <requiredInput href="#Merkmale" />
+    </informationRequirement>
+    <decisionTable id="Tabelle_Steuern" hitPolicy="COLLECT">
+      <input id="ST_E1" label="Rechtsform">
+        <inputExpression id="ST_E1_A" typeRef="string">
+          <text>Merkmale.rechtsform</text>
+        </inputExpression>
+        <inputValues id="ST_E1_W">
+          <text>"einzelunternehmen","gbr","ug","gmbh"</text>
+        </inputValues>
+      </input>
+      <input id="ST_E2" label="Kleinunternehmerregelung">
+        <inputExpression id="ST_E2_A" typeRef="boolean">
+          <text>Merkmale.kleinunternehmer</text>
+        </inputExpression>
+      </input>
+      <input id="ST_E3" label="Kunden: Unternehmen in Deutschland">
+        <inputExpression id="ST_E3_A" typeRef="boolean">
+          <text>Merkmale.kundenUnternehmen</text>
+        </inputExpression>
+      </input>
+      <input id="ST_E4" label="Kunden: Unternehmen in anderen EU-Staaten">
+        <inputExpression id="ST_E4_A" typeRef="boolean">
+          <text>Merkmale.kundenUnternehmenEu</text>
+        </inputExpression>
+      </input>
+      <input id="ST_E5" label="Kunden: Privatleute in anderen EU-Staaten">
+        <inputExpression id="ST_E5_A" typeRef="boolean">
+          <text>Merkmale.kundenPrivatEu</text>
+        </inputExpression>
+      </input>
+      <input id="ST_E6" label="Kaufmann nach HGB">
+        <inputExpression id="ST_E6_A" typeRef="boolean">
+          <text>Merkmale.kaufmann</text>
+        </inputExpression>
+      </input>
+      <input id="ST_E7" label="Befreiung nach § 241a HGB">
+        <inputExpression id="ST_E7_A" typeRef="boolean">
+          <text>Merkmale.hgbBefreit</text>
+        </inputExpression>
+      </input>
+      <input id="ST_E8" label="Handwerk">
+        <inputExpression id="ST_E8_A" typeRef="string">
+          <text>Merkmale.handwerk</text>
+        </inputExpression>
+        <inputValues id="ST_E8_W">
+          <text>"keins","zulassungspflichtig","zulassungsfrei","handwerksaehnlich","unklar"</text>
+        </inputValues>
+      </input>
+      <input id="ST_E9" label="Kunden: Privatleute in Deutschland">
+        <inputExpression id="ST_E9_A" typeRef="boolean">
+          <text>Merkmale.kundenPrivat</text>
+        </inputExpression>
+      </input>
+      <output id="ST_A" label="Pflicht" name="pflicht" typeRef="string">
+        <outputValues id="ST_A_W">
+          <text>"ustVoranmeldung","ustJahreserklaerung","kleinunternehmerGrenzen","rechnungen","eRechnungEmpfang","eRechnungAusstellen","zusammenfassendeMeldung","euFernverkauf","einkommensteuererklaerung","feststellungserklaerung","eBilanz","estVorauszahlungen"</text>
+        </outputValues>
+      </output>
+      <annotation name="Begründung" />
+      <rule id="ST01">
+        <inputEntry id="ST01_E1">
+          <text>-</text>
+        </inputEntry>
+        <inputEntry id="ST01_E2">
+          <text>false</text>
+        </inputEntry>
+        <inputEntry id="ST01_E3">
+          <text>-</text>
+        </inputEntry>
+        <inputEntry id="ST01_E4">
+          <text>-</text>
+        </inputEntry>
+        <inputEntry id="ST01_E5">
+          <text>-</text>
+        </inputEntry>
+        <inputEntry id="ST01_E6">
+          <text>-</text>
+        </inputEntry>
+        <inputEntry id="ST01_E7">
+          <text>-</text>
+        </inputEntry>
+        <inputEntry id="ST01_E8">
+          <text>-</text>
+        </inputEntry>
+        <inputEntry id="ST01_E9">
+          <text>-</text>
+        </inputEntry>
+        <outputEntry id="ST01_A">
+          <text>"ustVoranmeldung"</text>
+        </outputEntry>
+        <annotationEntry>
+          <text>Ohne Kleinunternehmerregelung sind Voranmeldungen abzugeben.</text>
+        </annotationEntry>
+      </rule>
+      <rule id="ST02">
+        <inputEntry id="ST02_E1">
+          <text>-</text>
+        </inputEntry>
+        <inputEntry id="ST02_E2">
+          <text>false</text>
+        </inputEntry>
+        <inputEntry id="ST02_E3">
+          <text>-</text>
+        </inputEntry>
+        <inputEntry id="ST02_E4">
+          <text>-</text>
+        </inputEntry>
+        <inputEntry id="ST02_E5">
+          <text>-</text>
+        </inputEntry>
+        <inputEntry id="ST02_E6">
+          <text>-</text>
+        </inputEntry>
+        <inputEntry id="ST02_E7">
+          <text>-</text>
+        </inputEntry>
+        <inputEntry id="ST02_E8">
+          <text>-</text>
+        </inputEntry>
+        <inputEntry id="ST02_E9">
+          <text>-</text>
+        </inputEntry>
+        <outputEntry id="ST02_A">
+          <text>"ustJahreserklaerung"</text>
+        </outputEntry>
+        <annotationEntry>
+          <text>Ohne Kleinunternehmerregelung ist eine Jahreserklärung abzugeben.</text>
+        </annotationEntry>
+      </rule>
+      <rule id="ST03">
+        <inputEntry id="ST03_E1">
+          <text>-</text>
+        </inputEntry>
+        <inputEntry id="ST03_E2">
+          <text>true</text>
+        </inputEntry>
+        <inputEntry id="ST03_E3">
+          <text>-</text>
+        </inputEntry>
+        <inputEntry id="ST03_E4">
+          <text>-</text>
+        </inputEntry>
+        <inputEntry id="ST03_E5">
+          <text>-</text>
+        </inputEntry>
+        <inputEntry id="ST03_E6">
+          <text>-</text>
+        </inputEntry>
+        <inputEntry id="ST03_E7">
+          <text>-</text>
+        </inputEntry>
+        <inputEntry id="ST03_E8">
+          <text>-</text>
+        </inputEntry>
+        <inputEntry id="ST03_E9">
+          <text>-</text>
+        </inputEntry>
+        <outputEntry id="ST03_A">
+          <text>"kleinunternehmerGrenzen"</text>
+        </outputEntry>
+        <annotationEntry>
+          <text>Die Steuerbefreiung gilt nur innerhalb der Umsatzgrenzen.</text>
+        </annotationEntry>
+      </rule>
+      <rule id="ST04">
+        <inputEntry id="ST04_E1">
+          <text>-</text>
+        </inputEntry>
+        <inputEntry id="ST04_E2">
+          <text>-</text>
+        </inputEntry>
+        <inputEntry id="ST04_E3">
+          <text>true</text>
+        </inputEntry>
+        <inputEntry id="ST04_E4">
+          <text>-</text>
+        </inputEntry>
+        <inputEntry id="ST04_E5">
+          <text>-</text>
+        </inputEntry>
+        <inputEntry id="ST04_E6">
+          <text>-</text>
+        </inputEntry>
+        <inputEntry id="ST04_E7">
+          <text>-</text>
+        </inputEntry>
+        <inputEntry id="ST04_E8">
+          <text>-</text>
+        </inputEntry>
+        <inputEntry id="ST04_E9">
+          <text>-</text>
+        </inputEntry>
+        <outputEntry id="ST04_A">
+          <text>"rechnungen"</text>
+        </outputEntry>
+        <annotationEntry>
+          <text>Leistungen an Unternehmen sind binnen sechs Monaten abzurechnen.</text>
+        </annotationEntry>
+      </rule>
+      <rule id="ST05">
+        <inputEntry id="ST05_E1">
+          <text>-</text>
+        </inputEntry>
+        <inputEntry id="ST05_E2">
+          <text>false</text>
+        </inputEntry>
+        <inputEntry id="ST05_E3">
+          <text>-</text>
+        </inputEntry>
+        <inputEntry id="ST05_E4">
+          <text>true</text>
+        </inputEntry>
+        <inputEntry id="ST05_E5">
+          <text>-</text>
+        </inputEntry>
+        <inputEntry id="ST05_E6">
+          <text>-</text>
+        </inputEntry>
+        <inputEntry id="ST05_E7">
+          <text>-</text>
+        </inputEntry>
+        <inputEntry id="ST05_E8">
+          <text>-</text>
+        </inputEntry>
+        <inputEntry id="ST05_E9">
+          <text>-</text>
+        </inputEntry>
+        <outputEntry id="ST05_A">
+          <text>"rechnungen"</text>
+        </outputEntry>
+        <annotationEntry>
+          <text>An Unternehmen in anderen EU-Staaten ist bis zum 15. des Folgemonats abzurechnen.</text>
+        </annotationEntry>
+      </rule>
+      <rule id="ST06">
+        <inputEntry id="ST06_E1">
+          <text>-</text>
+        </inputEntry>
+        <inputEntry id="ST06_E2">
+          <text>-</text>
+        </inputEntry>
+        <inputEntry id="ST06_E3">
+          <text>-</text>
+        </inputEntry>
+        <inputEntry id="ST06_E4">
+          <text>-</text>
+        </inputEntry>
+        <inputEntry id="ST06_E5">
+          <text>-</text>
+        </inputEntry>
+        <inputEntry id="ST06_E6">
+          <text>-</text>
+        </inputEntry>
+        <inputEntry id="ST06_E7">
+          <text>-</text>
+        </inputEntry>
+        <inputEntry id="ST06_E8">
+          <text>-</text>
+        </inputEntry>
+        <inputEntry id="ST06_E9">
+          <text>-</text>
+        </inputEntry>
+        <outputEntry id="ST06_A">
+          <text>"eRechnungEmpfang"</text>
+        </outputEntry>
+        <annotationEntry>
+          <text>Inländische Unternehmen dürfen E-Rechnungen ohne Zustimmung schicken.</text>
+        </annotationEntry>
+      </rule>
+      <rule id="ST07">
+        <inputEntry id="ST07_E1">
+          <text>-</text>
+        </inputEntry>
+        <inputEntry id="ST07_E2">
+          <text>false</text>
+        </inputEntry>
+        <inputEntry id="ST07_E3">
+          <text>true</text>
+        </inputEntry>
+        <inputEntry id="ST07_E4">
+          <text>-</text>
+        </inputEntry>
+        <inputEntry id="ST07_E5">
+          <text>-</text>
+        </inputEntry>
+        <inputEntry id="ST07_E6">
+          <text>-</text>
+        </inputEntry>
+        <inputEntry id="ST07_E7">
+          <text>-</text>
+        </inputEntry>
+        <inputEntry id="ST07_E8">
+          <text>-</text>
+        </inputEntry>
+        <inputEntry id="ST07_E9">
+          <text>-</text>
+        </inputEntry>
+        <outputEntry id="ST07_A">
+          <text>"eRechnungAusstellen"</text>
+        </outputEntry>
+        <annotationEntry>
+          <text>Rechnungen an inländische Unternehmen werden zur E-Rechnung.</text>
+        </annotationEntry>
+      </rule>
+      <rule id="ST08">
+        <inputEntry id="ST08_E1">
+          <text>-</text>
+        </inputEntry>
+        <inputEntry id="ST08_E2">
+          <text>false</text>
+        </inputEntry>
+        <inputEntry id="ST08_E3">
+          <text>-</text>
+        </inputEntry>
+        <inputEntry id="ST08_E4">
+          <text>true</text>
+        </inputEntry>
+        <inputEntry id="ST08_E5">
+          <text>-</text>
+        </inputEntry>
+        <inputEntry id="ST08_E6">
+          <text>-</text>
+        </inputEntry>
+        <inputEntry id="ST08_E7">
+          <text>-</text>
+        </inputEntry>
+        <inputEntry id="ST08_E8">
+          <text>-</text>
+        </inputEntry>
+        <inputEntry id="ST08_E9">
+          <text>-</text>
+        </inputEntry>
+        <outputEntry id="ST08_A">
+          <text>"zusammenfassendeMeldung"</text>
+        </outputEntry>
+        <annotationEntry>
+          <text>Lieferungen und Leistungen an Unternehmen in anderen EU-Staaten sind zu melden.</text>
+        </annotationEntry>
+      </rule>
+      <rule id="ST09">
+        <inputEntry id="ST09_E1">
+          <text>-</text>
+        </inputEntry>
+        <inputEntry id="ST09_E2">
+          <text>false</text>
+        </inputEntry>
+        <inputEntry id="ST09_E3">
+          <text>-</text>
+        </inputEntry>
+        <inputEntry id="ST09_E4">
+          <text>-</text>
+        </inputEntry>
+        <inputEntry id="ST09_E5">
+          <text>true</text>
+        </inputEntry>
+        <inputEntry id="ST09_E6">
+          <text>-</text>
+        </inputEntry>
+        <inputEntry id="ST09_E7">
+          <text>-</text>
+        </inputEntry>
+        <inputEntry id="ST09_E8">
+          <text>-</text>
+        </inputEntry>
+        <inputEntry id="ST09_E9">
+          <text>-</text>
+        </inputEntry>
+        <outputEntry id="ST09_A">
+          <text>"euFernverkauf"</text>
+        </outputEntry>
+        <annotationEntry>
+          <text>Über 10.000 € EU-Verkäufen an Privatleute gilt die Steuer des Bestimmungslands.</text>
+        </annotationEntry>
+      </rule>
+      <rule id="ST10">
+        <inputEntry id="ST10_E1">
+          <text>"einzelunternehmen","gbr"</text>
+        </inputEntry>
+        <inputEntry id="ST10_E2">
+          <text>-</text>
+        </inputEntry>
+        <inputEntry id="ST10_E3">
+          <text>-</text>
+        </inputEntry>
+        <inputEntry id="ST10_E4">
+          <text>-</text>
+        </inputEntry>
+        <inputEntry id="ST10_E5">
+          <text>-</text>
+        </inputEntry>
+        <inputEntry id="ST10_E6">
+          <text>-</text>
+        </inputEntry>
+        <inputEntry id="ST10_E7">
+          <text>-</text>
+        </inputEntry>
+        <inputEntry id="ST10_E8">
+          <text>-</text>
+        </inputEntry>
+        <inputEntry id="ST10_E9">
+          <text>-</text>
+        </inputEntry>
+        <outputEntry id="ST10_A">
+          <text>"einkommensteuererklaerung"</text>
+        </outputEntry>
+        <annotationEntry>
+          <text>Gewinne natürlicher Personen fließen in die Einkommensteuererklärung.</text>
+        </annotationEntry>
+      </rule>
+      <rule id="ST11">
+        <inputEntry id="ST11_E1">
+          <text>"gbr"</text>
+        </inputEntry>
+        <inputEntry id="ST11_E2">
+          <text>-</text>
+        </inputEntry>
+        <inputEntry id="ST11_E3">
+          <text>-</text>
+        </inputEntry>
+        <inputEntry id="ST11_E4">
+          <text>-</text>
+        </inputEntry>
+        <inputEntry id="ST11_E5">
+          <text>-</text>
+        </inputEntry>
+        <inputEntry id="ST11_E6">
+          <text>-</text>
+        </inputEntry>
+        <inputEntry id="ST11_E7">
+          <text>-</text>
+        </inputEntry>
+        <inputEntry id="ST11_E8">
+          <text>-</text>
+        </inputEntry>
+        <inputEntry id="ST11_E9">
+          <text>-</text>
+        </inputEntry>
+        <outputEntry id="ST11_A">
+          <text>"feststellungserklaerung"</text>
+        </outputEntry>
+        <annotationEntry>
+          <text>Gemeinsame Einkünfte mehrerer Personen werden gesondert und einheitlich festgestellt.</text>
+        </annotationEntry>
+      </rule>
+      <rule id="ST12">
+        <inputEntry id="ST12_E1">
+          <text>"ug","gmbh"</text>
+        </inputEntry>
+        <inputEntry id="ST12_E2">
+          <text>-</text>
+        </inputEntry>
+        <inputEntry id="ST12_E3">
+          <text>-</text>
+        </inputEntry>
+        <inputEntry id="ST12_E4">
+          <text>-</text>
+        </inputEntry>
+        <inputEntry id="ST12_E5">
+          <text>-</text>
+        </inputEntry>
+        <inputEntry id="ST12_E6">
+          <text>-</text>
+        </inputEntry>
+        <inputEntry id="ST12_E7">
+          <text>-</text>
+        </inputEntry>
+        <inputEntry id="ST12_E8">
+          <text>-</text>
+        </inputEntry>
+        <inputEntry id="ST12_E9">
+          <text>-</text>
+        </inputEntry>
+        <outputEntry id="ST12_A">
+          <text>"eBilanz"</text>
+        </outputEntry>
+        <annotationEntry>
+          <text>Bilanzierende übermitteln Bilanz und GuV elektronisch.</text>
+        </annotationEntry>
+      </rule>
+      <rule id="ST13">
+        <inputEntry id="ST13_E1">
+          <text>"einzelunternehmen"</text>
+        </inputEntry>
+        <inputEntry id="ST13_E2">
+          <text>-</text>
+        </inputEntry>
+        <inputEntry id="ST13_E3">
+          <text>-</text>
+        </inputEntry>
+        <inputEntry id="ST13_E4">
+          <text>-</text>
+        </inputEntry>
+        <inputEntry id="ST13_E5">
+          <text>-</text>
+        </inputEntry>
+        <inputEntry id="ST13_E6">
+          <text>true</text>
+        </inputEntry>
+        <inputEntry id="ST13_E7">
+          <text>false</text>
+        </inputEntry>
+        <inputEntry id="ST13_E8">
+          <text>-</text>
+        </inputEntry>
+        <inputEntry id="ST13_E9">
+          <text>-</text>
+        </inputEntry>
+        <outputEntry id="ST13_A">
+          <text>"eBilanz"</text>
+        </outputEntry>
+        <annotationEntry>
+          <text>Bilanzierende übermitteln Bilanz und GuV elektronisch.</text>
+        </annotationEntry>
+      </rule>
+      <rule id="ST14">
+        <inputEntry id="ST14_E1">
+          <text>"gbr"</text>
+        </inputEntry>
+        <inputEntry id="ST14_E2">
+          <text>-</text>
+        </inputEntry>
+        <inputEntry id="ST14_E3">
+          <text>-</text>
+        </inputEntry>
+        <inputEntry id="ST14_E4">
+          <text>-</text>
+        </inputEntry>
+        <inputEntry id="ST14_E5">
+          <text>-</text>
+        </inputEntry>
+        <inputEntry id="ST14_E6">
+          <text>true</text>
+        </inputEntry>
+        <inputEntry id="ST14_E7">
+          <text>-</text>
+        </inputEntry>
+        <inputEntry id="ST14_E8">
+          <text>-</text>
+        </inputEntry>
+        <inputEntry id="ST14_E9">
+          <text>-</text>
+        </inputEntry>
+        <outputEntry id="ST14_A">
+          <text>"eBilanz"</text>
+        </outputEntry>
+        <annotationEntry>
+          <text>Bilanzierende übermitteln Bilanz und GuV elektronisch.</text>
+        </annotationEntry>
+      </rule>
+      <rule id="ST15">
+        <inputEntry id="ST15_E1">
+          <text>"einzelunternehmen","gbr"</text>
+        </inputEntry>
+        <inputEntry id="ST15_E2">
+          <text>-</text>
+        </inputEntry>
+        <inputEntry id="ST15_E3">
+          <text>-</text>
+        </inputEntry>
+        <inputEntry id="ST15_E4">
+          <text>-</text>
+        </inputEntry>
+        <inputEntry id="ST15_E5">
+          <text>-</text>
+        </inputEntry>
+        <inputEntry id="ST15_E6">
+          <text>-</text>
+        </inputEntry>
+        <inputEntry id="ST15_E7">
+          <text>-</text>
+        </inputEntry>
+        <inputEntry id="ST15_E8">
+          <text>-</text>
+        </inputEntry>
+        <inputEntry id="ST15_E9">
+          <text>-</text>
+        </inputEntry>
+        <outputEntry id="ST15_A">
+          <text>"estVorauszahlungen"</text>
+        </outputEntry>
+        <annotationEntry>
+          <text>Das Finanzamt kann vierteljährliche Vorauszahlungen festsetzen.</text>
+        </annotationEntry>
+      </rule>
+      <rule id="ST16">
+        <inputEntry id="ST16_E1">
+          <text>-</text>
+        </inputEntry>
+        <inputEntry id="ST16_E2">
+          <text>false</text>
+        </inputEntry>
+        <inputEntry id="ST16_E3">
+          <text>-</text>
+        </inputEntry>
+        <inputEntry id="ST16_E4">
+          <text>-</text>
+        </inputEntry>
+        <inputEntry id="ST16_E5">
+          <text>-</text>
+        </inputEntry>
+        <inputEntry id="ST16_E6">
+          <text>-</text>
+        </inputEntry>
+        <inputEntry id="ST16_E7">
+          <text>-</text>
+        </inputEntry>
+        <inputEntry id="ST16_E8">
+          <text>not("keins")</text>
+        </inputEntry>
+        <inputEntry id="ST16_E9">
+          <text>true</text>
+        </inputEntry>
+        <outputEntry id="ST16_A">
+          <text>"rechnungen"</text>
+        </outputEntry>
+        <annotationEntry>
+          <text>Steuerpflichtige Leistungen im Zusammenhang mit einem Grundstück sind auch Privatleuten binnen sechs Monaten abzurechnen.</text>
+        </annotationEntry>
+      </rule>
+    </decisionTable>
+  </decision>
+  <decision id="Entscheidung_Buchfuehrung" name="Buchführung, Abschluss und Kasse">
+    <informationRequirement id="IR_Buchfuehrung">
+      <requiredInput href="#Merkmale" />
+    </informationRequirement>
+    <decisionTable id="Tabelle_Buchfuehrung" hitPolicy="COLLECT">
+      <input id="BU_E1" label="Rechtsform">
+        <inputExpression id="BU_E1_A" typeRef="string">
+          <text>Merkmale.rechtsform</text>
+        </inputExpression>
+        <inputValues id="BU_E1_W">
+          <text>"einzelunternehmen","gbr","ug","gmbh"</text>
+        </inputValues>
+      </input>
+      <input id="BU_E2" label="Kaufmann nach HGB">
+        <inputExpression id="BU_E2_A" typeRef="boolean">
+          <text>Merkmale.kaufmann</text>
+        </inputExpression>
+      </input>
+      <input id="BU_E3" label="Befreiung nach § 241a HGB">
+        <inputExpression id="BU_E3_A" typeRef="boolean">
+          <text>Merkmale.hgbBefreit</text>
+        </inputExpression>
+      </input>
+      <input id="BU_E4" label="Grenze nach § 141 AO überschritten">
+        <inputExpression id="BU_E4_A" typeRef="boolean">
+          <text>Merkmale.ao141Grenze</text>
+        </inputExpression>
+      </input>
+      <input id="BU_E5" label="Bargeld">
+        <inputExpression id="BU_E5_A" typeRef="boolean">
+          <text>Merkmale.bargeld</text>
+        </inputExpression>
+      </input>
+      <input id="BU_E6" label="Kasse">
+        <inputExpression id="BU_E6_A" typeRef="string">
+          <text>Merkmale.kasse</text>
+        </inputExpression>
+        <inputValues id="BU_E6_W">
+          <text>"keine","offeneLadenkasse","elektronisch"</text>
+        </inputValues>
+      </input>
+      <output id="BU_A" label="Pflicht" name="pflicht" typeRef="string">
+        <outputValues id="BU_A_W">
+          <text>"aufbewahrung","buchfuehrungHgb","buchfuehrungAo141","kassenfuehrung","elektronischeKasse","jahresabschluss","offenlegung","ugRuecklage","geschaeftsbriefe"</text>
+        </outputValues>
+      </output>
+      <annotation name="Begründung" />
+      <rule id="BU01">
+        <inputEntry id="BU01_E1">
+          <text>-</text>
+        </inputEntry>
+        <inputEntry id="BU01_E2">
+          <text>-</text>
+        </inputEntry>
+        <inputEntry id="BU01_E3">
+          <text>-</text>
+        </inputEntry>
+        <inputEntry id="BU01_E4">
+          <text>-</text>
+        </inputEntry>
+        <inputEntry id="BU01_E5">
+          <text>-</text>
+        </inputEntry>
+        <inputEntry id="BU01_E6">
+          <text>-</text>
+        </inputEntry>
+        <outputEntry id="BU01_A">
+          <text>"aufbewahrung"</text>
+        </outputEntry>
+        <annotationEntry>
+          <text>Bücher, Belege und Geschäftsbriefe sind aufzubewahren.</text>
+        </annotationEntry>
+      </rule>
+      <rule id="BU02">
+        <inputEntry id="BU02_E1">
+          <text>"ug","gmbh"</text>
+        </inputEntry>
+        <inputEntry id="BU02_E2">
+          <text>-</text>
+        </inputEntry>
+        <inputEntry id="BU02_E3">
+          <text>-</text>
+        </inputEntry>
+        <inputEntry id="BU02_E4">
+          <text>-</text>
+        </inputEntry>
+        <inputEntry id="BU02_E5">
+          <text>-</text>
+        </inputEntry>
+        <inputEntry id="BU02_E6">
+          <text>-</text>
+        </inputEntry>
+        <outputEntry id="BU02_A">
+          <text>"buchfuehrungHgb"</text>
+        </outputEntry>
+        <annotationEntry>
+          <text>UG und GmbH sind Handelsgesellschaften und führen Bücher.</text>
+        </annotationEntry>
+      </rule>
+      <rule id="BU03">
+        <inputEntry id="BU03_E1">
+          <text>"gbr"</text>
+        </inputEntry>
+        <inputEntry id="BU03_E2">
+          <text>true</text>
+        </inputEntry>
+        <inputEntry id="BU03_E3">
+          <text>-</text>
+        </inputEntry>
+        <inputEntry id="BU03_E4">
+          <text>-</text>
+        </inputEntry>
+        <inputEntry id="BU03_E5">
+          <text>-</text>
+        </inputEntry>
+        <inputEntry id="BU03_E6">
+          <text>-</text>
+        </inputEntry>
+        <outputEntry id="BU03_A">
+          <text>"buchfuehrungHgb"</text>
+        </outputEntry>
+        <annotationEntry>
+          <text>Eine OHG ist Handelsgesellschaft; die Befreiung nach § 241a HGB gilt nur für Einzelkaufleute.</text>
+        </annotationEntry>
+      </rule>
+      <rule id="BU04">
+        <inputEntry id="BU04_E1">
+          <text>"einzelunternehmen"</text>
+        </inputEntry>
+        <inputEntry id="BU04_E2">
+          <text>true</text>
+        </inputEntry>
+        <inputEntry id="BU04_E3">
+          <text>false</text>
+        </inputEntry>
+        <inputEntry id="BU04_E4">
+          <text>-</text>
+        </inputEntry>
+        <inputEntry id="BU04_E5">
+          <text>-</text>
+        </inputEntry>
+        <inputEntry id="BU04_E6">
+          <text>-</text>
+        </inputEntry>
+        <outputEntry id="BU04_A">
+          <text>"buchfuehrungHgb"</text>
+        </outputEntry>
+        <annotationEntry>
+          <text>Einzelkaufleute über den Grenzen des § 241a HGB führen Bücher.</text>
+        </annotationEntry>
+      </rule>
+      <rule id="BU05">
+        <inputEntry id="BU05_E1">
+          <text>-</text>
+        </inputEntry>
+        <inputEntry id="BU05_E2">
+          <text>false</text>
+        </inputEntry>
+        <inputEntry id="BU05_E3">
+          <text>-</text>
+        </inputEntry>
+        <inputEntry id="BU05_E4">
+          <text>true</text>
+        </inputEntry>
+        <inputEntry id="BU05_E5">
+          <text>-</text>
+        </inputEntry>
+        <inputEntry id="BU05_E6">
+          <text>-</text>
+        </inputEntry>
+        <outputEntry id="BU05_A">
+          <text>"buchfuehrungAo141"</text>
+        </outputEntry>
+        <annotationEntry>
+          <text>Über 800.000 € Umsatz oder 80.000 € Gewinn kann das Finanzamt Bücher verlangen.</text>
+        </annotationEntry>
+      </rule>
+      <rule id="BU06">
+        <inputEntry id="BU06_E1">
+          <text>-</text>
+        </inputEntry>
+        <inputEntry id="BU06_E2">
+          <text>-</text>
+        </inputEntry>
+        <inputEntry id="BU06_E3">
+          <text>-</text>
+        </inputEntry>
+        <inputEntry id="BU06_E4">
+          <text>-</text>
+        </inputEntry>
+        <inputEntry id="BU06_E5">
+          <text>true</text>
+        </inputEntry>
+        <inputEntry id="BU06_E6">
+          <text>-</text>
+        </inputEntry>
+        <outputEntry id="BU06_A">
+          <text>"kassenfuehrung"</text>
+        </outputEntry>
+        <annotationEntry>
+          <text>Bareinnahmen und -ausgaben sind täglich festzuhalten.</text>
+        </annotationEntry>
+      </rule>
+      <rule id="BU07">
+        <inputEntry id="BU07_E1">
+          <text>-</text>
+        </inputEntry>
+        <inputEntry id="BU07_E2">
+          <text>-</text>
+        </inputEntry>
+        <inputEntry id="BU07_E3">
+          <text>-</text>
+        </inputEntry>
+        <inputEntry id="BU07_E4">
+          <text>-</text>
+        </inputEntry>
+        <inputEntry id="BU07_E5">
+          <text>-</text>
+        </inputEntry>
+        <inputEntry id="BU07_E6">
+          <text>"elektronisch"</text>
+        </inputEntry>
+        <outputEntry id="BU07_A">
+          <text>"elektronischeKasse"</text>
+        </outputEntry>
+        <annotationEntry>
+          <text>Elektronische Kassen brauchen TSE, Belegausgabe und Mitteilung.</text>
+        </annotationEntry>
+      </rule>
+      <rule id="BU08">
+        <inputEntry id="BU08_E1">
+          <text>"ug","gmbh"</text>
+        </inputEntry>
+        <inputEntry id="BU08_E2">
+          <text>-</text>
+        </inputEntry>
+        <inputEntry id="BU08_E3">
+          <text>-</text>
+        </inputEntry>
+        <inputEntry id="BU08_E4">
+          <text>-</text>
+        </inputEntry>
+        <inputEntry id="BU08_E5">
+          <text>-</text>
+        </inputEntry>
+        <inputEntry id="BU08_E6">
+          <text>-</text>
+        </inputEntry>
+        <outputEntry id="BU08_A">
+          <text>"jahresabschluss"</text>
+        </outputEntry>
+        <annotationEntry>
+          <text>Kapitalgesellschaften stellen den Jahresabschluss in festen Fristen auf.</text>
+        </annotationEntry>
+      </rule>
+      <rule id="BU09">
+        <inputEntry id="BU09_E1">
+          <text>"ug","gmbh"</text>
+        </inputEntry>
+        <inputEntry id="BU09_E2">
+          <text>-</text>
+        </inputEntry>
+        <inputEntry id="BU09_E3">
+          <text>-</text>
+        </inputEntry>
+        <inputEntry id="BU09_E4">
+          <text>-</text>
+        </inputEntry>
+        <inputEntry id="BU09_E5">
+          <text>-</text>
+        </inputEntry>
+        <inputEntry id="BU09_E6">
+          <text>-</text>
+        </inputEntry>
+        <outputEntry id="BU09_A">
+          <text>"offenlegung"</text>
+        </outputEntry>
+        <annotationEntry>
+          <text>Kapitalgesellschaften legen den Jahresabschluss offen.</text>
+        </annotationEntry>
+      </rule>
+      <rule id="BU10">
+        <inputEntry id="BU10_E1">
+          <text>"ug"</text>
+        </inputEntry>
+        <inputEntry id="BU10_E2">
+          <text>-</text>
+        </inputEntry>
+        <inputEntry id="BU10_E3">
+          <text>-</text>
+        </inputEntry>
+        <inputEntry id="BU10_E4">
+          <text>-</text>
+        </inputEntry>
+        <inputEntry id="BU10_E5">
+          <text>-</text>
+        </inputEntry>
+        <inputEntry id="BU10_E6">
+          <text>-</text>
+        </inputEntry>
+        <outputEntry id="BU10_A">
+          <text>"ugRuecklage"</text>
+        </outputEntry>
+        <annotationEntry>
+          <text>Die UG bildet eine gesetzliche Rücklage.</text>
+        </annotationEntry>
+      </rule>
+      <rule id="BU11">
+        <inputEntry id="BU11_E1">
+          <text>-</text>
+        </inputEntry>
+        <inputEntry id="BU11_E2">
+          <text>true</text>
+        </inputEntry>
+        <inputEntry id="BU11_E3">
+          <text>-</text>
+        </inputEntry>
+        <inputEntry id="BU11_E4">
+          <text>-</text>
+        </inputEntry>
+        <inputEntry id="BU11_E5">
+          <text>-</text>
+        </inputEntry>
+        <inputEntry id="BU11_E6">
+          <text>-</text>
+        </inputEntry>
+        <outputEntry id="BU11_A">
+          <text>"geschaeftsbriefe"</text>
+        </outputEntry>
+        <annotationEntry>
+          <text>Kaufleute und Handelsgesellschaften machen Pflichtangaben auf Geschäftsbriefen.</text>
+        </annotationEntry>
+      </rule>
+    </decisionTable>
+  </decision>
+  <decision id="Entscheidung_Online" name="Online und Verpackung">
+    <informationRequirement id="IR_Online">
+      <requiredInput href="#Merkmale" />
+    </informationRequirement>
+    <decisionTable id="Tabelle_Online" hitPolicy="COLLECT">
+      <input id="ON_E1" label="Online-Auftritt">
+        <inputExpression id="ON_E1_A" typeRef="boolean">
+          <text>Merkmale.website</text>
+        </inputExpression>
+      </input>
+      <input id="ON_E2" label="Waren in Verpackungen an Privatleute">
+        <inputExpression id="ON_E2_A" typeRef="boolean">
+          <text>Merkmale.verpackungen</text>
+        </inputExpression>
+      </input>
+      <output id="ON_A" label="Pflicht" name="pflicht" typeRef="string">
+        <outputValues id="ON_A_W">
+          <text>"impressum","verpackung","verpackungDatenmeldung"</text>
+        </outputValues>
+      </output>
+      <annotation name="Begründung" />
+      <rule id="ON01">
+        <inputEntry id="ON01_E1">
+          <text>true</text>
+        </inputEntry>
+        <inputEntry id="ON01_E2">
+          <text>-</text>
+        </inputEntry>
+        <outputEntry id="ON01_A">
+          <text>"impressum"</text>
+        </outputEntry>
+        <annotationEntry>
+          <text>Geschäftsmäßige digitale Dienste brauchen Anbieterangaben.</text>
+        </annotationEntry>
+      </rule>
+      <rule id="ON02">
+        <inputEntry id="ON02_E1">
+          <text>-</text>
+        </inputEntry>
+        <inputEntry id="ON02_E2">
+          <text>true</text>
+        </inputEntry>
+        <outputEntry id="ON02_A">
+          <text>"verpackung"</text>
+        </outputEntry>
+        <annotationEntry>
+          <text>Hersteller systembeteiligungspflichtiger Verpackungen registrieren sich und beteiligen sich an einem System.</text>
+        </annotationEntry>
+      </rule>
+      <rule id="ON03">
+        <inputEntry id="ON03_E1">
+          <text>-</text>
+        </inputEntry>
+        <inputEntry id="ON03_E2">
+          <text>true</text>
+        </inputEntry>
+        <outputEntry id="ON03_A">
+          <text>"verpackungDatenmeldung"</text>
+        </outputEntry>
+        <annotationEntry>
+          <text>Die Mengen der beteiligten Verpackungen gehen auch an die Zentrale Stelle.</text>
+        </annotationEntry>
+      </rule>
+    </decisionTable>
+  </decision>
+  <decision id="Entscheidung_Luecken" name="Nicht geprüfte Bereiche">
+    <informationRequirement id="IR_Luecken">
+      <requiredInput href="#Merkmale" />
+    </informationRequirement>
+    <decisionTable id="Tabelle_Luecken" hitPolicy="COLLECT">
+      <input id="LU_E1" label="Rechtsform">
+        <inputExpression id="LU_E1_A" typeRef="string">
+          <text>Merkmale.rechtsform</text>
+        </inputExpression>
+        <inputValues id="LU_E1_W">
+          <text>"einzelunternehmen","gbr","ug","gmbh"</text>
+        </inputValues>
+      </input>
+      <input id="LU_E2" label="Tätigkeit">
+        <inputExpression id="LU_E2_A" typeRef="string">
+          <text>Merkmale.taetigkeit</text>
+        </inputExpression>
+        <inputValues id="LU_E2_W">
+          <text>"gewerblich","freiberuflich"</text>
+        </inputValues>
+      </input>
+      <input id="LU_E3" label="Kaufmännischer Betrieb">
+        <inputExpression id="LU_E3_A" typeRef="string">
+          <text>Merkmale.kaufmaennisch</text>
+        </inputExpression>
+        <inputValues id="LU_E3_W">
+          <text>"ja","nein","unklar"</text>
+        </inputValues>
+      </input>
+      <input id="LU_E4" label="Handwerk">
+        <inputExpression id="LU_E4_A" typeRef="string">
+          <text>Merkmale.handwerk</text>
+        </inputExpression>
+        <inputValues id="LU_E4_W">
+          <text>"keins","zulassungspflichtig","zulassungsfrei","handwerksaehnlich","unklar"</text>
+        </inputValues>
+      </input>
+      <input id="LU_E5" label="Handel">
+        <inputExpression id="LU_E5_A" typeRef="boolean">
+          <text>Merkmale.handel</text>
+        </inputExpression>
+      </input>
+      <input id="LU_E6" label="Onlinehandel">
+        <inputExpression id="LU_E6_A" typeRef="boolean">
+          <text>Merkmale.onlinehandel</text>
+        </inputExpression>
+      </input>
+      <input id="LU_E7" label="Gastronomie">
+        <inputExpression id="LU_E7_A" typeRef="boolean">
+          <text>Merkmale.gastronomie</text>
+        </inputExpression>
+      </input>
+      <input id="LU_E8" label="Umgang mit Lebensmitteln">
+        <inputExpression id="LU_E8_A" typeRef="boolean">
+          <text>Merkmale.lebensmittel</text>
+        </inputExpression>
+      </input>
+      <input id="LU_E9" label="Beschäftigte">
+        <inputExpression id="LU_E9_A" typeRef="number">
+          <text>Merkmale.beschaeftigte</text>
+        </inputExpression>
+      </input>
+      <input id="LU_E10" label="Online-Auftritt">
+        <inputExpression id="LU_E10_A" typeRef="boolean">
+          <text>Merkmale.website</text>
+        </inputExpression>
+      </input>
+      <input id="LU_E11" label="Kleinunternehmerregelung">
+        <inputExpression id="LU_E11_A" typeRef="boolean">
+          <text>Merkmale.kleinunternehmer</text>
+        </inputExpression>
+      </input>
+      <input id="LU_E12" label="Kunden: Privatleute in anderen EU-Staaten">
+        <inputExpression id="LU_E12_A" typeRef="boolean">
+          <text>Merkmale.kundenPrivatEu</text>
+        </inputExpression>
+      </input>
+      <input id="LU_E13" label="Kunden: Unternehmen in anderen EU-Staaten">
+        <inputExpression id="LU_E13_A" typeRef="boolean">
+          <text>Merkmale.kundenUnternehmenEu</text>
+        </inputExpression>
+      </input>
+      <input id="LU_E14" label="Umsatz im ersten Jahr">
+        <inputExpression id="LU_E14_A" typeRef="number">
+          <text>Merkmale.umsatzErstesJahr</text>
+        </inputExpression>
+      </input>
+      <output id="LU_A" label="Lücke" name="luecke" typeRef="string">
+        <outputValues id="LU_A_W">
+          <text>"gewerbesteuer","koerperschaftsteuer","gastronomieLandesrecht","lebensmittelrecht","fernabsatz","datenschutz","arbeitsrecht","gewerberechtSonstiges","kuenstlersozialabgabe","rundfunkbeitrag","elektroBatterien","euKleinunternehmer","freiberuflicheKapitalgesellschaft","kaufmannUnklar","handwerkUnklar","kleinunternehmerGruendungsjahr","geschaeftsfuehrung"</text>
+        </outputValues>
+      </output>
+      <annotation name="Begründung" />
+      <rule id="LU01">
+        <inputEntry id="LU01_E1">
+          <text>-</text>
+        </inputEntry>
+        <inputEntry id="LU01_E2">
+          <text>"gewerblich"</text>
+        </inputEntry>
+        <inputEntry id="LU01_E3">
+          <text>-</text>
+        </inputEntry>
+        <inputEntry id="LU01_E4">
+          <text>-</text>
+        </inputEntry>
+        <inputEntry id="LU01_E5">
+          <text>-</text>
+        </inputEntry>
+        <inputEntry id="LU01_E6">
+          <text>-</text>
+        </inputEntry>
+        <inputEntry id="LU01_E7">
+          <text>-</text>
+        </inputEntry>
+        <inputEntry id="LU01_E8">
+          <text>-</text>
+        </inputEntry>
+        <inputEntry id="LU01_E9">
+          <text>-</text>
+        </inputEntry>
+        <inputEntry id="LU01_E10">
+          <text>-</text>
+        </inputEntry>
+        <inputEntry id="LU01_E11">
+          <text>-</text>
+        </inputEntry>
+        <inputEntry id="LU01_E12">
+          <text>-</text>
+        </inputEntry>
+        <inputEntry id="LU01_E13">
+          <text>-</text>
+        </inputEntry>
+        <inputEntry id="LU01_E14">
+          <text>-</text>
+        </inputEntry>
+        <outputEntry id="LU01_A">
+          <text>"gewerbesteuer"</text>
+        </outputEntry>
+        <annotationEntry>
+          <text>Gewerbesteuer</text>
+        </annotationEntry>
+      </rule>
+      <rule id="LU02">
+        <inputEntry id="LU02_E1">
+          <text>"ug","gmbh"</text>
+        </inputEntry>
+        <inputEntry id="LU02_E2">
+          <text>-</text>
+        </inputEntry>
+        <inputEntry id="LU02_E3">
+          <text>-</text>
+        </inputEntry>
+        <inputEntry id="LU02_E4">
+          <text>-</text>
+        </inputEntry>
+        <inputEntry id="LU02_E5">
+          <text>-</text>
+        </inputEntry>
+        <inputEntry id="LU02_E6">
+          <text>-</text>
+        </inputEntry>
+        <inputEntry id="LU02_E7">
+          <text>-</text>
+        </inputEntry>
+        <inputEntry id="LU02_E8">
+          <text>-</text>
+        </inputEntry>
+        <inputEntry id="LU02_E9">
+          <text>-</text>
+        </inputEntry>
+        <inputEntry id="LU02_E10">
+          <text>-</text>
+        </inputEntry>
+        <inputEntry id="LU02_E11">
+          <text>-</text>
+        </inputEntry>
+        <inputEntry id="LU02_E12">
+          <text>-</text>
+        </inputEntry>
+        <inputEntry id="LU02_E13">
+          <text>-</text>
+        </inputEntry>
+        <inputEntry id="LU02_E14">
+          <text>-</text>
+        </inputEntry>
+        <outputEntry id="LU02_A">
+          <text>"koerperschaftsteuer"</text>
+        </outputEntry>
+        <annotationEntry>
+          <text>Körperschaftsteuer</text>
+        </annotationEntry>
+      </rule>
+      <rule id="LU03">
+        <inputEntry id="LU03_E1">
+          <text>-</text>
+        </inputEntry>
+        <inputEntry id="LU03_E2">
+          <text>-</text>
+        </inputEntry>
+        <inputEntry id="LU03_E3">
+          <text>-</text>
+        </inputEntry>
+        <inputEntry id="LU03_E4">
+          <text>-</text>
+        </inputEntry>
+        <inputEntry id="LU03_E5">
+          <text>-</text>
+        </inputEntry>
+        <inputEntry id="LU03_E6">
+          <text>-</text>
+        </inputEntry>
+        <inputEntry id="LU03_E7">
+          <text>true</text>
+        </inputEntry>
+        <inputEntry id="LU03_E8">
+          <text>-</text>
+        </inputEntry>
+        <inputEntry id="LU03_E9">
+          <text>-</text>
+        </inputEntry>
+        <inputEntry id="LU03_E10">
+          <text>-</text>
+        </inputEntry>
+        <inputEntry id="LU03_E11">
+          <text>-</text>
+        </inputEntry>
+        <inputEntry id="LU03_E12">
+          <text>-</text>
+        </inputEntry>
+        <inputEntry id="LU03_E13">
+          <text>-</text>
+        </inputEntry>
+        <inputEntry id="LU03_E14">
+          <text>-</text>
+        </inputEntry>
+        <outputEntry id="LU03_A">
+          <text>"gastronomieLandesrecht"</text>
+        </outputEntry>
+        <annotationEntry>
+          <text>Gaststättenrecht des Landes</text>
+        </annotationEntry>
+      </rule>
+      <rule id="LU04">
+        <inputEntry id="LU04_E1">
+          <text>-</text>
+        </inputEntry>
+        <inputEntry id="LU04_E2">
+          <text>-</text>
+        </inputEntry>
+        <inputEntry id="LU04_E3">
+          <text>-</text>
+        </inputEntry>
+        <inputEntry id="LU04_E4">
+          <text>-</text>
+        </inputEntry>
+        <inputEntry id="LU04_E5">
+          <text>-</text>
+        </inputEntry>
+        <inputEntry id="LU04_E6">
+          <text>-</text>
+        </inputEntry>
+        <inputEntry id="LU04_E7">
+          <text>-</text>
+        </inputEntry>
+        <inputEntry id="LU04_E8">
+          <text>true</text>
+        </inputEntry>
+        <inputEntry id="LU04_E9">
+          <text>-</text>
+        </inputEntry>
+        <inputEntry id="LU04_E10">
+          <text>-</text>
+        </inputEntry>
+        <inputEntry id="LU04_E11">
+          <text>-</text>
+        </inputEntry>
+        <inputEntry id="LU04_E12">
+          <text>-</text>
+        </inputEntry>
+        <inputEntry id="LU04_E13">
+          <text>-</text>
+        </inputEntry>
+        <inputEntry id="LU04_E14">
+          <text>-</text>
+        </inputEntry>
+        <outputEntry id="LU04_A">
+          <text>"lebensmittelrecht"</text>
+        </outputEntry>
+        <annotationEntry>
+          <text>Lebensmittelrecht</text>
+        </annotationEntry>
+      </rule>
+      <rule id="LU05">
+        <inputEntry id="LU05_E1">
+          <text>-</text>
+        </inputEntry>
+        <inputEntry id="LU05_E2">
+          <text>-</text>
+        </inputEntry>
+        <inputEntry id="LU05_E3">
+          <text>-</text>
+        </inputEntry>
+        <inputEntry id="LU05_E4">
+          <text>-</text>
+        </inputEntry>
+        <inputEntry id="LU05_E5">
+          <text>-</text>
+        </inputEntry>
+        <inputEntry id="LU05_E6">
+          <text>true</text>
+        </inputEntry>
+        <inputEntry id="LU05_E7">
+          <text>-</text>
+        </inputEntry>
+        <inputEntry id="LU05_E8">
+          <text>-</text>
+        </inputEntry>
+        <inputEntry id="LU05_E9">
+          <text>-</text>
+        </inputEntry>
+        <inputEntry id="LU05_E10">
+          <text>-</text>
+        </inputEntry>
+        <inputEntry id="LU05_E11">
+          <text>-</text>
+        </inputEntry>
+        <inputEntry id="LU05_E12">
+          <text>-</text>
+        </inputEntry>
+        <inputEntry id="LU05_E13">
+          <text>-</text>
+        </inputEntry>
+        <inputEntry id="LU05_E14">
+          <text>-</text>
+        </inputEntry>
+        <outputEntry id="LU05_A">
+          <text>"fernabsatz"</text>
+        </outputEntry>
+        <annotationEntry>
+          <text>Verbraucherrecht im Onlinehandel</text>
+        </annotationEntry>
+      </rule>
+      <rule id="LU06">
+        <inputEntry id="LU06_E1">
+          <text>-</text>
+        </inputEntry>
+        <inputEntry id="LU06_E2">
+          <text>-</text>
+        </inputEntry>
+        <inputEntry id="LU06_E3">
+          <text>-</text>
+        </inputEntry>
+        <inputEntry id="LU06_E4">
+          <text>-</text>
+        </inputEntry>
+        <inputEntry id="LU06_E5">
+          <text>-</text>
+        </inputEntry>
+        <inputEntry id="LU06_E6">
+          <text>-</text>
+        </inputEntry>
+        <inputEntry id="LU06_E7">
+          <text>-</text>
+        </inputEntry>
+        <inputEntry id="LU06_E8">
+          <text>-</text>
+        </inputEntry>
+        <inputEntry id="LU06_E9">
+          <text>-</text>
+        </inputEntry>
+        <inputEntry id="LU06_E10">
+          <text>true</text>
+        </inputEntry>
+        <inputEntry id="LU06_E11">
+          <text>-</text>
+        </inputEntry>
+        <inputEntry id="LU06_E12">
+          <text>-</text>
+        </inputEntry>
+        <inputEntry id="LU06_E13">
+          <text>-</text>
+        </inputEntry>
+        <inputEntry id="LU06_E14">
+          <text>-</text>
+        </inputEntry>
+        <outputEntry id="LU06_A">
+          <text>"datenschutz"</text>
+        </outputEntry>
+        <annotationEntry>
+          <text>Datenschutz</text>
+        </annotationEntry>
+      </rule>
+      <rule id="LU07">
+        <inputEntry id="LU07_E1">
+          <text>-</text>
+        </inputEntry>
+        <inputEntry id="LU07_E2">
+          <text>-</text>
+        </inputEntry>
+        <inputEntry id="LU07_E3">
+          <text>-</text>
+        </inputEntry>
+        <inputEntry id="LU07_E4">
+          <text>-</text>
+        </inputEntry>
+        <inputEntry id="LU07_E5">
+          <text>-</text>
+        </inputEntry>
+        <inputEntry id="LU07_E6">
+          <text>-</text>
+        </inputEntry>
+        <inputEntry id="LU07_E7">
+          <text>-</text>
+        </inputEntry>
+        <inputEntry id="LU07_E8">
+          <text>-</text>
+        </inputEntry>
+        <inputEntry id="LU07_E9">
+          <text>&gt; 0</text>
+        </inputEntry>
+        <inputEntry id="LU07_E10">
+          <text>-</text>
+        </inputEntry>
+        <inputEntry id="LU07_E11">
+          <text>-</text>
+        </inputEntry>
+        <inputEntry id="LU07_E12">
+          <text>-</text>
+        </inputEntry>
+        <inputEntry id="LU07_E13">
+          <text>-</text>
+        </inputEntry>
+        <inputEntry id="LU07_E14">
+          <text>-</text>
+        </inputEntry>
+        <outputEntry id="LU07_A">
+          <text>"datenschutz"</text>
+        </outputEntry>
+        <annotationEntry>
+          <text>Datenschutz</text>
+        </annotationEntry>
+      </rule>
+      <rule id="LU08">
+        <inputEntry id="LU08_E1">
+          <text>-</text>
+        </inputEntry>
+        <inputEntry id="LU08_E2">
+          <text>-</text>
+        </inputEntry>
+        <inputEntry id="LU08_E3">
+          <text>-</text>
+        </inputEntry>
+        <inputEntry id="LU08_E4">
+          <text>-</text>
+        </inputEntry>
+        <inputEntry id="LU08_E5">
+          <text>-</text>
+        </inputEntry>
+        <inputEntry id="LU08_E6">
+          <text>-</text>
+        </inputEntry>
+        <inputEntry id="LU08_E7">
+          <text>-</text>
+        </inputEntry>
+        <inputEntry id="LU08_E8">
+          <text>-</text>
+        </inputEntry>
+        <inputEntry id="LU08_E9">
+          <text>&gt; 0</text>
+        </inputEntry>
+        <inputEntry id="LU08_E10">
+          <text>-</text>
+        </inputEntry>
+        <inputEntry id="LU08_E11">
+          <text>-</text>
+        </inputEntry>
+        <inputEntry id="LU08_E12">
+          <text>-</text>
+        </inputEntry>
+        <inputEntry id="LU08_E13">
+          <text>-</text>
+        </inputEntry>
+        <inputEntry id="LU08_E14">
+          <text>-</text>
+        </inputEntry>
+        <outputEntry id="LU08_A">
+          <text>"arbeitsrecht"</text>
+        </outputEntry>
+        <annotationEntry>
+          <text>Arbeitsrecht und Arbeitsschutz</text>
+        </annotationEntry>
+      </rule>
+      <rule id="LU09">
+        <inputEntry id="LU09_E1">
+          <text>-</text>
+        </inputEntry>
+        <inputEntry id="LU09_E2">
+          <text>"gewerblich"</text>
+        </inputEntry>
+        <inputEntry id="LU09_E3">
+          <text>-</text>
+        </inputEntry>
+        <inputEntry id="LU09_E4">
+          <text>-</text>
+        </inputEntry>
+        <inputEntry id="LU09_E5">
+          <text>-</text>
+        </inputEntry>
+        <inputEntry id="LU09_E6">
+          <text>-</text>
+        </inputEntry>
+        <inputEntry id="LU09_E7">
+          <text>-</text>
+        </inputEntry>
+        <inputEntry id="LU09_E8">
+          <text>-</text>
+        </inputEntry>
+        <inputEntry id="LU09_E9">
+          <text>-</text>
+        </inputEntry>
+        <inputEntry id="LU09_E10">
+          <text>-</text>
+        </inputEntry>
+        <inputEntry id="LU09_E11">
+          <text>-</text>
+        </inputEntry>
+        <inputEntry id="LU09_E12">
+          <text>-</text>
+        </inputEntry>
+        <inputEntry id="LU09_E13">
+          <text>-</text>
+        </inputEntry>
+        <inputEntry id="LU09_E14">
+          <text>-</text>
+        </inputEntry>
+        <outputEntry id="LU09_A">
+          <text>"gewerberechtSonstiges"</text>
+        </outputEntry>
+        <annotationEntry>
+          <text>Erlaubnisse und Kammern</text>
+        </annotationEntry>
+      </rule>
+      <rule id="LU10">
+        <inputEntry id="LU10_E1">
+          <text>-</text>
+        </inputEntry>
+        <inputEntry id="LU10_E2">
+          <text>-</text>
+        </inputEntry>
+        <inputEntry id="LU10_E3">
+          <text>-</text>
+        </inputEntry>
+        <inputEntry id="LU10_E4">
+          <text>-</text>
+        </inputEntry>
+        <inputEntry id="LU10_E5">
+          <text>-</text>
+        </inputEntry>
+        <inputEntry id="LU10_E6">
+          <text>-</text>
+        </inputEntry>
+        <inputEntry id="LU10_E7">
+          <text>-</text>
+        </inputEntry>
+        <inputEntry id="LU10_E8">
+          <text>-</text>
+        </inputEntry>
+        <inputEntry id="LU10_E9">
+          <text>-</text>
+        </inputEntry>
+        <inputEntry id="LU10_E10">
+          <text>true</text>
+        </inputEntry>
+        <inputEntry id="LU10_E11">
+          <text>-</text>
+        </inputEntry>
+        <inputEntry id="LU10_E12">
+          <text>-</text>
+        </inputEntry>
+        <inputEntry id="LU10_E13">
+          <text>-</text>
+        </inputEntry>
+        <inputEntry id="LU10_E14">
+          <text>-</text>
+        </inputEntry>
+        <outputEntry id="LU10_A">
+          <text>"kuenstlersozialabgabe"</text>
+        </outputEntry>
+        <annotationEntry>
+          <text>Künstlersozialabgabe</text>
+        </annotationEntry>
+      </rule>
+      <rule id="LU11">
+        <inputEntry id="LU11_E1">
+          <text>-</text>
+        </inputEntry>
+        <inputEntry id="LU11_E2">
+          <text>-</text>
+        </inputEntry>
+        <inputEntry id="LU11_E3">
+          <text>-</text>
+        </inputEntry>
+        <inputEntry id="LU11_E4">
+          <text>-</text>
+        </inputEntry>
+        <inputEntry id="LU11_E5">
+          <text>-</text>
+        </inputEntry>
+        <inputEntry id="LU11_E6">
+          <text>-</text>
+        </inputEntry>
+        <inputEntry id="LU11_E7">
+          <text>-</text>
+        </inputEntry>
+        <inputEntry id="LU11_E8">
+          <text>-</text>
+        </inputEntry>
+        <inputEntry id="LU11_E9">
+          <text>-</text>
+        </inputEntry>
+        <inputEntry id="LU11_E10">
+          <text>-</text>
+        </inputEntry>
+        <inputEntry id="LU11_E11">
+          <text>-</text>
+        </inputEntry>
+        <inputEntry id="LU11_E12">
+          <text>-</text>
+        </inputEntry>
+        <inputEntry id="LU11_E13">
+          <text>-</text>
+        </inputEntry>
+        <inputEntry id="LU11_E14">
+          <text>-</text>
+        </inputEntry>
+        <outputEntry id="LU11_A">
+          <text>"rundfunkbeitrag"</text>
+        </outputEntry>
+        <annotationEntry>
+          <text>Rundfunkbeitrag für Betriebsstätten</text>
+        </annotationEntry>
+      </rule>
+      <rule id="LU12">
+        <inputEntry id="LU12_E1">
+          <text>-</text>
+        </inputEntry>
+        <inputEntry id="LU12_E2">
+          <text>-</text>
+        </inputEntry>
+        <inputEntry id="LU12_E3">
+          <text>-</text>
+        </inputEntry>
+        <inputEntry id="LU12_E4">
+          <text>-</text>
+        </inputEntry>
+        <inputEntry id="LU12_E5">
+          <text>-</text>
+        </inputEntry>
+        <inputEntry id="LU12_E6">
+          <text>true</text>
+        </inputEntry>
+        <inputEntry id="LU12_E7">
+          <text>-</text>
+        </inputEntry>
+        <inputEntry id="LU12_E8">
+          <text>-</text>
+        </inputEntry>
+        <inputEntry id="LU12_E9">
+          <text>-</text>
+        </inputEntry>
+        <inputEntry id="LU12_E10">
+          <text>-</text>
+        </inputEntry>
+        <inputEntry id="LU12_E11">
+          <text>-</text>
+        </inputEntry>
+        <inputEntry id="LU12_E12">
+          <text>-</text>
+        </inputEntry>
+        <inputEntry id="LU12_E13">
+          <text>-</text>
+        </inputEntry>
+        <inputEntry id="LU12_E14">
+          <text>-</text>
+        </inputEntry>
+        <outputEntry id="LU12_A">
+          <text>"elektroBatterien"</text>
+        </outputEntry>
+        <annotationEntry>
+          <text>Elektrogeräte und Batterien</text>
+        </annotationEntry>
+      </rule>
+      <rule id="LU13">
+        <inputEntry id="LU13_E1">
+          <text>-</text>
+        </inputEntry>
+        <inputEntry id="LU13_E2">
+          <text>-</text>
+        </inputEntry>
+        <inputEntry id="LU13_E3">
+          <text>-</text>
+        </inputEntry>
+        <inputEntry id="LU13_E4">
+          <text>-</text>
+        </inputEntry>
+        <inputEntry id="LU13_E5">
+          <text>true</text>
+        </inputEntry>
+        <inputEntry id="LU13_E6">
+          <text>-</text>
+        </inputEntry>
+        <inputEntry id="LU13_E7">
+          <text>-</text>
+        </inputEntry>
+        <inputEntry id="LU13_E8">
+          <text>-</text>
+        </inputEntry>
+        <inputEntry id="LU13_E9">
+          <text>-</text>
+        </inputEntry>
+        <inputEntry id="LU13_E10">
+          <text>-</text>
+        </inputEntry>
+        <inputEntry id="LU13_E11">
+          <text>-</text>
+        </inputEntry>
+        <inputEntry id="LU13_E12">
+          <text>-</text>
+        </inputEntry>
+        <inputEntry id="LU13_E13">
+          <text>-</text>
+        </inputEntry>
+        <inputEntry id="LU13_E14">
+          <text>-</text>
+        </inputEntry>
+        <outputEntry id="LU13_A">
+          <text>"elektroBatterien"</text>
+        </outputEntry>
+        <annotationEntry>
+          <text>Elektrogeräte und Batterien</text>
+        </annotationEntry>
+      </rule>
+      <rule id="LU14">
+        <inputEntry id="LU14_E1">
+          <text>-</text>
+        </inputEntry>
+        <inputEntry id="LU14_E2">
+          <text>-</text>
+        </inputEntry>
+        <inputEntry id="LU14_E3">
+          <text>-</text>
+        </inputEntry>
+        <inputEntry id="LU14_E4">
+          <text>-</text>
+        </inputEntry>
+        <inputEntry id="LU14_E5">
+          <text>-</text>
+        </inputEntry>
+        <inputEntry id="LU14_E6">
+          <text>-</text>
+        </inputEntry>
+        <inputEntry id="LU14_E7">
+          <text>-</text>
+        </inputEntry>
+        <inputEntry id="LU14_E8">
+          <text>-</text>
+        </inputEntry>
+        <inputEntry id="LU14_E9">
+          <text>-</text>
+        </inputEntry>
+        <inputEntry id="LU14_E10">
+          <text>-</text>
+        </inputEntry>
+        <inputEntry id="LU14_E11">
+          <text>true</text>
+        </inputEntry>
+        <inputEntry id="LU14_E12">
+          <text>true</text>
+        </inputEntry>
+        <inputEntry id="LU14_E13">
+          <text>-</text>
+        </inputEntry>
+        <inputEntry id="LU14_E14">
+          <text>-</text>
+        </inputEntry>
+        <outputEntry id="LU14_A">
+          <text>"euKleinunternehmer"</text>
+        </outputEntry>
+        <annotationEntry>
+          <text>EU-Geschäft als Kleinunternehmer</text>
+        </annotationEntry>
+      </rule>
+      <rule id="LU15">
+        <inputEntry id="LU15_E1">
+          <text>-</text>
+        </inputEntry>
+        <inputEntry id="LU15_E2">
+          <text>-</text>
+        </inputEntry>
+        <inputEntry id="LU15_E3">
+          <text>-</text>
+        </inputEntry>
+        <inputEntry id="LU15_E4">
+          <text>-</text>
+        </inputEntry>
+        <inputEntry id="LU15_E5">
+          <text>-</text>
+        </inputEntry>
+        <inputEntry id="LU15_E6">
+          <text>-</text>
+        </inputEntry>
+        <inputEntry id="LU15_E7">
+          <text>-</text>
+        </inputEntry>
+        <inputEntry id="LU15_E8">
+          <text>-</text>
+        </inputEntry>
+        <inputEntry id="LU15_E9">
+          <text>-</text>
+        </inputEntry>
+        <inputEntry id="LU15_E10">
+          <text>-</text>
+        </inputEntry>
+        <inputEntry id="LU15_E11">
+          <text>true</text>
+        </inputEntry>
+        <inputEntry id="LU15_E12">
+          <text>-</text>
+        </inputEntry>
+        <inputEntry id="LU15_E13">
+          <text>true</text>
+        </inputEntry>
+        <inputEntry id="LU15_E14">
+          <text>-</text>
+        </inputEntry>
+        <outputEntry id="LU15_A">
+          <text>"euKleinunternehmer"</text>
+        </outputEntry>
+        <annotationEntry>
+          <text>EU-Geschäft als Kleinunternehmer</text>
+        </annotationEntry>
+      </rule>
+      <rule id="LU16">
+        <inputEntry id="LU16_E1">
+          <text>"ug","gmbh"</text>
+        </inputEntry>
+        <inputEntry id="LU16_E2">
+          <text>"freiberuflich"</text>
+        </inputEntry>
+        <inputEntry id="LU16_E3">
+          <text>-</text>
+        </inputEntry>
+        <inputEntry id="LU16_E4">
+          <text>-</text>
+        </inputEntry>
+        <inputEntry id="LU16_E5">
+          <text>-</text>
+        </inputEntry>
+        <inputEntry id="LU16_E6">
+          <text>-</text>
+        </inputEntry>
+        <inputEntry id="LU16_E7">
+          <text>-</text>
+        </inputEntry>
+        <inputEntry id="LU16_E8">
+          <text>-</text>
+        </inputEntry>
+        <inputEntry id="LU16_E9">
+          <text>-</text>
+        </inputEntry>
+        <inputEntry id="LU16_E10">
+          <text>-</text>
+        </inputEntry>
+        <inputEntry id="LU16_E11">
+          <text>-</text>
+        </inputEntry>
+        <inputEntry id="LU16_E12">
+          <text>-</text>
+        </inputEntry>
+        <inputEntry id="LU16_E13">
+          <text>-</text>
+        </inputEntry>
+        <inputEntry id="LU16_E14">
+          <text>-</text>
+        </inputEntry>
+        <outputEntry id="LU16_A">
+          <text>"freiberuflicheKapitalgesellschaft"</text>
+        </outputEntry>
+        <annotationEntry>
+          <text>Freiberufliche UG oder GmbH</text>
+        </annotationEntry>
+      </rule>
+      <rule id="LU17">
+        <inputEntry id="LU17_E1">
+          <text>"einzelunternehmen","gbr"</text>
+        </inputEntry>
+        <inputEntry id="LU17_E2">
+          <text>"gewerblich"</text>
+        </inputEntry>
+        <inputEntry id="LU17_E3">
+          <text>"unklar"</text>
+        </inputEntry>
+        <inputEntry id="LU17_E4">
+          <text>-</text>
+        </inputEntry>
+        <inputEntry id="LU17_E5">
+          <text>-</text>
+        </inputEntry>
+        <inputEntry id="LU17_E6">
+          <text>-</text>
+        </inputEntry>
+        <inputEntry id="LU17_E7">
+          <text>-</text>
+        </inputEntry>
+        <inputEntry id="LU17_E8">
+          <text>-</text>
+        </inputEntry>
+        <inputEntry id="LU17_E9">
+          <text>-</text>
+        </inputEntry>
+        <inputEntry id="LU17_E10">
+          <text>-</text>
+        </inputEntry>
+        <inputEntry id="LU17_E11">
+          <text>-</text>
+        </inputEntry>
+        <inputEntry id="LU17_E12">
+          <text>-</text>
+        </inputEntry>
+        <inputEntry id="LU17_E13">
+          <text>-</text>
+        </inputEntry>
+        <inputEntry id="LU17_E14">
+          <text>-</text>
+        </inputEntry>
+        <outputEntry id="LU17_A">
+          <text>"kaufmannUnklar"</text>
+        </outputEntry>
+        <annotationEntry>
+          <text>Kaufmannseigenschaft klären</text>
+        </annotationEntry>
+      </rule>
+      <rule id="LU18">
+        <inputEntry id="LU18_E1">
+          <text>-</text>
+        </inputEntry>
+        <inputEntry id="LU18_E2">
+          <text>-</text>
+        </inputEntry>
+        <inputEntry id="LU18_E3">
+          <text>-</text>
+        </inputEntry>
+        <inputEntry id="LU18_E4">
+          <text>"unklar"</text>
+        </inputEntry>
+        <inputEntry id="LU18_E5">
+          <text>-</text>
+        </inputEntry>
+        <inputEntry id="LU18_E6">
+          <text>-</text>
+        </inputEntry>
+        <inputEntry id="LU18_E7">
+          <text>-</text>
+        </inputEntry>
+        <inputEntry id="LU18_E8">
+          <text>-</text>
+        </inputEntry>
+        <inputEntry id="LU18_E9">
+          <text>-</text>
+        </inputEntry>
+        <inputEntry id="LU18_E10">
+          <text>-</text>
+        </inputEntry>
+        <inputEntry id="LU18_E11">
+          <text>-</text>
+        </inputEntry>
+        <inputEntry id="LU18_E12">
+          <text>-</text>
+        </inputEntry>
+        <inputEntry id="LU18_E13">
+          <text>-</text>
+        </inputEntry>
+        <inputEntry id="LU18_E14">
+          <text>-</text>
+        </inputEntry>
+        <outputEntry id="LU18_A">
+          <text>"handwerkUnklar"</text>
+        </outputEntry>
+        <annotationEntry>
+          <text>Handwerksart klären</text>
+        </annotationEntry>
+      </rule>
+      <rule id="LU19">
+        <inputEntry id="LU19_E1">
+          <text>-</text>
+        </inputEntry>
+        <inputEntry id="LU19_E2">
+          <text>-</text>
+        </inputEntry>
+        <inputEntry id="LU19_E3">
+          <text>-</text>
+        </inputEntry>
+        <inputEntry id="LU19_E4">
+          <text>-</text>
+        </inputEntry>
+        <inputEntry id="LU19_E5">
+          <text>-</text>
+        </inputEntry>
+        <inputEntry id="LU19_E6">
+          <text>-</text>
+        </inputEntry>
+        <inputEntry id="LU19_E7">
+          <text>-</text>
+        </inputEntry>
+        <inputEntry id="LU19_E8">
+          <text>-</text>
+        </inputEntry>
+        <inputEntry id="LU19_E9">
+          <text>-</text>
+        </inputEntry>
+        <inputEntry id="LU19_E10">
+          <text>-</text>
+        </inputEntry>
+        <inputEntry id="LU19_E11">
+          <text>true</text>
+        </inputEntry>
+        <inputEntry id="LU19_E12">
+          <text>-</text>
+        </inputEntry>
+        <inputEntry id="LU19_E13">
+          <text>-</text>
+        </inputEntry>
+        <inputEntry id="LU19_E14">
+          <text>&gt; 25000</text>
+        </inputEntry>
+        <outputEntry id="LU19_A">
+          <text>"kleinunternehmerGruendungsjahr"</text>
+        </outputEntry>
+        <annotationEntry>
+          <text>Kleinunternehmergrenze im Gründungsjahr</text>
+        </annotationEntry>
+      </rule>
+      <rule id="LU20">
+        <inputEntry id="LU20_E1">
+          <text>"ug","gmbh"</text>
+        </inputEntry>
+        <inputEntry id="LU20_E2">
+          <text>-</text>
+        </inputEntry>
+        <inputEntry id="LU20_E3">
+          <text>-</text>
+        </inputEntry>
+        <inputEntry id="LU20_E4">
+          <text>-</text>
+        </inputEntry>
+        <inputEntry id="LU20_E5">
+          <text>-</text>
+        </inputEntry>
+        <inputEntry id="LU20_E6">
+          <text>-</text>
+        </inputEntry>
+        <inputEntry id="LU20_E7">
+          <text>-</text>
+        </inputEntry>
+        <inputEntry id="LU20_E8">
+          <text>-</text>
+        </inputEntry>
+        <inputEntry id="LU20_E9">
+          <text>-</text>
+        </inputEntry>
+        <inputEntry id="LU20_E10">
+          <text>-</text>
+        </inputEntry>
+        <inputEntry id="LU20_E11">
+          <text>-</text>
+        </inputEntry>
+        <inputEntry id="LU20_E12">
+          <text>-</text>
+        </inputEntry>
+        <inputEntry id="LU20_E13">
+          <text>-</text>
+        </inputEntry>
+        <inputEntry id="LU20_E14">
+          <text>-</text>
+        </inputEntry>
+        <outputEntry id="LU20_A">
+          <text>"geschaeftsfuehrung"</text>
+        </outputEntry>
+        <annotationEntry>
+          <text>Vergütung der Geschäftsführung klären</text>
+        </annotationEntry>
+      </rule>
+    </decisionTable>
+  </decision>
+  <dmndi:DMNDI>
+    <dmndi:DMNDiagram id="DRD" name="Pflichten-Kompass">
+      <dmndi:DMNShape id="DI_Merkmale" dmnElementRef="Merkmale">
+        <dc:Bounds x="687.5" y="390" width="125" height="45" />
+      </dmndi:DMNShape>
+      <dmndi:DMNShape id="DI_Entscheidung_Gruendung" dmnElementRef="Entscheidung_Gruendung">
+        <dc:Bounds x="30" y="150" width="180" height="80" />
+      </dmndi:DMNShape>
+      <dmndi:DMNEdge id="DI_IR_Gruendung" dmnElementRef="IR_Gruendung">
+        <di:waypoint x="750" y="390" />
+        <di:waypoint x="120" y="230" />
+      </dmndi:DMNEdge>
+      <dmndi:DMNShape id="DI_Entscheidung_Personal" dmnElementRef="Entscheidung_Personal">
+        <dc:Bounds x="240" y="150" width="180" height="80" />
+      </dmndi:DMNShape>
+      <dmndi:DMNEdge id="DI_IR_Personal" dmnElementRef="IR_Personal">
+        <di:waypoint x="750" y="390" />
+        <di:waypoint x="330" y="230" />
+      </dmndi:DMNEdge>
+      <dmndi:DMNShape id="DI_Entscheidung_Branchen" dmnElementRef="Entscheidung_Branchen">
+        <dc:Bounds x="450" y="150" width="180" height="80" />
+      </dmndi:DMNShape>
+      <dmndi:DMNEdge id="DI_IR_Branchen" dmnElementRef="IR_Branchen">
+        <di:waypoint x="750" y="390" />
+        <di:waypoint x="540" y="230" />
+      </dmndi:DMNEdge>
+      <dmndi:DMNShape id="DI_Entscheidung_Steuern" dmnElementRef="Entscheidung_Steuern">
+        <dc:Bounds x="660" y="150" width="180" height="80" />
+      </dmndi:DMNShape>
+      <dmndi:DMNEdge id="DI_IR_Steuern" dmnElementRef="IR_Steuern">
+        <di:waypoint x="750" y="390" />
+        <di:waypoint x="750" y="230" />
+      </dmndi:DMNEdge>
+      <dmndi:DMNShape id="DI_Entscheidung_Buchfuehrung" dmnElementRef="Entscheidung_Buchfuehrung">
+        <dc:Bounds x="870" y="150" width="180" height="80" />
+      </dmndi:DMNShape>
+      <dmndi:DMNEdge id="DI_IR_Buchfuehrung" dmnElementRef="IR_Buchfuehrung">
+        <di:waypoint x="750" y="390" />
+        <di:waypoint x="960" y="230" />
+      </dmndi:DMNEdge>
+      <dmndi:DMNShape id="DI_Entscheidung_Online" dmnElementRef="Entscheidung_Online">
+        <dc:Bounds x="1080" y="150" width="180" height="80" />
+      </dmndi:DMNShape>
+      <dmndi:DMNEdge id="DI_IR_Online" dmnElementRef="IR_Online">
+        <di:waypoint x="750" y="390" />
+        <di:waypoint x="1170" y="230" />
+      </dmndi:DMNEdge>
+      <dmndi:DMNShape id="DI_Entscheidung_Luecken" dmnElementRef="Entscheidung_Luecken">
+        <dc:Bounds x="1290" y="150" width="180" height="80" />
+      </dmndi:DMNShape>
+      <dmndi:DMNEdge id="DI_IR_Luecken" dmnElementRef="IR_Luecken">
+        <di:waypoint x="750" y="390" />
+        <di:waypoint x="1380" y="230" />
+      </dmndi:DMNEdge>
+    </dmndi:DMNDiagram>
+  </dmndi:DMNDI>
+</definitions>

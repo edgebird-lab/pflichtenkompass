@@ -24,7 +24,7 @@ Vor jedem Commit: `npm run lint`, `npm test`, `npm run build`, `npm run e2e` (lo
 
 - [x] **2.1** FEEL-Teilmenge in `src/regeln/feel.ts`: eigener Parser nach der Grammatik in 6.4 (`parseEintrag`, `parseLiterale`), Typprüfung für V6 (`pruefeTyp`), Auswertung (`erfuellt`; null oder falscher Typ zur Laufzeit wirft). Geprüft: FE1–FE26 und weitere Randfälle in `feel.test.ts`. Leere Intervalle sind auch `(1..1)` und `[1..1)`, nicht nur `von > bis` (Entscheidung E8).
 - [ ] **2.2** Differenztests gegen feelin.
-- [ ] **2.3** `regeln/pflichten.dmn` mit 7 Tabellen und DRD (67 Regeln).
+- [x] **2.3** [`regeln/pflichten.dmn`](../regeln/pflichten.dmn): DMN 1.3 mit 7 Tabellen (Hit Policy COLLECT, Annotationsspalte „Begründung“) und DRD (DMNDI); `.gitattributes` mit `*.dmn text eol=lf`. Einmalig aus den Tabellen in 6.5 erzeugt, ab jetzt ist die Datei die Quelle. Geprüft: GR 9, PE 7, BR 1, ST 16, BU 11, ON 3, LU 20 = 67, keine Warnung von dmn-moddle, Formen und Kanten vollständig (`src/regeln/datei.test.ts`); dmn-js 18 öffnet DRD und alle Tabellen ohne Fehler, Wasserzeichen sichtbar (`e2e/regeln.spec.ts`, statt demo.bpmn.io lokal mit derselben Bibliothek). Für 4.7 notiert: Die Tabellenzeilen tragen die Regel-ID im Attribut `data-row-id`; dmn-js zeigt seine Bedienung englisch („When“, „And“, „Hit policy“, „View DRD“).
 - [ ] **2.4** Laden mit dmn-moddle, Prüfung V1–V11 (RV1–RV10).
 - [ ] **2.5** Auswertung (A–F, RT1–RT11).
 - [ ] **2.6** `regeln/stand.json`, `npm run regeln:stand`, V12 (KA6).
