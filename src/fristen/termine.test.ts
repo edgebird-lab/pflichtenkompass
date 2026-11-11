@@ -278,6 +278,17 @@ describe('Weitere Fristregeln', () => {
     expect(rechenweg('estVorauszahlungen', kontext(beispiel('A').profil))).toEqual(['Keine Termine: Das Finanzamt hat keine Vorauszahlungen festgesetzt (Frage 32).'])
     expect(rechenweg('gewerbeanzeige', kontext(beispiel('A').profil))).toEqual([])
   })
+
+  it('Beschäftigung erst nach dem Zeitraum: keine Lohnsteuertermine und ein klarer Rechenweg', () => {
+    // A mit einer Angestellten ab 01.06.2029; der Zeitraum endet am 31.12.2028 (vorher: „Anmeldungszeitraum: .“)
+    const spaet = mit('A', (x) => {
+      x.personal = { ...x.personal, vorhanden: true, beginn: '2029-06-01', svPflichtig: 1, lohnsteuerJeMonat: 300 }
+    })
+    const liste = alleTermine(spaet)
+    expect(von(liste, 'lohnsteuer')).toEqual([])
+    expect(von(liste, 'beitragsnachweis')).toEqual([])
+    expect(rechenweg('lohnsteuer', kontext(spaet))).toEqual(['Keine Termine im betrachteten Zeitraum: Die Beschäftigung beginnt am 01.06.2029.'])
+  })
 })
 
 describe('Allgemeine Eigenschaften (alle Beispiele)', () => {

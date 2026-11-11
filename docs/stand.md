@@ -33,7 +33,7 @@ Vor jedem Commit: `npm run lint`, `npm test`, `npm run build`, `npm run e2e` (lo
 
 ## Hinweise für den nächsten Durchgang (Phase 6 ff.)
 
-- **Zahlen:** 349 Unit-Tests in 25 Dateien und 40 Browsertests (Stand nach der Prüfung vom 11.11.2026), alle grün. Läuft der Rechner mit anderen Apps voll, scheitern Browsertests an Zeitlimits; dann `npm run e2e -- --workers=4` (so am 11.11.2026 grün, 2,1 min).
+- **Zahlen:** 350 Unit-Tests in 25 Dateien und 40 Browsertests (Stand nach der Prüfung vom 11.11.2026), alle grün. Läuft der Rechner mit anderen Apps voll, scheitern Browsertests an Zeitlimits; dann `npm run e2e -- --workers=4` (so am 11.11.2026 grün, 2,1 min).
 - **Schon da und getestet:** `src/fristen/datum.ts` (ISO-Daten, Tageszahlen in UTC, `plusMonate` mit Monatsletztem, Wochentag, Formatierung „Mo, 15.02.2027“; DA5 und DA10 schon geprüft), `src/modell/pruefung.ts` (alle Prüfungen aus 6.9 für 4.3), `aenderungenSeitSpeichern` und `gespeichertAus` für 4.8, `loescheLokaleDaten` für 4.1, `src/hash.ts` (SHA-256 über Web Crypto, auch für den Profilschlüssel der ICS-UIDs in 3.4).
 - **Auswertung:** `werteAus` erwartet ein gültiges Startdatum und Daten im Bereich der Prüfung (F13, F23: 1900–2099, E26); die Oberfläche ruft es erst auf, wenn `pruefeProfil` keinen Fehler meldet. Ohne Bundesland (F03) bleiben die Termine leer. Leere Ereignisse (F13, F23) fallen auf F02 zurück (`src/modell/wirksam.ts`).
 - **Oberfläche:** Bildschirmfotos für Sichtprüfung und README mit `scripts/ansehen.mjs` (Vorschau auf Port 4182 vorher starten). Browsertests nutzen `e2e/hilfen.ts` (festes Datum 11.11.2026 über `page.clock`, Beispiel laden, axe, Tab-Navigation). Im Arbeitsordner keinen Vorschau-Server laufen lassen: `reuseExistingServer` würde sonst einen alten Build testen.
@@ -89,6 +89,7 @@ Kritische Prüfung des gebauten Umfangs gegen die Spezifikation, mit eigenen Nac
 8. Die Fußzeile des Drucks steht als Text in `styles.css`; nichts prüfte sie gegen den Hinweistext, ein neuer Rechtsstand hätte dort das alte Datum gelassen. Test: Browsertest liest die Seitenregel (`e2e/druck.spec.ts`).
 9. „Nächster Termin“ wiederholte auf Karte und Druck den langen Titel der Pflicht (E25). Test: `src/ui/texte.test.ts`.
 10. Lücken in den Browsertests geschlossen: Datei über 1 MB und Datei mit falschem Feld beim Öffnen (`e2e/datei.spec.ts`).
+11. Beginnt die erste Beschäftigung erst nach dem betrachteten Zeitraum (etwa Start 2027, Angestellte ab Juni 2029), stand im Rechenweg der Lohnsteuer „Anmeldungszeitraum: .“; jetzt ein klarer Satz. Test: `termine.test.ts`.
 
 ## Phase 6 – Windows-Programm mit Tauri 2 (später)
 

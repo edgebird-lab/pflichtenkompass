@@ -412,6 +412,9 @@ export function rechenweg(id: Pflicht['id'], k: TerminKontext): string[] {
       ]
     }
     case 'lohnsteuer': {
+      // Beginnt die Beschäftigung erst nach dem Zeitraum, gibt es nichts zu rechnen (vorher stand dort „Anmeldungszeitraum: .“)
+      const beginn = beschaeftigungsbeginn(p)
+      if (beginn > k.horizont.bis) return [`Keine Termine im betrachteten Zeitraum: Die Beschäftigung beginnt am ${datumText(beginn)}.`]
       const jahre = jahreBis(erstesLohnsteuerjahr(k), k.horizont)
       return [
         `Anmeldungszeitraum: ${jahre
