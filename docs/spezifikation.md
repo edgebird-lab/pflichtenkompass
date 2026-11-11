@@ -1092,7 +1092,7 @@ Wie beim Prozesslotsen: React, TypeScript, Vite, Vitest, Playwright mit axe, oxl
 | **feiertagejs** | 1.5.1 | MIT, ohne Abhängigkeiten | Feiertage je Land |
 | @tauri-apps/api | 2.12.4 | Apache-2.0 OR MIT | Phase 6 |
 | @tauri-apps/cli | 2.12.4 | Apache-2.0 OR MIT | Phase 6 (dev) |
-| @tauri-apps/plugin-opener | 2.7.3 | MIT OR Apache-2.0 | Phase 6: Quellenlinks im Standardbrowser |
+| @tauri-apps/plugin-opener | 2.7.3 | MIT OR Apache-2.0 | Phase 6: Quellenlinks im Standardbrowser (umgesetzt mit dem Rust-Plugin allein, E27) |
 
 Verworfen: `date-holidays` 3.39.1 (Lizenz „ISC AND CC-BY-SA-4.0“, Share-Alike für Daten); ICS-Bibliotheken (Format ist klein, eigener Code mit Tests); zod (Prüfung wie `speicher.ts` im Prozesslotsen).
 
@@ -1203,6 +1203,7 @@ Vorlage ist `docs/windows-prototyp` des Prozesslotsen (gemessen: Installer 2,1 M
 - Plattformschicht `src/plattform/` aus dem Prozesslotsen; Tauri-Bibliotheken nur per dynamischem Import.
 - Voraussetzungen auf Robins Rechner: Rust pro Benutzer, VS Build Tools 2022 und Windows SDK (vorhanden). Kein Codesigning (Risiko R11).
 - Den Installer nie auf Robins Rechner ausführen (Regel aus der CLAUDE.md des Prozesslotsen). Installertest nur in der CI mit `src-tauri/windows/installer-test.ps1`; lokal testet `npm run desktop:test` das Programm ohne Installation.
+- **Nachtrag 11.11.2026:** Auf Robins ausdrücklichen Wunsch ist das Programm auf seinem Rechner pro Benutzer installiert (Entscheidung E31). Links öffnet ein eigener Befehl mit der Erlaubnisliste in Rust statt Opener-Rechten der Oberfläche (E27); `@tauri-apps/plugin-opener` (JS) entfällt. Umsetzung und Abweichungen: [stand.md](stand.md#phase-6--windows-programm-mit-tauri-2), E27–E31 in [entscheidungen.md](entscheidungen.md).
 
 ---
 

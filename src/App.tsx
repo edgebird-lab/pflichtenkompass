@@ -5,12 +5,13 @@ import { KATALOG_STAND, KATALOG_VERSION } from './katalog/typen'
 import { pruefeProfil } from './modell/pruefung'
 import { ladeAusBrowser, ladeEinstellungen, neuesProjekt, speichereEinstellungen, speichereImBrowser, STANDARD_EINSTELLUNGEN, type BrowserStand } from './modell/speicher'
 import type { Datum, Einstellungen } from './modell/typen'
-import { plattform } from './plattform'
+import { plattform, type MenueBefehl } from './plattform'
 import { werteAus } from './regeln/auswertung'
 import type { Regelwerk } from './regeln/typen'
 import { useDateiBefehle } from './ui/datei'
 import { Druckansicht } from './ui/Druckansicht'
 import { Hilfe } from './ui/Hilfe'
+import { KalenderDialog } from './ui/KalenderDialog'
 import { AppKontext, useApp, type AppApi } from './ui/kontext'
 import { RueckfrageDialog } from './ui/RueckfrageDialog'
 import { ErgebnisSchritt } from './ui/schritte/ErgebnisSchritt'
@@ -58,6 +59,7 @@ function Hauptfenster() {
   const [regelFehler, setRegelFehler] = useState<string | null>(null)
   const [meldung, setMeldung] = useState('')
   const [ueber, setUeber] = useState(false)
+  const [kalender, setKalender] = useState(false)
   const dateiFeld = useRef<HTMLInputElement>(null)
   const meldungsZeit = useRef<number | undefined>(undefined)
   const aktuell = useRef(z)
@@ -159,11 +161,18 @@ function Hauptfenster() {
     if (ziel !== '#schritt-titel') element?.scrollIntoView({ block: 'center' })
   }, [z.schritt, z.version])
 
-  // Strg+S speichert als Datei, Strg+O öffnet (auch in Eingabefeldern)
+  // Strg+S speichert als Datei, Strg+O öffnet (auch in Eingabefeldern); im Programm Strg+Umschalt+S „Speichern unter“
   useEffect(() => {
     const taste = (e: KeyboardEvent) => {
-      if (!(e.ctrlKey || e.metaKey) || e.altKey || e.shiftKey) return
+      if (!(e.ctrlKey || e.metaKey) || e.altKey) return
       const k = e.key.toLowerCase()
+      if (e.shiftKey) {
+        if (k === 's' && plattform.desktop) {
+          e.preventDefault()
+          void datei.speichernUnter()
+        }
+        return
+      }
       if (k === 's') {
         e.preventDefault()
         void datei.speichern()
@@ -176,8 +185,73 @@ function Hauptfenster() {
     return () => window.removeEventListener('keydown', taste)
   }, [datei])
 
-  // Projektdatei ins Fenster ziehen
+  // Kalenderdialog: aus den Terminen oder aus dem Programmmenü; ohne Ergebnis zeigen die Termine, was fehlt
+  const zeigeKalender = useCallback(() => {
+    if (ergebnisRef.current) setKalender(true)
+    else geheZu('termine')
+  }, [geheZu])
+
+  // Programm: Datei vom Start (Doppelklick im Explorer), weitere Dateien, Menü, Links, Schließen
+  const gestartet = useRef(false)
   useEffect(() => {
+    if (!plattform.desktop || gestartet.current) return
+    gestartet.current = true
+    plattform.startDatei().then(
+      (d) => d && datei.oeffneGewaehlt(d),
+      (e: unknown) => datei.zeigeFehler(null, e instanceof Error ? e.message : String(e)),
+    )
+  }, [datei])
+  useEffect(() => plattform.externeLinks(melde), [melde])
+  // Beim Schließen den Stand sofort sichern statt erst nach 500 ms
+  useEffect(
+    () =>
+      plattform.beimSchliessen(async () => {
+        if (aktuell.current.speichern) speichereImBrowser(aktuell.current.projekt)
+        return true
+      }),
+    [],
+  )
+  const befehl = useCallback(
+    (b: MenueBefehl) => {
+      switch (b) {
+        case 'neu':
+          return void datei.neu()
+        case 'oeffnen':
+          return datei.oeffnen()
+        case 'speichern':
+          return void datei.speichern()
+        case 'speichernUnter':
+          return void datei.speichernUnter()
+        case 'kalender':
+          return zeigeKalender()
+        case 'drucken':
+          return window.print()
+        case 'pdf':
+          return void datei.pdf()
+        case 'ueber':
+          return setUeber(true)
+      }
+    },
+    [datei, zeigeKalender],
+  )
+  // Einmal anmelden und immer die aktuellen Befehle rufen: Ein Ab- und Anmelden bei jeder Änderung
+  // könnte ein Ereignis des Rust-Teils (zweiter Start, Menü) in der Lücke verlieren
+  const aktuelleBefehle = useRef({ datei, befehl })
+  useEffect(() => {
+    aktuelleBefehle.current = { datei, befehl }
+  }, [datei, befehl])
+  useEffect(() => {
+    const ab = [
+      plattform.beiDatei((d) => void aktuelleBefehle.current.datei.oeffneGewaehlt(d)),
+      plattform.beiDateiFehler((name, fehler) => void aktuelleBefehle.current.datei.zeigeFehler(name, fehler)),
+      plattform.beiMenue((b) => aktuelleBefehle.current.befehl(b)),
+    ]
+    return () => ab.forEach((f) => f())
+  }, [])
+
+  // Im Browser: Projektdatei ins Fenster ziehen (im Programm meldet das der Rust-Teil mit Pfad)
+  useEffect(() => {
+    if (plattform.desktop) return
     const ueber = (e: DragEvent) => {
       if (e.dataTransfer?.types.includes('Files')) e.preventDefault()
     }
@@ -217,8 +291,9 @@ function Hauptfenster() {
       geheZu,
       melde,
       datei,
+      zeigeKalender,
     }),
-    [z, heute, einstellungen, setzeEinstellungen, regelwerk, regelFehler, pruefung, ergebnis, geheZu, melde, datei],
+    [z, heute, einstellungen, setzeEinstellungen, regelwerk, regelFehler, pruefung, ergebnis, geheZu, melde, datei, zeigeKalender],
   )
 
   return (
@@ -267,6 +342,7 @@ function Hauptfenster() {
         </footer>
       </div>
       {ergebnis && <Druckansicht ergebnis={ergebnis} />}
+      <KalenderDialog offen={kalender} onSchliessen={() => setKalender(false)} />
       <UeberDialog offen={ueber} onSchliessen={() => setUeber(false)} />
     </AppKontext.Provider>
   )
@@ -322,12 +398,31 @@ function Kopfzeile({ meldung, onUeber }: { meldung: string; onUeber: () => void 
           <MenuePunkt onClick={() => datei.oeffnen()} schliesse={schliesse} taste="Strg+O">
             Datei öffnen …
           </MenuePunkt>
-          <MenuePunkt onClick={() => void datei.speichern()} schliesse={schliesse} taste="Strg+S">
-            Als Datei speichern
-          </MenuePunkt>
-          <MenuePunkt onClick={() => window.print()} schliesse={schliesse}>
-            Drucken oder als PDF speichern
-          </MenuePunkt>
+          {plattform.desktop ? (
+            <>
+              <MenuePunkt onClick={() => void datei.speichern()} schliesse={schliesse} taste="Strg+S">
+                Speichern
+              </MenuePunkt>
+              <MenuePunkt onClick={() => void datei.speichernUnter()} schliesse={schliesse} taste="Strg+Umschalt+S">
+                Speichern unter …
+              </MenuePunkt>
+              <MenuePunkt onClick={() => window.print()} schliesse={schliesse}>
+                Drucken …
+              </MenuePunkt>
+              <MenuePunkt onClick={() => void datei.pdf()} schliesse={schliesse}>
+                Als PDF speichern …
+              </MenuePunkt>
+            </>
+          ) : (
+            <>
+              <MenuePunkt onClick={() => void datei.speichern()} schliesse={schliesse} taste="Strg+S">
+                Als Datei speichern
+              </MenuePunkt>
+              <MenuePunkt onClick={() => window.print()} schliesse={schliesse}>
+                Drucken oder als PDF speichern
+              </MenuePunkt>
+            </>
+          )}
           <MenuePunkt onClick={() => void datei.loescheLokal()} schliesse={schliesse}>
             Lokale Daten löschen
           </MenuePunkt>

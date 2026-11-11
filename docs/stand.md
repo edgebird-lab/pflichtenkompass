@@ -2,11 +2,11 @@
 
 Checkliste aller Schritte aus Abschnitt 11 der [Spezifikation](spezifikation.md). `- [x]` erledigt, `- [ ]` offen; die Notiz sagt, was geprüft ist und wo ein Nachfolger weitermacht. Annahmen und Abweichungen stehen in [entscheidungen.md](entscheidungen.md).
 
-Vor jedem Commit: `npm run lint`, `npm test`, `npm run build`, `npm run e2e` (lokal mit Edge, Port 4182).
+Vor jedem Commit: `npm run lint`, `npm test`, `npm run build`, `npm run e2e` (lokal mit Edge, Port 4182); bei Änderungen am Windows-Programm zusätzlich `cargo test` und `npm run desktop:test`.
 
 **Offen für Robin:** Fachliche Abnahme nach [abnahme.md](abnahme.md) (Schritt 5.4), dabei Kalenderimport in Outlook und Google Kalender (Schritt 3.4, R12) und das PDF der Druckansicht ansehen.
 
-**Offen für Robin:** Das private GitHub-Repo ist noch nicht angelegt. `gh repo create` wurde am 11.11.2026 in drei Sitzungen (zuletzt bei der Prüfung nach Phase 5) vom Berechtigungssystem abgelehnt (Einstufung „Public Data-Sharing Upload“) und nicht umgangen; alle Commits liegen nur lokal. Nachholen mit `gh repo create edgebird-lab/pflichtenkompass --private --source . --remote origin` und `git push -u origin main`; danach läuft die CI (Lint, Test, Build) zum ersten Mal.
+**Repo:** `edgebird-lab/pflichtenkompass` liegt seit dem 11.11.2026 privat auf GitHub (auf Robins Bitte angelegt); die CI läuft bei jedem Push.
 
 ## Phase 0 – Gerüst
 
@@ -33,7 +33,7 @@ Vor jedem Commit: `npm run lint`, `npm test`, `npm run build`, `npm run e2e` (lo
 
 ## Hinweise für den nächsten Durchgang (Phase 6 ff.)
 
-- **Zahlen:** 350 Unit-Tests in 25 Dateien und 40 Browsertests (Stand nach der Prüfung vom 11.11.2026), alle grün. Läuft der Rechner mit anderen Apps voll, scheitern Browsertests an Zeitlimits; dann `npm run e2e -- --workers=4` (so am 11.11.2026 grün, 2,1 min).
+- **Zahlen:** 357 Unit-Tests in 26 Dateien und 40 Browsertests, dazu 8 Rust-Tests und 56 Prüfpunkte im Desktop-Test (Stand nach Phase 6, 11.11.2026), alle grün. Läuft der Rechner mit anderen Apps voll, scheitern Browsertests an Zeitlimits; dann `npm run e2e -- --workers=4` (so am 11.11.2026 grün, 2,1 min).
 - **Schon da und getestet:** `src/fristen/datum.ts` (ISO-Daten, Tageszahlen in UTC, `plusMonate` mit Monatsletztem, Wochentag, Formatierung „Mo, 15.02.2027“; DA5 und DA10 schon geprüft), `src/modell/pruefung.ts` (alle Prüfungen aus 6.9 für 4.3), `aenderungenSeitSpeichern` und `gespeichertAus` für 4.8, `loescheLokaleDaten` für 4.1, `src/hash.ts` (SHA-256 über Web Crypto, auch für den Profilschlüssel der ICS-UIDs in 3.4).
 - **Auswertung:** `werteAus` erwartet ein gültiges Startdatum und Daten im Bereich der Prüfung (F13, F23: 1900–2099, E26); die Oberfläche ruft es erst auf, wenn `pruefeProfil` keinen Fehler meldet. Ohne Bundesland (F03) bleiben die Termine leer. Leere Ereignisse (F13, F23) fallen auf F02 zurück (`src/modell/wirksam.ts`).
 - **Oberfläche:** Bildschirmfotos für Sichtprüfung und README mit `scripts/ansehen.mjs` (Vorschau auf Port 4182 vorher starten). Browsertests nutzen `e2e/hilfen.ts` (festes Datum 11.11.2026 über `page.clock`, Beispiel laden, axe, Tab-Navigation). Im Arbeitsordner keinen Vorschau-Server laufen lassen: `reuseExistingServer` würde sonst einen alten Build testen.
@@ -91,12 +91,14 @@ Kritische Prüfung des gebauten Umfangs gegen die Spezifikation, mit eigenen Nac
 10. Lücken in den Browsertests geschlossen: Datei über 1 MB und Datei mit falschem Feld beim Öffnen (`e2e/datei.spec.ts`).
 11. Beginnt die erste Beschäftigung erst nach dem betrachteten Zeitraum (etwa Start 2027, Angestellte ab Juni 2029), stand im Rechenweg der Lohnsteuer „Anmeldungszeitraum: .“; jetzt ein klarer Satz. Test: `termine.test.ts`.
 
-## Phase 6 – Windows-Programm mit Tauri 2 (später)
+## Phase 6 – Windows-Programm mit Tauri 2
 
-- [ ] **6.1** `src-tauri` übernehmen.
-- [ ] **6.2** Rust-Befehle, Capabilities, Opener, CSP.
-- [ ] **6.3** NSIS-Installer bauen, nicht lokal ausführen.
-- [ ] **6.4** Installer-Rauchtest nur in der CI.
+Umgesetzt am 11.11.2026; Abweichungen von 7.6 stehen in E27–E31.
+
+- [x] **6.1** `src-tauri` aus dem Prozesslotsen übernommen und angepasst: Kennung `de.olbricht-digital.pflichtenkompass`, Produktname „Pflichten-Kompass“, `mainBinaryName` `pflichtenkompass`, Fenster 1320 × 860 (mindestens 900 × 600), Dateizuordnung nur `.pflichtenkompass` (Rolle Editor, MIME-Typ aus 7.4). Eigenes Symbol: Kompass in den Farben der App (`src-tauri/icons/quelle.svg`, daraus `npx tauri icon`). Plattformschicht `src/plattform/desktop.ts` wie im Prozesslotsen, Tauri-Bibliotheken nur per dynamischem Import; `index.ts` wählt Browser oder Programm. Npm-Skripte `desktop`, `desktop:build`, `desktop:test`. Geprüft: Debug-Build startet mit der Startseite (`npm run desktop:test`).
+- [x] **6.2** Rust-Befehle `start_datei`, `oeffnen`, `speichern`, `speichern_unter` (Projekt und Kalender `.ics`, Endung wird ergänzt), `als_pdf` (WebView2 `PrintToPdf`, A4 mit den Rändern der Druck-CSS) und `oeffne_link` (https und Erlaubnisliste in Rust, E27); im App-Manifest in `build.rs`, Rechte nur `core:default`, Fenstertitel, Schließen und `allow-<befehl>`, keine Datei- oder Opener-Rechte. Navigationsschutz für das Hauptfenster, Single-Instance, Ziehen ins Fenster, Menüleiste. CSP aus dem Prozesslotsen; im Programm-Build ohne Meta-Tag der Web-App (E28). Oberfläche: Speichern an den bekannten Pfad und Speichern unter (E29), „Als PDF speichern …“, Kalenderdialog auch aus dem Menü (E30), Sichern beim Schließen. Geprüft: `cargo test` (8), `src/plattform/tauri.test.ts` (7: Kennung, Zuordnung, Installer, CSP gleich der Web-App, Rechte, 1 MB, Erlaubnisliste gegen alle Quellen des Katalogs, Testdatei der CI), `npm run desktop:test` mit 56 Prüfpunkten: alle Befehle ausgelöst, Normlink geht an den Standardbrowser, fremde Links, Pfade, Dateiarten und Plugins abgelehnt, Regelansicht mit dmn-js und Symbolschrift ohne CSP-Meldung, Gegenprobe mit eingeschleustem Inline-Skript. Das PDF der Druckansicht (Beispiel C, 5 Seiten) angesehen: A4, Kopf, Tabellen, Hinweistext und „Seite n von m“ auf jeder Seite.
+- [x] **6.3** NSIS-Installer pro Benutzer ohne Admin (`npx tauri build`): 1,53 MiB (1.600.909 Bytes), Programm 3,8 MB. Startzeit bis zum ersten Bild: Debug-Build 1,1 s mit neuem WebView2-Profil, 0,8 s beim Neustart (Desktop-Test), installierter Release-Build 1,35 s beim allerersten Start (neues WebView2-Profil), danach Seite nach 0,85 s geladen. **Abweichung (E31):** Auf Robins ausdrücklichen Wunsch am 11.11.2026 still installiert (`/S`): `%LOCALAPPDATA%\Pflichten-Kompass\pflichtenkompass.exe`, Startmenü, Verknüpfung „Pflichten-Kompass“ auf dem Desktop, `.pflichtenkompass` per Doppelklick; einmal gestartet: Startseite erschien, Fenstertitel „Pflichten-Kompass“, wieder geschlossen; Beispiel C per Doppelklick (Zuordnung) geöffnet: Fenstertitel „Ergebnis – Elektro GmbH – Pflichten-Kompass“. Die Programmdaten dieser Proben danach entfernt, damit Robin leer beginnt.
+- [x] **6.4** Rauchtest des Installers in der CI (`.github/workflows/windows.yml`, `src-tauri/windows/installer-test.ps1`): still installieren, Programm, Deinstallationseintrag, Startmenü, Desktop-Verknüpfung, Dateizuordnung, Beispiel C per Zuordnung öffnen (Fenstertitel „Ergebnis – Elektro GmbH – Pflichten-Kompass“), schließen, still deinstallieren; Protokoll `installer-test.log` als Artefakt. Kalender und PDF prüft der Desktop-Test, weil der Release-Build keine Testantworten für Dialoge hat. Geprüft: erster Lauf von `windows.yml` mit diesem Stand (Ergebnis folgt). `release.yml` legt bei einem Tag `v*` nur einen Release-Entwurf an; es gibt keinen Tag.
 
 ## Phase 7 – Katalog 2027.01 (später)
 

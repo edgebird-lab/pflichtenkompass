@@ -1,0 +1,58 @@
+{
+  "$schema": "../node_modules/@tauri-apps/cli/config.schema.json",
+  "productName": "Pflichten-Kompass",
+  "mainBinaryName": "pflichtenkompass",
+  "version": "../package.json",
+  "identifier": "de.olbricht-digital.pflichtenkompass",
+  "build": {
+    "frontendDist": "../dist",
+    "devUrl": "http://localhost:5182",
+    "beforeDevCommand": "npm run dev",
+    "beforeBuildCommand": "npm run build"
+  },
+  "app": {
+    "windows": [
+      {
+        "label": "main",
+        "title": "Pflichten-Kompass",
+        "width": 1320,
+        "height": 860,
+        "minWidth": 900,
+        "minHeight": 600,
+        "center": true,
+        "dragDropEnabled": true
+      }
+    ],
+    "security": {
+      "csp": "default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; font-src 'self' data:; connect-src ipc: http://ipc.localhost; object-src 'none'; base-uri 'none'; form-action 'none'; frame-ancestors 'none'",
+      "freezePrototype": false
+    }
+  },
+  "bundle": {
+    "active": true,
+    "targets": ["nsis"],
+    "publisher": "Robin Olbricht",
+    "category": "Business",
+    "shortDescription": "Anmeldungen, Meldungen und Fristen für Gründungen",
+    "longDescription": "Zeigt Gründerinnen und Gründern, welche Anmeldungen, Meldungen und Fristen auf sie zukommen: begründet, mit Rechtsgrundlage, Quelle und Stand. Keine Rechtsberatung.",
+    "copyright": "© 2026 Robin Olbricht",
+    "icon": ["icons/32x32.png", "icons/128x128.png", "icons/128x128@2x.png", "icons/icon.icns", "icons/icon.ico"],
+    "fileAssociations": [
+      {
+        "ext": ["pflichtenkompass"],
+        "name": "PflichtenKompass.Projekt",
+        "description": "Pflichten-Kompass-Projekt",
+        "mimeType": "application/vnd.pflichtenkompass+json",
+        "role": "Editor"
+      }
+    ],
+    "windows": {
+      "webviewInstallMode": { "type": "downloadBootstrapper", "silent": true },
+      "nsis": {
+        "installMode": "currentUser",
+        "languages": ["German"],
+        "compression": "lzma"
+      }
+    }
+  }
+}

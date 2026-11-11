@@ -6,7 +6,23 @@
 import { describe, expect, it } from 'vitest'
 
 const texte = import.meta.glob<string>(['/README.md', '/CLAUDE.md', '/docs/*.md'], { query: '?raw', import: 'default', eager: true })
-const dateien = new Set(Object.keys(import.meta.glob(['/*.*', '/docs/**/*', '/regeln/**/*', '/src/**/*', '/scripts/**/*', '/e2e/**/*', '/public/**/*'])))
+const dateien = new Set(
+  Object.keys(
+    import.meta.glob([
+      '/*.*',
+      '/docs/**/*',
+      '/regeln/**/*',
+      '/src/**/*',
+      '/scripts/**/*',
+      '/e2e/**/*',
+      '/public/**/*',
+      '/.github/**/*',
+      '/src-tauri/**/*',
+      '!/src-tauri/target/**',
+      '!/src-tauri/gen/**',
+    ]),
+  ),
+)
 
 /** Löst einen relativen Link vom Ort der Markdown-Datei aus auf. */
 function loese(von: string, ziel: string): string {

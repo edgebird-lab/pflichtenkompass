@@ -17,12 +17,15 @@ const CSP = [
 
 /**
  * Setzt die CSP als Meta-Tag direkt hinter den Zeichensatz, also vor alle Skripte und Stile.
- * Nur im Produktions-Build; im Dev-Server würde sie das Neuladen (HMR) stören.
+ * Nur im Produktions-Build; im Dev-Server würde sie das Neuladen (HMR) stören. Im Build für das
+ * Windows-Programm (Tauri setzt TAURI_ENV_PLATFORM) gilt stattdessen die CSP aus
+ * `src-tauri/tauri.conf.json`: Sie erlaubt zusätzlich die Verbindung zum Rust-Teil (ipc:), die
+ * `connect-src 'self'` hier sperren würde, denn zwei Richtlinien gelten immer gemeinsam.
  */
 function csp(): Plugin {
   return {
     name: 'pflichtenkompass-csp',
-    apply: 'build',
+    apply: (_, { command }) => command === 'build' && !process.env.TAURI_ENV_PLATFORM,
     transformIndexHtml(html) {
       const charset = /<meta charset="UTF-8" \/>/
       if (!charset.test(html)) throw new Error('index.html: <meta charset="UTF-8" /> fehlt, CSP nicht gesetzt.')

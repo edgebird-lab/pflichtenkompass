@@ -3,6 +3,7 @@ import { HINWEISTEXT } from '../../katalog/hinweis'
 import { KATALOG_STAND, KATALOG_VERSION } from '../../katalog/typen'
 import { beispiele } from '../../modell/beispiele'
 import { BUNDESLAND_NAMEN } from '../../modell/fragen'
+import { plattform } from '../../plattform'
 import { hatInhalt } from '../datei'
 import { useApp } from '../kontext'
 import { rechtsformText } from '../texte'
@@ -76,7 +77,8 @@ export function StartSchritt() {
       <section className="karte" aria-labelledby="daten-titel">
         <h2 id="daten-titel">Daten auf diesem Rechner</h2>
         <p className="leise">
-          Antworten, Status und Einstellungen liegen nur im Speicher dieses Browsers. „Als Datei speichern“ im Menü „Projekt“ sichert sie als Datei <code>.pflichtenkompass</code>. An
+          Antworten, Status und Einstellungen liegen nur im Speicher {plattform.desktop ? 'dieses Programms' : 'dieses Browsers'}. „{plattform.desktop ? 'Speichern' : 'Als Datei speichern'}“ im
+          Menü „Projekt“ sichert sie als Datei <code>.pflichtenkompass</code>. An
           Rechnern, die mehrere Personen nutzen, die Daten nach der Arbeit löschen.
         </p>
         <button type="button" className="knopf knopf-gefahr" onClick={() => void datei.loescheLokal()}>

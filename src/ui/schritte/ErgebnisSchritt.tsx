@@ -12,9 +12,11 @@ import { BEARBEITUNGEN, type Bearbeitung } from '../../modell/typen'
 import { aenderungenSeitSpeichern, nachZeitpunkt, vergleiche } from '../../regeln/auswertung'
 import type { Ergebnis } from '../../regeln/typen'
 import { SCHRITTE } from '../../zustand'
+import { plattform } from '../../plattform'
 import { useApp } from '../kontext'
 import { Lueckenkarte, Pflichtkarte } from '../Pflichtkarte'
 import { BEARBEITUNG_TEXT } from '../texte'
+import { DruckKnoepfe } from './DruckKnoepfe'
 import { Weiterleiste } from './FragenSchritt'
 import { FehlendeAngaben } from './FehlendeAngaben'
 
@@ -166,11 +168,9 @@ export function ErgebnisSchritt() {
       )}
 
       <div className="knopfreihe">
-        <button type="button" className="knopf" onClick={() => window.print()}>
-          Drucken oder als PDF speichern
-        </button>
+        <DruckKnoepfe />
         <button type="button" className="knopf" onClick={() => void datei.speichern()}>
-          Als Datei speichern
+          {plattform.desktop ? 'Speichern' : 'Als Datei speichern'}
         </button>
       </div>
       <Weiterleiste info={info} />

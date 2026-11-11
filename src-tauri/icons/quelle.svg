@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024">
+  <!-- Programmsymbol des Pflichten-Kompasses: Kompass in den Farben der App (Akzent #1c5cab, Warnfarbe #fab219 für die Nadel).
+       Daraus erzeugt: npx tauri icon src-tauri/icons/quelle.svg -->
+  <rect x="40" y="40" width="944" height="944" rx="208" fill="#1c5cab"/>
+  <circle cx="512" cy="512" r="318" fill="none" stroke="#ffffff" stroke-width="64"/>
+  <path d="M512 226v74M512 724v74M226 512h74M724 512h74" stroke="#ffffff" stroke-width="44" stroke-linecap="round"/>
+  <g transform="rotate(40 512 512)">
+    <path d="M512 262 L586 512 L438 512 Z" fill="#fab219" stroke="#fab219" stroke-width="20" stroke-linejoin="round"/>
+    <path d="M512 762 L586 512 L438 512 Z" fill="#ffffff" stroke="#ffffff" stroke-width="20" stroke-linejoin="round"/>
+  </g>
+  <circle cx="512" cy="512" r="34" fill="#1c5cab"/>
+</svg>

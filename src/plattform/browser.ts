@@ -23,15 +23,13 @@ export const browserPlattform: Plattform = {
     ladeHerunter(vorschlag, inhalt, MIME[art])
     return { pfad: null, name: vorschlag }
   },
-  zuletzt: async () => [],
-  oeffneZuletzt: async () => {
-    throw new Error('Im Browser gibt es keine zuletzt geöffneten Dateien.')
-  },
   setzeTitel: (titel) => {
     document.title = titel
   },
   beiDatei: () => () => {},
+  beiDateiFehler: () => () => {},
   beimSchliessen: () => () => {},
   beiMenue: () => () => {},
-  alsPdf: async () => false,
+  externeLinks: () => () => {},
+  alsPdf: async () => null,
 }

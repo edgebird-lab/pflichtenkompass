@@ -1,8 +1,8 @@
 /**
  * Was die Oberfläche vom Betriebssystem braucht: Dateien öffnen und speichern,
- * Fenstertitel, Schließen abfangen, Menübefehle. Im Browser gibt es davon nur
- * einen Teil (Herunterladen statt Speichern); im Windows-Programm (Tauri,
- * Phase 6) erledigt das der Rust-Teil. Übernommen aus dem Prozesslotsen.
+ * Fenstertitel, Schließen abfangen, Menübefehle, externe Links. Im Browser gibt es
+ * davon nur einen Teil (Herunterladen statt Speichern); im Windows-Programm (Tauri,
+ * Spezifikation 7.6) erledigt das der Rust-Teil. Übernommen aus dem Prozesslotsen.
  */
 
 /** Eine geöffnete Datei. Im Browser gibt es keinen Pfad. */
@@ -10,11 +10,6 @@ export interface Datei {
   pfad: string | null
   name: string
   inhalt: string
-}
-
-export interface Zuletzt {
-  pfad: string
-  name: string
 }
 
 /** Projektdatei `.pflichtenkompass` oder Kalenderdatei `.ics`. */
@@ -34,15 +29,20 @@ export interface Plattform {
   speichern(pfad: string, inhalt: string): Promise<void>
   /** Fragt nach Ort und Namen; im Browser ein Download. null bei Abbruch. */
   speichernUnter(vorschlag: string, inhalt: string, art: DateiArt): Promise<{ pfad: string | null; name: string } | null>
-  /** Zuletzt geöffnete Dateien, neueste zuerst. */
-  zuletzt(): Promise<Zuletzt[]>
-  oeffneZuletzt(pfad: string): Promise<Datei>
   setzeTitel(titel: string): void
   /** Weitere Datei soll geöffnet werden (Doppelklick bei laufendem Programm, ins Fenster gezogen). */
   beiDatei(f: (d: Datei) => void): () => void
+  /** So eine Datei ließ sich nicht lesen (zu groß, keine Textdatei). */
+  beiDateiFehler(f: (name: string, fehler: string) => void): () => void
   /** Vor dem Schließen: `darf` entscheidet, ob das Fenster zugeht. */
   beimSchliessen(darf: () => Promise<boolean>): () => void
   beiMenue(f: (befehl: MenueBefehl) => void): () => void
-  /** Druckansicht als PDF ohne Druckdialog; false, wenn das hier nicht geht oder abgebrochen wurde. */
-  alsPdf(vorschlag: string): Promise<boolean>
+  /**
+   * Externe Links: Im Programm öffnen sie im Standardbrowser, nur mit https und nur für die
+   * Erlaubnisliste des Rust-Teils; sonst bekommt `fehler` die Meldung. Im Browser öffnen sie
+   * wie gewohnt in einem neuen Tab.
+   */
+  externeLinks(fehler: (text: string) => void): () => void
+  /** Druckansicht als PDF ohne Druckdialog; Dateiname, oder null, wenn das hier nicht geht oder abgebrochen wurde. */
+  alsPdf(vorschlag: string): Promise<string | null>
 }

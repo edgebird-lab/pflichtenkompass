@@ -3,6 +3,7 @@ import { useEffect, useRef } from 'react'
 import { datumText } from '../fristen/datum'
 import { HINWEISTEXT } from '../katalog/hinweis'
 import { KATALOG_STAND, KATALOG_VERSION } from '../katalog/typen'
+import { plattform } from '../plattform'
 import { VERSION } from '../version'
 
 const LIZENZEN: readonly [string, string, string][] = [
@@ -10,6 +11,8 @@ const LIZENZEN: readonly [string, string, string][] = [
   ['dmn-moddle 12.2.1', 'MIT', 'DMN-1.3-Datei lesen'],
   ['feiertagejs 1.5.1', 'MIT', 'Feiertage der Länder'],
   ['React 19.3.1', 'MIT', 'Oberfläche'],
+  // Nur im Windows-Programm im Einsatz
+  ...(plattform.desktop ? [['Tauri 2.12 mit Plugins für Dialoge, Links und Einzelstart', 'Apache-2.0 oder MIT', 'Windows-Programm'] as [string, string, string]] : []),
 ]
 
 export function UeberDialog({ offen, onSchliessen }: { offen: boolean; onSchliessen: () => void }) {
@@ -46,7 +49,7 @@ export function UeberDialog({ offen, onSchliessen }: { offen: boolean; onSchlies
       <p className="hinweis-kasten">
         <strong>Keine Rechtsberatung.</strong> {HINWEISTEXT}
       </p>
-      <p>Datenschutz: Die App überträgt nichts. Antworten liegen nur im Speicher dieses Browsers oder in selbst gespeicherten Dateien.</p>
+      <p>Datenschutz: Die App überträgt nichts. Antworten liegen nur im Speicher {plattform.desktop ? 'dieses Programms' : 'dieses Browsers'} oder in selbst gespeicherten Dateien.</p>
       <h3>Verwendete Bibliotheken</h3>
       <ul className="liste-eng">
         {LIZENZEN.map(([name, lizenz, zweck]) => (

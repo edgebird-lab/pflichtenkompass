@@ -1,0 +1,17 @@
+{
+  "$schema": "../gen/schemas/desktop-schema.json",
+  "identifier": "default",
+  "description": "Hauptfenster: Standardrechte, Fenstertitel, Schließen nach dem Sichern des Stands und die eigenen Befehle. Keine allgemeinen Dateirechte, keine Rechte am Opener-Plugin (Links nur über oeffne_link mit Erlaubnisliste).",
+  "windows": ["main"],
+  "permissions": [
+    "core:default",
+    "core:window:allow-set-title",
+    "core:window:allow-destroy",
+    "allow-start-datei",
+    "allow-oeffnen",
+    "allow-speichern",
+    "allow-speichern-unter",
+    "allow-als-pdf",
+    "allow-oeffne-link"
+  ]
+}

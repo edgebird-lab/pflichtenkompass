@@ -30,6 +30,8 @@ export interface AppApi {
   /** Kurze Statusmeldung in der Kopfzeile */
   melde: (text: string) => void
   datei: DateiBefehle
+  /** Öffnet den Dialog „Kalender exportieren“ (ohne Ergebnis: Schritt „Termine“ mit den fehlenden Angaben). */
+  zeigeKalender: () => void
 }
 
 export const AppKontext = createContext<AppApi | null>(null)

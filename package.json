@@ -14,9 +14,14 @@
     "preview": "vite preview",
     "e2e": "playwright test",
     "doku": "node scripts/katalog-doku.mjs",
-    "regeln:stand": "node scripts/regeln-stand.mjs"
+    "regeln:stand": "node scripts/regeln-stand.mjs",
+    "desktop": "tauri dev",
+    "desktop:build": "tauri build",
+    "desktop:test": "node scripts/desktop-test.mjs",
+    "tauri": "tauri"
   },
   "dependencies": {
+    "@tauri-apps/api": "^2.12.4",
     "dmn-js": "^18.0.3",
     "dmn-moddle": "^12.2.1",
     "feiertagejs": "^1.5.1",
@@ -26,6 +31,7 @@
   "devDependencies": {
     "@axe-core/playwright": "^4.14.0",
     "@playwright/test": "^1.65.0",
+    "@tauri-apps/cli": "^2.12.4",
     "@types/node": "^24.19.2",
     "@types/react": "^19.3.0",
     "@types/react-dom": "^19.3.0",

@@ -1,0 +1,156 @@
+{
+  "formatVersion": 1,
+  "app": "pflichtenkompass",
+  "profil": {
+    "gbrEingetragen": false,
+    "handwerk": "zulassungspflichtig",
+    "personal": {
+      "vorhanden": true,
+      "beginn": "2027-04-01",
+      "svPflichtig": 2,
+      "minijobber": 1,
+      "minijobPauschsteuer": true,
+      "sofortmeldeBranche": true,
+      "lohnsteuerJeMonat": 450
+    },
+    "kasseAnschaffung": null,
+    "name": "Elektro GmbH",
+    "start": "2027-04-01",
+    "bundesland": "BY",
+    "rechtsform": "gmbh",
+    "taetigkeit": "gewerblich",
+    "kaufmaennisch": "nein",
+    "steuerberater": true,
+    "branchen": [
+      "handwerk"
+    ],
+    "lebensmittel": false,
+    "kunden": {
+      "privatInland": true,
+      "unternehmenInland": true,
+      "privatEu": false,
+      "unternehmenEu": false
+    },
+    "website": true,
+    "verpackungen": false,
+    "kasse": "keine",
+    "bargeld": false,
+    "steuern": {
+      "umsatzErstesJahr": 400000,
+      "gewinnErstesJahr": 40000,
+      "kleinunternehmer": false,
+      "umsatz2026": null,
+      "ustErstesJahr": null,
+      "euFernverkaeufe": 0,
+      "dauerfristverlaengerung": true,
+      "vorauszahlungen": false
+    }
+  },
+  "status": {},
+  "gespeichert": {
+    "katalogVersion": "2026.11.0",
+    "am": "2026-11-11",
+    "pflichten": [
+      {
+        "id": "gewerbeanzeige",
+        "stand": "2026-11-11"
+      },
+      {
+        "id": "steuerlicheErfassung",
+        "stand": "2026-11-11"
+      },
+      {
+        "id": "handelsregisterGmbh",
+        "stand": "2026-11-11"
+      },
+      {
+        "id": "transparenzregister",
+        "stand": "2026-11-11"
+      },
+      {
+        "id": "handwerksrolle",
+        "stand": "2026-11-11"
+      },
+      {
+        "id": "berufsgenossenschaft",
+        "stand": "2026-11-11"
+      },
+      {
+        "id": "betriebsnummer",
+        "stand": "2026-11-11"
+      },
+      {
+        "id": "svAnmeldung",
+        "stand": "2026-11-11"
+      },
+      {
+        "id": "sofortmeldung",
+        "stand": "2026-11-11"
+      },
+      {
+        "id": "beitragsnachweis",
+        "stand": "2026-11-11"
+      },
+      {
+        "id": "lohnunterlagen",
+        "stand": "2026-11-11"
+      },
+      {
+        "id": "lohnsteuer",
+        "stand": "2026-11-11"
+      },
+      {
+        "id": "arbeitszeitMinijob",
+        "stand": "2026-11-11"
+      },
+      {
+        "id": "ustVoranmeldung",
+        "stand": "2026-11-11"
+      },
+      {
+        "id": "ustJahreserklaerung",
+        "stand": "2026-11-11"
+      },
+      {
+        "id": "rechnungen",
+        "stand": "2026-11-11"
+      },
+      {
+        "id": "eRechnungEmpfang",
+        "stand": "2026-11-11"
+      },
+      {
+        "id": "eRechnungAusstellen",
+        "stand": "2026-11-11"
+      },
+      {
+        "id": "eBilanz",
+        "stand": "2026-11-11"
+      },
+      {
+        "id": "aufbewahrung",
+        "stand": "2026-11-11"
+      },
+      {
+        "id": "buchfuehrungHgb",
+        "stand": "2026-11-11"
+      },
+      {
+        "id": "jahresabschluss",
+        "stand": "2026-11-11"
+      },
+      {
+        "id": "offenlegung",
+        "stand": "2026-11-11"
+      },
+      {
+        "id": "geschaeftsbriefe",
+        "stand": "2026-11-11"
+      },
+      {
+        "id": "impressum",
+        "stand": "2026-11-11"
+      }
+    ]
+  }
+}

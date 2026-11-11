@@ -38,7 +38,8 @@ export function KalenderDialog({ offen, onSchliessen }: { offen: boolean; onSchl
     }
   }, [offen])
 
-  const eintraege = ergebnis ? exportEintraege(ergebnis, z.projekt.status, { nurOffene, vergangene: einstellungen.vergangeneExportieren, heute }) : []
+  // Nur bei offenem Dialog zählen (er hängt dauerhaft in App.tsx, auch für das Programmmenü)
+  const eintraege = offen && ergebnis ? exportEintraege(ergebnis, z.projekt.status, { nurOffene, vergangene: einstellungen.vergangeneExportieren, heute }) : []
 
   const exportieren = async () => {
     if (!ergebnis) return

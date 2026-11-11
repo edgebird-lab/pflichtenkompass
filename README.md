@@ -1,6 +1,6 @@
 # Pflichten-Kompass
 
-Zeigt Gründerinnen und Gründern, welche Anmeldungen, Meldungen und Fristen auf sie zukommen. Aus einem geführten Interview entsteht eine begründete Pflichtenliste mit Frist, zuständiger Stelle, Rechtsgrundlage, Quelle und Stand. Jede Pflicht nennt die Antworten, die sie ausgelöst haben, und die App sagt offen, welche Bereiche sie nicht geprüft hat. Die Regeln liegen als DMN-1.3-Entscheidungstabellen im Repo. Läuft im Browser, ohne Server und ohne KI.
+Zeigt Gründerinnen und Gründern, welche Anmeldungen, Meldungen und Fristen auf sie zukommen. Aus einem geführten Interview entsteht eine begründete Pflichtenliste mit Frist, zuständiger Stelle, Rechtsgrundlage, Quelle und Stand. Jede Pflicht nennt die Antworten, die sie ausgelöst haben, und die App sagt offen, welche Bereiche sie nicht geprüft hat. Die Regeln liegen als DMN-1.3-Entscheidungstabellen im Repo. Läuft im Browser oder als Windows-Programm, ohne Server und ohne KI.
 
 > **Keine Rechtsberatung.** Der Pflichten-Kompass zeigt häufige Pflichten nach dem Rechtsstand vom 11.11.2026. Er ist keine Rechts- oder Steuerberatung und nicht vollständig. Jede Pflicht vor dem Handeln an der genannten Quelle prüfen oder fachlich beraten lassen.
 
@@ -8,7 +8,7 @@ Zeigt Gründerinnen und Gründern, welche Anmeldungen, Meldungen und Fristen auf
 
 ## Stand
 
-Version 0.1.0, Phasen 0–5 umgesetzt und am 11.11.2026 kritisch geprüft: Regeln, Katalog und 71.264 Kalenderwerte eigenständig nachgerechnet, die Kalenderdatei mit einem fremden Parser gelesen, das PDF der Druckansicht Seite für Seite angesehen; elf Fehler und Lücken behoben, darunter zwei Abstürze (Liste in [docs/stand.md](docs/stand.md#prüfung-nach-phase-5-11112026)). Die fachliche Abnahme mit Robin (Schritt 5.4) steht noch aus; bis dahin gelten die Annahmen in [docs/entscheidungen.md](docs/entscheidungen.md). Offen sind außerdem der Kalenderimport in Outlook und Google Kalender von Hand, das Windows-Programm (Phase 6) und der Katalog 2027.01 (Phase 7). Das Repo liegt bisher nur lokal; die CI ist deshalb noch nie gelaufen. Die Planung steht in der [Spezifikation](docs/spezifikation.md).
+Version 0.1.0, Phasen 0–5 umgesetzt und am 11.11.2026 kritisch geprüft: Regeln, Katalog und 71.264 Kalenderwerte eigenständig nachgerechnet, die Kalenderdatei mit einem fremden Parser gelesen, das PDF der Druckansicht Seite für Seite angesehen; elf Fehler und Lücken behoben, darunter zwei Abstürze (Liste in [docs/stand.md](docs/stand.md#prüfung-nach-phase-5-11112026)). Die fachliche Abnahme mit Robin (Schritt 5.4) steht noch aus; bis dahin gelten die Annahmen in [docs/entscheidungen.md](docs/entscheidungen.md). Seit dem 11.11.2026 gibt es den Pflichten-Kompass auch als [Windows-Programm](#windows-programm) (Phase 6) mit Installer, Dateizuordnung und PDF ohne Druckdialog; auf Robins Rechner ist es installiert. Offen sind der Kalenderimport in Outlook und Google Kalender von Hand und der Katalog 2027.01 (Phase 7). Das Repo ist privat auf GitHub; die CI prüft Lint, Tests und Build, bei Änderungen am Programmteil zusätzlich das Windows-Programm samt Installer. Die Planung steht in der [Spezifikation](docs/spezifikation.md).
 
 ## Was es kann
 
@@ -28,6 +28,18 @@ Version 0.1.0, Phasen 0–5 umgesetzt und am 11.11.2026 kritisch geprüft: Regel
 | ![Schritt „Personal“ mit Fragen 12 bis 17 und der Hilfe zu Geringfügigkeitsgrenze und Sofortmeldung](docs/bilder/interview.png) | ![Terminliste April 2027 mit Gründungsterminen und dem ersten Beitragsnachweis](docs/bilder/termine.png) |
 | **Regeln (DRD)** | **Regeln (Tabelle „Steuern“)** |
 | ![DRD mit sieben Entscheidungen; Entscheidungen mit Treffern sind blau hinterlegt](docs/bilder/regeln-drd.png) | ![Entscheidungstabelle „Steuern“ mit markierten Trefferzeilen](docs/bilder/regeln-tabelle.png) |
+
+## Windows-Programm
+
+Dieselbe Oberfläche als installiertes Programm (Tauri 2 mit WebView2), gebaut aus [`src-tauri`](src-tauri) nach dem Vorbild des Prozesslotsen.
+
+- **Installer** pro Benutzer ohne Admin-Rechte (NSIS, deutsch, 1,5 MB): legt den Pflichten-Kompass unter `%LOCALAPPDATA%\Pflichten-Kompass` ab, mit Eintrag im Startmenü, Verknüpfung auf dem Desktop und Eintrag unter „Apps“ zum Deinstallieren. Noch nicht signiert; SmartScreen fragt beim ersten Start nach.
+- **Dateien:** `.pflichtenkompass` öffnet per Doppelklick im Programm, auch in einem schon laufenden (dann ohne zweites Fenster), oder durch Ziehen ins Fenster. „Speichern“ (Strg+S) schreibt in die geöffnete Datei, „Speichern unter“ (Strg+Umschalt+S) fragt nach dem Ort. Den Kalender (`.ics`) speichert der Dialog von Windows.
+- **PDF der Druckansicht** direkt über WebView2, ohne Druckdialog: A4 mit Hinweistext und „Seite n von m“ auf jeder Seite. „Drucken …“ öffnet den Druckdialog.
+- **Menüleiste** „Datei“ (Neu beginnen, Öffnen, Speichern, Speichern unter, Kalender exportieren, Drucken, Als PDF speichern, Beenden) und „Hilfe“.
+- **Quellen und Normen** öffnen im Standardbrowser, nur mit https und nur für gesetze-im-internet.de, omg.org, rfc-editor.org und bpmn.io; das Programmfenster zeigt nie eine fremde Seite.
+- **Sicherheit:** Die Oberfläche hat keine allgemeinen Dateirechte. Gelesen und geschrieben wird nur, was der Benutzer selbst gewählt hat (Dialog, Doppelklick, ins Fenster gezogen), atomar über eine Hilfsdatei; geöffnet werden höchstens 1 MB. Es gilt dieselbe strenge CSP wie in der Web-App, nur mit der Verbindung zum Rust-Teil. Die Antworten liegen wie im Browser nur auf dem Rechner (Speicher von WebView2 unter `%LOCALAPPDATA%\de.olbricht-digital.pflichtenkompass`) und werden beim Schließen gesichert.
+- **Start:** Startseite nach rund 0,9 s, beim allerersten Start nach 1,4 s, weil WebView2 dann sein Profil anlegt (installierter Release-Build auf Robins Rechner; Debug-Build im Desktop-Test 1,1 s und 0,8 s).
 
 ## Beispiele
 
@@ -81,7 +93,7 @@ Ob eine Pflicht gilt, entscheiden sieben Entscheidungstabellen in [`regeln/pflic
 
 ## Datenschutz
 
-Keine Daten verlassen den Rechner: kein Server, keine Telemetrie, keine Konten, keine externen Schriften. Antworten liegen nur im Browserspeicher oder in der selbst gespeicherten Projektdatei. Im Produktions-Build gilt eine strenge Content-Security-Policy.
+Keine Daten verlassen den Rechner: kein Server, keine Telemetrie, keine Konten, keine externen Schriften. Antworten liegen nur im Browserspeicher (im Windows-Programm im Speicher von WebView2) oder in der selbst gespeicherten Projektdatei. Im Produktions-Build und im Windows-Programm gilt eine strenge Content-Security-Policy.
 
 ## Aufbau
 
@@ -92,22 +104,24 @@ Keine Daten verlassen den Rechner: kein Server, keine Telemetrie, keine Konten, 
 | `src/regeln` | FEEL-Teilmenge, Laden und Prüfen der DMN-Datei, Auswertung |
 | `src/fristen` | Datum, Feiertage, Berechnungen, Termine |
 | `src/export` | Kalenderdatei (iCalendar) |
-| `src/plattform` | Öffnen und Speichern im Browser (später im Windows-Programm) |
+| `src/plattform` | Öffnen, Speichern, Menü, Links: im Browser (`browser.ts`) und im Windows-Programm (`desktop.ts`) |
 | `src/ui` | React-Oberfläche: Schritte, Pflichtkarte, Terminliste, Regelansicht (lazy), Druckansicht, Dialoge |
 | `regeln` | `pflichten.dmn` (DMN 1.3) und ihr Prüfwert |
+| `src-tauri` | Windows-Programm: Rust-Befehle (`src/lib.rs`), Rechte, CSP, Installer, Symbol (`icons/quelle.svg`), Installertest der CI |
 | `e2e` | Browsertests mit Playwright und axe |
-| `scripts` | Doku erzeugen, Prüfwert der Regeln, Bildschirmfotos |
+| `scripts` | Doku erzeugen, Prüfwert der Regeln, Bildschirmfotos, Desktop-Test |
 | `docs` | [Spezifikation](docs/spezifikation.md), [Stand](docs/stand.md), [Entscheidungen](docs/entscheidungen.md), [Abnahme](docs/abnahme.md), [Pflichtenkatalog](docs/katalog.md), [Fragenkatalog](docs/fragenkatalog.md), [Lizenzen](docs/lizenzen.md), [Bilder](docs/bilder) |
 
 Die Fachlogik kennt kein React und ist getestet; „heute“ wird ihr immer übergeben.
 
-**Technik:** React 19, TypeScript 7, Vite 8, Vitest, Playwright mit axe, oxlint, GitHub Actions; dmn-moddle und dmn-js für DMN, feiertagejs für die Feiertage.
+**Technik:** React 19, TypeScript 7, Vite 8, Vitest, Playwright mit axe, oxlint, GitHub Actions; dmn-moddle und dmn-js für DMN, feiertagejs für die Feiertage; Tauri 2 (Rust) für das Windows-Programm.
 
 ## Tests
 
-- **Unit-Tests (Vitest, 350 in 25 Dateien):** FEEL-Teilmenge mit Differenztest gegen feelin, Prüfung des Regelwerks, Golden Tests der Beispiele A–F und gezielte Regeltests, Merkmale, Katalog, Speichern, Feiertage, Berechnungen, Termine, Kalenderexport, Antworten, Anzeigetexte und Zustand.
+- **Unit-Tests (Vitest, 357 in 26 Dateien):** FEEL-Teilmenge mit Differenztest gegen feelin, Prüfung des Regelwerks, Golden Tests der Beispiele A–F und gezielte Regeltests, Merkmale, Katalog, Speichern, Feiertage, Berechnungen, Termine, Kalenderexport, Antworten, Anzeigetexte und Zustand; dazu die Regeln des Windows-Programms (Kennung, Dateizuordnung, CSP gleich der Web-App, Rechte nur für die eigenen Befehle, jede Quelle auf der Erlaubnisliste).
 - **Browsertests (Playwright, lokal mit Edge, 40):** E1 Beispiel A nur mit der Tastatur, E2 Beispiele A–F, E3 Kalenderexport, E4 Druckansicht samt Fußzeile, E5 Datei speichern und öffnen, E6 Regelansicht ohne CSP-Meldung, E7 axe in allen Schritten hell und dunkel; dazu Sichtbarkeit der Fragen, Meldungen am Feld, Speicher, Tastatur, schmale Ansicht und die Fehlerfälle: fremde, kaputte und zu große Dateien, unlesbarer oder gesperrter Browserspeicher, Kalenderexport ohne Web Crypto, unsinnige Jahre im Aufbewahrungsrechner.
-- **CI** (GitHub Actions): Lint, Unit-Tests und Build; die Browsertests laufen vorerst nur lokal (Entscheidung E1).
+- **Windows-Programm:** `cargo test` (8 Tests: Dateiargumente, atomares Speichern, Binär- und zu große Dateien, Dateiarten, Endungen, Freigaben, Erlaubnisliste der Links, Navigationsschutz) und `npm run desktop:test` (56 Prüfpunkte am echten Programm ohne Installation: Start, Speichern unter und Speichern, Kalender, PDF in A4, Regelansicht mit dmn-js ohne CSP-Meldung, Quellenlink, abgelehnte Links, Pfade und Befehle, Navigationsschutz, Öffnen per Dialog, zweiter Start mit Datei, Sichern beim Schließen, Neustart mit Datei).
+- **CI** (GitHub Actions): Lint, Unit-Tests und Build; die Browsertests laufen vorerst nur lokal (Entscheidung E1). Bei Änderungen am Programmteil baut `windows.yml` auf Windows Programm und Installer, führt `cargo test` aus und prüft den Installer (still installieren, Startmenü, Desktop-Verknüpfung, Dateizuordnung, Datei per Doppelklick öffnen, deinstallieren; Protokoll als Artefakt). `release.yml` legt bei einem Versions-Tag nur einen Entwurf an.
 
 ## Starten
 
@@ -119,7 +133,15 @@ npm run build
 npx vite preview --port 4182 --strictPort   # dann http://localhost:4182 öffnen
 ```
 
-Die App braucht keinen Server außer dieser Vorschau und keine Konten. Ein Windows-Programm folgt mit Phase 6.
+Die App braucht keinen Server außer dieser Vorschau und keine Konten.
+
+**Windows-Programm:** nach der Installation über die Verknüpfung „Pflichten-Kompass“ auf dem Desktop, über das Startmenü oder per Doppelklick auf eine `.pflichtenkompass`-Datei. Den Installer selbst bauen (Rust stable mit MSVC, VS Build Tools 2022, Windows SDK):
+
+```bash
+npx tauri build   # Installer: <Zielordner>/release/bundle/nsis/Pflichten-Kompass_0.1.0_x64-setup.exe
+```
+
+Den Installer mit Doppelklick ausführen (pro Benutzer, ohne Admin) oder still mit `Pflichten-Kompass_0.1.0_x64-setup.exe /S`. Deinstallieren über „Apps“ in den Windows-Einstellungen.
 
 ## Entwickeln
 
@@ -132,6 +154,9 @@ npm run build     # Typprüfung und Produktions-Build
 npm run lint      # oxlint
 npm run doku      # docs/katalog.md und docs/fragenkatalog.md neu erzeugen
 npm run regeln:stand   # Prüfwert der Regeldatei prüfen; nach Änderungen mit --version … --stand …
+npm run desktop        # Windows-Programm mit Dev-Server (tauri dev)
+npx tauri build --debug --no-bundle && npm run desktop:test   # Programm ohne Installation testen (CDP-Port 9334)
+cargo test --manifest-path src-tauri/Cargo.toml                # Rust-Tests
 ```
 
 Bildschirmfotos: `npm run build`, dann `npx vite preview --port 4182 --strictPort` starten und `node scripts/readme-bilder.mjs` (README) oder `node scripts/ansehen.mjs <ordner>` (Rundgang) ausführen. Die Vorschau danach wieder beenden, sonst testen die Browsertests den alten Build weiter.

@@ -2,14 +2,13 @@
  * Termine (Spezifikation 5.4): Liste nach Monaten im Horizont mit Datum, Termin, Zeitraum,
  * Stelle und Art; „gesetzlich bis“ bei Abweichung; vergangene Termine grau.
  */
-import { useState } from 'react'
 import { datumMitTag, datumText, MONATE, zerlege } from '../../fristen/datum'
 import type { Pflicht } from '../../katalog/typen'
 import type { Termin } from '../../regeln/typen'
 import { SCHRITTE } from '../../zustand'
-import { KalenderDialog } from '../KalenderDialog'
 import { useApp } from '../kontext'
 import { TERMIN_ART_TEXT } from '../texte'
+import { DruckKnoepfe } from './DruckKnoepfe'
 import { FehlendeAngaben } from './FehlendeAngaben'
 import { Weiterleiste } from './FragenSchritt'
 
@@ -29,8 +28,7 @@ function nachMonaten(zeilen: Zeile[]): { monat: string; zeilen: Zeile[] }[] {
 }
 
 export function TermineSchritt() {
-  const { heute, ergebnis, einstellungen } = useApp()
-  const [dialog, setDialog] = useState(false)
+  const { heute, ergebnis, einstellungen, zeigeKalender } = useApp()
   const info = SCHRITTE.find((s) => s.id === 'termine')!
 
   if (!ergebnis) {
@@ -56,12 +54,10 @@ export function TermineSchritt() {
         Monate ab dem Startmonat){vergangen > 0 && `, davon ${vergangen} vor heute`}.
       </p>
       <div className="knopfreihe">
-        <button type="button" className="knopf knopf-haupt" onClick={() => setDialog(true)}>
+        <button type="button" className="knopf knopf-haupt" onClick={zeigeKalender}>
           Kalender exportieren …
         </button>
-        <button type="button" className="knopf" onClick={() => window.print()}>
-          Drucken oder als PDF speichern
-        </button>
+        <DruckKnoepfe />
       </div>
       <p className="leise klein">
         Die Daten sind vorsichtig angesetzt: nie später als das gesetzliche Fristende. Wo das Gesetz mehr Zeit lässt, steht „gesetzlich bis“ dabei. Pflichten ohne feste Termine (laufend) stehen
@@ -111,7 +107,6 @@ export function TermineSchritt() {
         </section>
       ))}
       {zeilen.length === 0 && <p className="leise">Im Zeitraum gibt es keine Termine mit festem Datum.</p>}
-      <KalenderDialog offen={dialog} onSchliessen={() => setDialog(false)} />
       <Weiterleiste info={info} />
     </div>
   )
