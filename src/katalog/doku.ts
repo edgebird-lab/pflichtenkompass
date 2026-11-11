@@ -4,6 +4,7 @@
  */
 import { datumText } from '../fristen/datum'
 import { HINWEISTEXT } from './hinweis'
+import { LUECKE_HINWEIS, LUECKEN } from './luecken'
 import { normenGruppen, normKurz, normLink } from './normen'
 import { GRUPPEN, PFLICHTEN, ZEITPUNKTE } from './pflichten'
 import { QUELLEN } from './quellen'
@@ -39,13 +40,23 @@ export function katalogDoku(): string {
     '',
     `> **Keine Rechtsberatung.** ${HINWEISTEXT}`,
     '',
-    `Rechtsstand ${datumText(KATALOG_STAND)}. ${PFLICHTEN.length} Pflichten aus Abschnitt 6.6 der [Spezifikation](spezifikation.md). Die Normen verlinken auf die Einzelnorm bei gesetze-im-internet.de; die Quellen stehen am Ende.`,
+    `Rechtsstand ${datumText(KATALOG_STAND)}. ${PFLICHTEN.length} Pflichten aus Abschnitt 6.6 der [Spezifikation](spezifikation.md) und ${LUECKEN.length} Lückenhinweise aus 6.7. Die Normen verlinken auf die Einzelnorm bei gesetze-im-internet.de; die Quellen stehen am Ende.`,
     '',
   ]
   for (const g of GRUPPEN) {
     zeilen.push(`## ${g.titel}`, '')
     for (const p of PFLICHTEN.filter((x) => x.gruppe === g.id)) zeilen.push(...pflichtAbschnitt(p))
   }
+  zeilen.push(
+    '## Lückenhinweise',
+    '',
+    `${LUECKE_HINWEIS}. Lücken sind keine Pflichten: Sie nennen Bereiche, die zum Profil passen, aber nicht geprüft sind („nicht geprüft“), oder Fragen, die vor dem Handeln zu klären sind („klären“). Abschnitt 6.7 der Spezifikation.`,
+    '',
+    '| Nr. | Titel | Art | Was offen ist |',
+    '| --- | --- | --- | --- |',
+  )
+  for (const l of LUECKEN) zeilen.push(`| ${l.nr} | ${l.titel} | ${l.art === 'pruefen' ? 'klären' : 'nicht geprüft'} | ${l.text} |`)
+  zeilen.push('')
   zeilen.push('## Quellen', '', '| Nr. | Quelle | Stand laut Seite | Abgerufen |', '| --- | --- | --- | --- |')
   for (const q of QUELLEN) zeilen.push(`| ${q.id} | [${q.titel}](${q.url}) | ${q.stand} | ${datumText(q.abgerufen)} |`)
   zeilen.push('')

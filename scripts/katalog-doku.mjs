@@ -1,4 +1,4 @@
-// Erzeugt die Doku aus dem Katalog: docs/katalog.md (und ab Schritt 1.4 docs/fragenkatalog.md).
+// Erzeugt die Doku aus Katalog und Fragen: docs/katalog.md und docs/fragenkatalog.md.
 // Die TypeScript-Module lädt Vite (runnerImport), wie im Build. Aufruf: npm run doku
 import { readFile, writeFile } from 'node:fs/promises'
 import { fileURLToPath } from 'node:url'
@@ -19,3 +19,6 @@ async function schreibe(datei, inhalt) {
 
 const { module: katalog } = await runnerImport('/src/katalog/doku.ts', { root: wurzel, logLevel: 'warn' })
 await schreibe('docs/katalog.md', katalog.katalogDoku())
+
+const { module: fragen } = await runnerImport('/src/modell/doku.ts', { root: wurzel, logLevel: 'warn' })
+await schreibe('docs/fragenkatalog.md', fragen.fragenkatalogDoku())

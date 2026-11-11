@@ -4,7 +4,7 @@
 
 > **Keine Rechtsberatung.** Der Pflichten-Kompass zeigt häufige Pflichten nach dem Rechtsstand vom 11.11.2026. Er ist keine Rechts- oder Steuerberatung und nicht vollständig. Jede Pflicht vor dem Handeln an der genannten Quelle prüfen oder fachlich beraten lassen.
 
-Rechtsstand 11.11.2026. 40 Pflichten aus Abschnitt 6.6 der [Spezifikation](spezifikation.md). Die Normen verlinken auf die Einzelnorm bei gesetze-im-internet.de; die Quellen stehen am Ende.
+Rechtsstand 11.11.2026. 40 Pflichten aus Abschnitt 6.6 der [Spezifikation](spezifikation.md) und 17 Lückenhinweise aus 6.7. Die Normen verlinken auf die Einzelnorm bei gesetze-im-internet.de; die Quellen stehen am Ende.
 
 ## Gründung und Anmeldung
 
@@ -506,6 +506,30 @@ Die Mengen der beteiligten Verpackungen gehen auch an die Zentrale Stelle.
 - **Quellen:** Q12
 - **Gültig ab:** 12.08.2026
 - **Hinweise:** Vollständigkeitserklärung bis 15. Mai ab 80 t Glas, 50 t Papier oder 30 t sonstiger Materialien.
+
+## Lückenhinweise
+
+In Version 0.1 nicht geprüft. Lücken sind keine Pflichten: Sie nennen Bereiche, die zum Profil passen, aber nicht geprüft sind („nicht geprüft“), oder Fragen, die vor dem Handeln zu klären sind („klären“). Abschnitt 6.7 der Spezifikation.
+
+| Nr. | Titel | Art | Was offen ist |
+| --- | --- | --- | --- |
+| 1 | Gewerbesteuer | nicht geprüft | Erklärung und Vorauszahlungen. |
+| 2 | Körperschaftsteuer | nicht geprüft | Erklärung und Vorauszahlungen. |
+| 3 | Gaststättenrecht des Landes | nicht geprüft | Erlaubnis oder Anzeige nach Landesrecht. |
+| 4 | Lebensmittelrecht | nicht geprüft | Registrierung als Lebensmittelbetrieb, Hygiene. |
+| 5 | Verbraucherrecht im Onlinehandel | nicht geprüft | Informations- und Widerrufspflichten, Bestellbutton, Preisangaben, Barrierefreiheit. |
+| 6 | Datenschutz | nicht geprüft | Datenschutzhinweise, Verarbeitungsverzeichnis, Datenschutzbeauftragter, Einwilligung für Cookies. |
+| 7 | Arbeitsrecht und Arbeitsschutz | nicht geprüft | Arbeitsschutz, Nachweisgesetz, DEÜV-Fristen, Mindestlohnhöhe, Bereiche nach § 2a SchwarzArbG. |
+| 8 | Erlaubnisse und Kammern | nicht geprüft | Erlaubnispflichtige Gewerbe, Beiträge zu IHK oder HWK. |
+| 9 | Künstlersozialabgabe | nicht geprüft | Abgabe auf Aufträge an Kreative, z. B. Webdesign, Fotos, Texte. |
+| 10 | Rundfunkbeitrag für Betriebsstätten | nicht geprüft | Anmeldung und Beitrag je Betriebsstätte. |
+| 11 | Elektrogeräte und Batterien | nicht geprüft | Registrierungspflichten beim Verkauf solcher Waren. |
+| 12 | EU-Geschäft als Kleinunternehmer | nicht geprüft | Ort der Leistung, Rechnungsfristen und Meldepflichten. |
+| 13 | Freiberufliche UG oder GmbH | nicht geprüft | Gewerbeanzeige und Berufsrecht. |
+| 14 | Kaufmannseigenschaft klären | klären | Handelsregister und Buchführung nach HGB hängen davon ab. |
+| 15 | Handwerksart klären | klären | Handwerksrolle (Anlage A) oder Anzeige (Anlage B). |
+| 16 | Kleinunternehmergrenze im Gründungsjahr | klären | Welche Grenze im Gründungsjahr gilt; der Wortlaut von § 19 Abs. 1 UStG regelt das nicht ausdrücklich. |
+| 17 | Vergütung der Geschäftsführung klären | klären | Lohnsteuer auf ein Geschäftsführergehalt und Sozialversicherungsstatus der Geschäftsführung (Statusfeststellung); die Pflichten 9–14 erscheinen nur, wenn Frage 12 Beschäftigte nennt. |
 
 ## Quellen
 
