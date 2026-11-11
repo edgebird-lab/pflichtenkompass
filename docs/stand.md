@@ -4,11 +4,13 @@ Checkliste aller Schritte aus Abschnitt 11 der [Spezifikation](spezifikation.md)
 
 Vor jedem Commit: `npm run lint`, `npm test`, `npm run build`, `npm run e2e` (lokal mit Edge, Port 4182).
 
+**Offen für Robin:** Das private GitHub-Repo ist noch nicht angelegt. `gh repo create` wurde am 11.11.2026 vom Berechtigungssystem der Claude-Sitzung abgelehnt; alle Commits liegen nur lokal. Nachholen mit `gh repo create edgebird-lab/pflichtenkompass --private --source . --remote origin` und `git push -u origin main`; danach läuft die CI (Lint, Test, Build) zum ersten Mal.
+
 ## Phase 0 – Gerüst
 
 - [x] **0.1** Projekt wie beim Prozesslotsen (Vite, React, TypeScript, Vitest, Playwright, oxlint, CI). Ports 4182 (Vorschau, E2E, `strictPort`) und 5182 (Dev). CSP als Meta-Tag nur im Build (Abschnitt 8). CI: Lint, Test, Build (ohne E2E, siehe Entscheidung E1).
 - [x] **0.2** Plattformschicht aus dem Prozesslotsen (`src/plattform`, vorerst nur Browser; `desktop.ts` kommt mit Phase 6), Schrittleiste mit neun Schritten (Platzhalter), Darstellung System/Hell/Dunkel (gespeichert in `pflichtenkompass:einstellungen`), Startseite und Fußzeile mit Hinweistext aus 5.7. Geprüft: axe hell und dunkel in allen Schritten ohne schwere Befunde (`e2e/barrierefreiheit.spec.ts`), Tastatur, CSP. Vorgezogen aus 3.1: Grundfunktionen in `src/fristen/datum.ts` (ohne Feiertage).
-- [ ] **0.3** CLAUDE.md, README-Gerüst, Lizenzhinweise, Doku verlinkt.
+- [x] **0.3** `CLAUDE.md`, README-Gerüst, [Lizenzhinweise](lizenzen.md) (bpmn.io-Wasserzeichen, MIT). Geprüft: `src/doku.test.ts` prüft alle relativen Links in README, CLAUDE.md und `docs/`.
 
 ## Phase 1 – Fachmodell und Katalog
 
