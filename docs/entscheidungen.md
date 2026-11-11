@@ -15,11 +15,11 @@ Offene Fragen der [Spezifikation](spezifikation.md) (Abschnitt 10.2) und Punkte,
 | O7 | Gastronomie-Landesrecht, Lebensmittelregistrierung | Annahme, bis Robin entscheidet: Lücken 3 und 4 bleiben. |
 | O8 | Landesfeiertage nicht gegen Gesetze geprüft | Annahme, bis Robin entscheidet: konservative Behandlung nach 6.8.1. |
 | O9 | BGB §§ 187–193, Nachweistag, 24.12./31.12. | Annahme, bis Robin entscheidet: Termin einen Arbeitstag vor dem Nachweistag, 24.12. und 31.12. frei. |
-| O10 | Veröffentlichung (RDG, StBerG, Haftung) | Annahme, bis Robin entscheidet: Repo bleibt privat, keine Veröffentlichung. |
+| O10 | Veröffentlichung (RDG, StBerG, Haftung) | **Entschieden von Robin am 11.11.2026:** Repo öffentlich, Version 0.1.0 als Release mit Windows-Installer; der Hinweis „keine Rechts- oder Steuerberatung“ bleibt an allen Ausgaben, in README und Release-Notizen. Eine eigene rechtliche Prüfung ist hier nicht dokumentiert. |
 | O11 | § 41a Abs. 2 Satz 3 EStG, Umrechnung | Annahme, bis Robin entscheidet: Schätzung aus F18 × 12. |
 | O12 | § 17 MiLoG und § 2a SchwarzArbG | Annahme, bis Robin entscheidet: nicht aufgenommen, Teil der Lücke 7. |
 | O13 | E-Bilanz bei UG/GmbH über das KStG | Annahme, bis Robin entscheidet: Pflicht 27 mit Hinweis „nicht geprüft“. |
-| O14 | Name, Dateiendung, privates Repo, Lizenz | Annahme, bis Robin entscheidet: „Pflichten-Kompass“, `.pflichtenkompass`, Repo `edgebird-lab/pflichtenkompass` privat, Lizenz noch nicht festgelegt (wie Prozesslotse). |
+| O14 | Name, Dateiendung, privates Repo, Lizenz | „Pflichten-Kompass“, `.pflichtenkompass`. **Entschieden von Robin am 11.11.2026:** Repo `edgebird-lab/pflichtenkompass` öffentlich; vorerst keine Lizenz (alle Rechte vorbehalten, Quelltext sichtbar, Programme kostenlos nutzbar). |
 | O15 | Bestandsunternehmen (Start vor 2026) | Annahme, bis Robin entscheidet: nicht unterstützt; F02 ab 01.01.2026. |
 | O16 | OSS-Frist am Wochenende | Annahme, bis Robin entscheidet: kein `gesetzlichBis` (6.8.2). |
 
