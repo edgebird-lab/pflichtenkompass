@@ -109,6 +109,18 @@ Die Fachlogik kennt kein React und ist getestet; „heute“ wird ihr immer übe
 - **Browsertests (Playwright, lokal mit Edge, 40):** E1 Beispiel A nur mit der Tastatur, E2 Beispiele A–F, E3 Kalenderexport, E4 Druckansicht samt Fußzeile, E5 Datei speichern und öffnen, E6 Regelansicht ohne CSP-Meldung, E7 axe in allen Schritten hell und dunkel; dazu Sichtbarkeit der Fragen, Meldungen am Feld, Speicher, Tastatur, schmale Ansicht und die Fehlerfälle: fremde, kaputte und zu große Dateien, unlesbarer oder gesperrter Browserspeicher, Kalenderexport ohne Web Crypto, unsinnige Jahre im Aufbewahrungsrechner.
 - **CI** (GitHub Actions): Lint, Unit-Tests und Build; die Browsertests laufen vorerst nur lokal (Entscheidung E1).
 
+## Starten
+
+Mit Node 24 im Projektordner:
+
+```bash
+npm install
+npm run build
+npx vite preview --port 4182 --strictPort   # dann http://localhost:4182 öffnen
+```
+
+Die App braucht keinen Server außer dieser Vorschau und keine Konten. Ein Windows-Programm folgt mit Phase 6.
+
 ## Entwickeln
 
 ```bash
