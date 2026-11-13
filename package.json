@@ -1,7 +1,7 @@
 {
   "name": "pflichtenkompass",
   "private": true,
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "Anmeldungen, Meldungen und Fristen für Gründungen aus einem geführten Interview: begründet, mit Rechtsgrundlage, Quelle und Stand; Regeln als DMN 1.3.",
   "type": "module",
   "scripts": {

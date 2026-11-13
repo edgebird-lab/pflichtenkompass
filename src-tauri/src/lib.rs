@@ -121,11 +121,32 @@ fn oeffne_gewaehlt(app: &AppHandle, p: &Path) -> Result<Datei, String> {
 }
 
 /// Ergänzt die Endung, wenn der Benutzer einen Namen ohne Endung getippt hat (für Doppelklick und Filter).
+/// Endungen aus mehreren Teilen („beratungsakte.json“) werden angehängt, wenn der Name nicht schon auf sie
+/// endet; ein Punkt im Namen („Akte 2.0“) zählt dabei nicht als Endung. Endet der Name auf den letzten Teil
+/// („x.json“), wird nur der Rest davor eingefügt: „x.beratungsakte.json“, nicht „x.json.beratungsakte.json“.
 fn mit_endung(mut p: PathBuf, endung: &str) -> PathBuf {
-    if p.extension().is_none() {
-        p.set_extension(endung);
+    let Some((vorn, letzter)) = endung.rsplit_once('.') else {
+        if p.extension().is_none() {
+            p.set_extension(endung);
+        }
+        return p;
+    };
+    let datei = p.file_name().and_then(|n| n.to_str()).unwrap_or("").to_string();
+    let name = datei.to_ascii_lowercase();
+    let ganz = format!(".{}", endung.to_ascii_lowercase());
+    if name.len() > ganz.len() && name.ends_with(&ganz) {
+        return p;
     }
-    p
+    let schluss = format!(".{}", letzter.to_ascii_lowercase());
+    if name.len() > schluss.len() && name.ends_with(&schluss) && name != ganz {
+        // Die Endung ist ASCII; der Schnitt liegt deshalb auf einer Zeichengrenze.
+        let stamm = &datei[..datei.len() - schluss.len()];
+        return p.with_file_name(format!("{stamm}.{vorn}.{letzter}"));
+    }
+    let mut s = p.into_os_string();
+    s.push(".");
+    s.push(endung);
+    PathBuf::from(s)
 }
 
 /// Nur https, nur Hosts der Erlaubnisliste, ohne Benutzername und eigenen Port.
@@ -442,6 +463,22 @@ mod tests {
         assert_eq!(mit_endung(PathBuf::from("C:/a/Café GmbH"), "pflichtenkompass"), PathBuf::from("C:/a/Café GmbH.pflichtenkompass"));
         assert_eq!(mit_endung(PathBuf::from("C:/a/Elektro-GmbH-pflichtenkompass-2026-11-13"), "beratungsakte.json"), PathBuf::from("C:/a/Elektro-GmbH-pflichtenkompass-2026-11-13.beratungsakte.json"));
         assert_eq!(mit_endung(PathBuf::from("C:/a/b.beratungsakte.json"), "beratungsakte.json"), PathBuf::from("C:/a/b.beratungsakte.json"));
+    }
+
+    #[test]
+    fn ergaenzt_die_zweiteilige_endung_ohne_den_namen_zu_verstuemmeln() {
+        let akte = "beratungsakte.json";
+        let p = PathBuf::from;
+        assert_eq!(mit_endung(p("C:/a/b.BERATUNGSAKTE.JSON"), akte), p("C:/a/b.BERATUNGSAKTE.JSON"));
+        // „.json“ wird ergänzt, nicht verdoppelt
+        assert_eq!(mit_endung(p("C:/a/x.json"), akte), p("C:/a/x.beratungsakte.json"));
+        assert_eq!(mit_endung(p("C:/a/x.JSON"), akte), p("C:/a/x.beratungsakte.json"));
+        assert_eq!(mit_endung(p("C:/a/Akte 2.0.json"), akte), p("C:/a/Akte 2.0.beratungsakte.json"));
+        // Punkt im Namen: Endung angehängt, nichts abgeschnitten
+        assert_eq!(mit_endung(p("C:/a/Akte 2.0"), akte), p("C:/a/Akte 2.0.beratungsakte.json"));
+        assert_eq!(mit_endung(p("C:/a/Muster-Co.-KG-pflichtenkompass-2026-11-13"), akte), p("C:/a/Muster-Co.-KG-pflichtenkompass-2026-11-13.beratungsakte.json"));
+        assert_eq!(mit_endung(p("C:/a/b.pflichtenkompass"), akte), p("C:/a/b.pflichtenkompass.beratungsakte.json"));
+        assert_eq!(mit_endung(p("C:/a/.json"), akte), p("C:/a/.json.beratungsakte.json"));
     }
 
     #[test]
