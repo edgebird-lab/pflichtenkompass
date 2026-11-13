@@ -103,6 +103,7 @@ export function BeratungsakteDialog({
           {anzahl(vorschau.massnahmen.length, 'Maßnahme', 'Maßnahmen')}
           <span className="akte-datei">Datei: {dateiname}</span>
         </p>
+        <p className="akte-datenschutz">Die Datei ist unverschlüsselt und enthält Daten des Mandanten.</p>
         <p className="hinweis-kasten klein">
           <strong>Keine Rechtsberatung.</strong> {HINWEISTEXT} Der Hinweis steht auch in der Datei.
         </p>

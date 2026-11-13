@@ -114,6 +114,7 @@ Robin hat entschieden: Repo öffentlich, Release mit Windows-Installer, vorerst 
 ## Export Beratungsakte v1 (13.11.2026)
 
 - [x] **Export im offenen Format Beratungsakte v1:** Knopf „Für die Beratungsakte speichern“ im Ergebnis mit Dialog (Mandant vorbelegt mit dem Namen des Vorhabens, Mandantennummer, Inhalt und Dateiname, Hinweis „keine Rechtsberatung“); im Browser Download, im Programm Speichern-Dialog (`speichern_unter` mit der Art `beratungsakte`). Abbildung in [E32](entscheidungen.md). Kopie der Bibliothek 1.0.1 in `src/beratungsakte/`, Beispiele in `testdaten/beratungsakte/`. Geprüft: 18 Unit-Tests (`src/export/beratungsakte.test.ts`, dazu einer, der mit `BERATUNGSAKTE_AUSGABE` die Beispieldatei schreibt: Beispiele A–F gültig ohne Hinweise, Zahlen aus den Golden Tests, Stufen, Status, Warnungen, Grenzfälle, Kopie der Bibliothek), 5 Browsertests mit axe hell und dunkel (`e2e/beratungsakte.spec.ts`), `cargo test`, Desktop-Test mit 59 Prüfpunkten.
+- [x] **Nacharbeit (13.11.2026):** Dialog mit dem Hinweis „Die Datei ist unverschlüsselt und enthält Daten des Mandanten.“ (Browsertest). Erledigte Pflichten und solche, die nicht zutreffen, bleiben in der Akte; ihr Status steht maschinenlesbar im Namensraum (`status`), wie schon in E32.
 
 ## Phase 7 – Katalog 2027.01 (später)
 

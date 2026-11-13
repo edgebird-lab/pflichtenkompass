@@ -29,6 +29,7 @@ test('Dialog: Vorbelegung, Pflichtfeld, Abbrechen, Escape und Fokus; Speichern l
   await expect(dialog(page)).toContainText('Enthält: 11 Kennzahlen, 9 Befunde, 25 Maßnahmen')
   await expect(dialog(page)).toContainText('Datei: Elektro-GmbH-pflichtenkompass-2026-11-11.beratungsakte.json')
   await expect(dialog(page)).toContainText('Keine Rechtsberatung.')
+  await expect(dialog(page)).toContainText('Die Datei ist unverschlüsselt und enthält Daten des Mandanten.')
   await expect(dialog(page)).toContainText('keine Rechts- oder Steuerberatung')
   await page.keyboard.press('Escape')
   await expect(dialog(page)).toBeHidden()
