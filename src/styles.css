@@ -1059,6 +1059,21 @@ table.quellen {
   justify-content: flex-end;
   margin-top: 12px;
 }
+/* Beratungsakte: feste Breite, langer Dateiname bricht um statt überzustehen */
+.akte-dialog {
+  width: min(520px, calc(100vw - 32px));
+}
+.akte-dialog .feld > input {
+  width: 100%;
+}
+.akte-datei {
+  display: block;
+  overflow-wrap: anywhere;
+  color: var(--text-2);
+}
+.akte-dialog .hinweis-kasten {
+  margin: 12px 0;
+}
 
 /* Regeln ---------------------------------------------------------------------------------- */
 

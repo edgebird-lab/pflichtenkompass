@@ -3,7 +3,8 @@
  * Warnungen, Neu-Markierung, Änderungshinweis nach dem Öffnen einer Datei (4.8), Filter nach
  * Gruppe und Status, Lücken am Ende.
  */
-import { useState } from 'react'
+import { useRef, useState } from 'react'
+import { dateinameBeratungsakte, serialisiereBeratungsakte, type Beratungsakte } from '../../beratungsakte/beratungsakte'
 import { datumText } from '../../fristen/datum'
 import { HINWEISTEXT } from '../../katalog/hinweis'
 import { GRUPPEN, istPflichtId, pflicht } from '../../katalog/pflichten'
@@ -13,6 +14,7 @@ import { aenderungenSeitSpeichern, nachZeitpunkt, vergleiche } from '../../regel
 import type { Ergebnis } from '../../regeln/typen'
 import { SCHRITTE } from '../../zustand'
 import { plattform } from '../../plattform'
+import { BeratungsakteDialog } from '../BeratungsakteDialog'
 import { useApp } from '../kontext'
 import { Lueckenkarte, Pflichtkarte } from '../Pflichtkarte'
 import { BEARBEITUNG_TEXT } from '../texte'
@@ -53,7 +55,9 @@ function Aenderungshinweis({ ergebnis }: { ergebnis: Ergebnis }) {
 }
 
 export function ErgebnisSchritt() {
-  const { z, heute, ergebnis, datei } = useApp()
+  const { z, heute, ergebnis, datei, melde } = useApp()
+  const [akteOffen, setAkteOffen] = useState(false)
+  const akteKnopf = useRef<HTMLButtonElement>(null)
   const [gruppe, setGruppe] = useState<Gruppe | 'alle'>('alle')
   const [bearbeitung, setBearbeitung] = useState<Bearbeitung | 'alle'>('alle')
   const info = SCHRITTE.find((s) => s.id === 'ergebnis')!
@@ -66,6 +70,17 @@ export function ErgebnisSchritt() {
         <Weiterleiste info={info} />
       </div>
     )
+  }
+
+  const schliesseAkte = () => {
+    setAkteOffen(false)
+    requestAnimationFrame(() => akteKnopf.current?.focus())
+  }
+  // Wie die übrigen Exporte: im Programm über den Speichern-Dialog, im Browser als Download
+  const speichereAkte = async (akte: Beratungsakte) => {
+    const ort = await plattform.speichernUnter(dateinameBeratungsakte(akte), serialisiereBeratungsakte(akte), 'beratungsakte')
+    schliesseAkte()
+    if (ort) melde(`Für die Beratungsakte gespeichert: ${ort.name}`)
   }
 
   const statusVon = (id: PflichtId) => z.projekt.status[id]?.bearbeitung ?? 'offen'
@@ -172,7 +187,11 @@ export function ErgebnisSchritt() {
         <button type="button" className="knopf" onClick={() => void datei.speichern()}>
           {plattform.desktop ? 'Speichern' : 'Als Datei speichern'}
         </button>
+        <button type="button" className="knopf" ref={akteKnopf} onClick={() => setAkteOffen(true)}>
+          Für die Beratungsakte speichern
+        </button>
       </div>
+      {akteOffen && <BeratungsakteDialog projekt={z.projekt} ergebnis={ergebnis} quelldatei={datei.quelldatei()} onSpeichern={speichereAkte} onSchliessen={schliesseAkte} />}
       <Weiterleiste info={info} />
     </div>
   )

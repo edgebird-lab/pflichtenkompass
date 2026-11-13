@@ -48,11 +48,12 @@ struct Gespeichert {
     name: String,
 }
 
-/// Was `speichern_unter` schreiben darf: Projektdatei oder Kalender (.ics).
+/// Was `speichern_unter` schreiben darf: Projektdatei, Kalender (.ics) oder Beratungsakte (.beratungsakte.json).
 #[derive(Debug, PartialEq)]
 enum Art {
     Projekt,
     Kalender,
+    Beratungsakte,
 }
 
 impl Art {
@@ -60,6 +61,7 @@ impl Art {
         match text {
             "projekt" => Ok(Art::Projekt),
             "kalender" => Ok(Art::Kalender),
+            "beratungsakte" => Ok(Art::Beratungsakte),
             _ => Err(format!("Unbekannte Dateiart: {text}")),
         }
     }
@@ -69,6 +71,8 @@ impl Art {
         match self {
             Art::Projekt => ("Pflichten-Kompass-Projekt", "pflichtenkompass", "Speichern unter", "PFLICHTENKOMPASS_TEST_SPEICHERN_PROJEKT"),
             Art::Kalender => ("Kalender (*.ics)", "ics", "Kalender exportieren", "PFLICHTENKOMPASS_TEST_SPEICHERN_KALENDER"),
+            // Export im offenen Format Beratungsakte v1; die Endung hat zwei Teile
+            Art::Beratungsakte => ("Beratungsakte (*.beratungsakte.json)", "beratungsakte.json", "Für die Beratungsakte speichern", "PFLICHTENKOMPASS_TEST_SPEICHERN_BERATUNGSAKTE"),
         }
     }
 }
@@ -419,9 +423,12 @@ mod tests {
     }
 
     #[test]
-    fn kennt_nur_projekt_und_kalender() {
+    fn kennt_nur_projekt_kalender_und_beratungsakte() {
         assert_eq!(Art::aus("projekt"), Ok(Art::Projekt));
         assert_eq!(Art::aus("kalender"), Ok(Art::Kalender));
+        assert_eq!(Art::aus("beratungsakte"), Ok(Art::Beratungsakte));
+        assert_eq!(Art::Beratungsakte.dialog().0, "Beratungsakte (*.beratungsakte.json)");
+        assert_eq!(Art::Beratungsakte.dialog().1, "beratungsakte.json");
         assert!(Art::aus("exe").is_err());
         assert!(Art::aus("").is_err());
         assert_eq!(Art::Kalender.dialog().1, "ics");
@@ -433,6 +440,8 @@ mod tests {
         assert_eq!(mit_endung(PathBuf::from("C:/a/Kalender"), "ics"), PathBuf::from("C:/a/Kalender.ics"));
         assert_eq!(mit_endung(PathBuf::from("C:/a/b.ics"), "ics"), PathBuf::from("C:/a/b.ics"));
         assert_eq!(mit_endung(PathBuf::from("C:/a/Café GmbH"), "pflichtenkompass"), PathBuf::from("C:/a/Café GmbH.pflichtenkompass"));
+        assert_eq!(mit_endung(PathBuf::from("C:/a/Elektro-GmbH-pflichtenkompass-2026-11-13"), "beratungsakte.json"), PathBuf::from("C:/a/Elektro-GmbH-pflichtenkompass-2026-11-13.beratungsakte.json"));
+        assert_eq!(mit_endung(PathBuf::from("C:/a/b.beratungsakte.json"), "beratungsakte.json"), PathBuf::from("C:/a/b.beratungsakte.json"));
     }
 
     #[test]

@@ -33,6 +33,8 @@ export interface DateiBefehle {
   /** Druckansicht als PDF ohne Druckdialog (nur im Programm). */
   pdf(): Promise<void>
   loescheLokal(): Promise<void>
+  /** Name der geöffneten oder gespeicherten Projektdatei (nur im Programm bekannt), sonst null. */
+  quelldatei(): string | null
 }
 
 /** Hat das Projekt Antworten oder einen Status? Dann fragt die App vor dem Ersetzen nach. */
@@ -149,6 +151,8 @@ export function useDateiBefehle(a: {
       },
 
       speichernUnter,
+
+      quelldatei: () => dokument.current?.name ?? null,
 
       async pdf() {
         try {

@@ -12,8 +12,8 @@ export interface Datei {
   inhalt: string
 }
 
-/** Projektdatei `.pflichtenkompass` oder Kalenderdatei `.ics`. */
-export type DateiArt = 'projekt' | 'kalender'
+/** Projektdatei `.pflichtenkompass`, Kalenderdatei `.ics` oder Export `.beratungsakte.json`. */
+export type DateiArt = 'projekt' | 'kalender' | 'beratungsakte'
 
 /** Befehle aus dem Programmmenü (Windows-Programm). */
 export type MenueBefehl = 'neu' | 'oeffnen' | 'speichern' | 'speichernUnter' | 'kalender' | 'drucken' | 'pdf' | 'ueber'

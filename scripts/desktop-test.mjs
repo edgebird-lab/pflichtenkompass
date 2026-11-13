@@ -60,6 +60,8 @@ const DIALOGE = {
   PFLICHTENKOMPASS_TEST_SPEICHERN_PROJEKT: datei('a.pflichtenkompass'),
   // ohne Endung: Das Programm ergänzt „.ics“
   PFLICHTENKOMPASS_TEST_SPEICHERN_KALENDER: datei('Kalender Elektro'),
+  // ohne Endung: Das Programm ergänzt „.beratungsakte.json“
+  PFLICHTENKOMPASS_TEST_SPEICHERN_BERATUNGSAKTE: datei('Akte Elektro'),
   PFLICHTENKOMPASS_TEST_PDF: datei('druck.pdf'),
   PFLICHTENKOMPASS_TEST_OEFFNEN: datei('c.pflichtenkompass'),
   PFLICHTENKOMPASS_TEST_LINKS: datei('links.txt'),
@@ -213,6 +215,19 @@ try {
   await warte(async () => (await meldung()) === 'Als Datei gespeichert: a.pflichtenkompass', 'Speichern unter schreibt a.pflichtenkompass')
   const a = JSON.parse(readFileSync(datei('a.pflichtenkompass'), 'utf8'))
   pruefe(a.app === 'pflichtenkompass' && a.profil.name === 'Elektro GmbH' && a.gespeichert.pflichten.length === 25, 'Projektdatei mit Profil und 25 gespeicherten Pflichten')
+
+  // 2b. Für die Beratungsakte speichern: Dialog, Speichern-Dialog des Programms, Endung ergänzt
+  await seite.getByRole('button', { name: 'Für die Beratungsakte speichern' }).click()
+  const akteDialog = seite.getByRole('dialog', { name: 'Für die Beratungsakte speichern' })
+  await akteDialog.getByRole('textbox', { name: 'Mandantennummer (optional)' }).fill('K-0815')
+  await akteDialog.getByRole('button', { name: 'Speichern' }).click()
+  await warte(async () => (await meldung()) === 'Für die Beratungsakte gespeichert: Akte Elektro.beratungsakte.json', 'Beratungsakte gespeichert, Endung .beratungsakte.json ergänzt')
+  const akte = JSON.parse(readFileSync(datei('Akte Elektro.beratungsakte.json'), 'utf8'))
+  pruefe(
+    akte.format === 'beratungsakte' && akte.erzeugtVon.app === 'pflichtenkompass' && akte.mandant.name === 'Elektro GmbH' && akte.mandant.kennung === 'K-0815' && akte.analyse.quelldatei === 'a.pflichtenkompass',
+    'Beratungsakte mit Mandant aus dem Vorhaben, Nummer und Name der Projektdatei',
+  )
+  pruefe(akte.massnahmen.length === 25 && akte.befunde[0].kennung === 'hinweis:keine-rechtsberatung', 'Beratungsakte mit 25 Pflichten und dem Hinweis „keine Rechtsberatung“')
 
   // 3. Kalender ohne Dialog, Endung ergänzt
   await schritt('Termine')

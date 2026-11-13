@@ -1,10 +1,11 @@
 import { ladeHerunter } from '../ui/hilfen'
 import type { DateiArt, Plattform } from './typen'
 
-/** MIME-Typen nach Abschnitt 7.4 und 7.5 der Spezifikation. */
+/** MIME-Typen nach Abschnitt 7.4 und 7.5 der Spezifikation; die Beratungsakte ist schlichtes JSON. */
 const MIME: Record<DateiArt, string> = {
   projekt: 'application/vnd.pflichtenkompass+json',
   kalender: 'text/calendar',
+  beratungsakte: 'application/json',
 }
 
 /**

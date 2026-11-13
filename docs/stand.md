@@ -33,7 +33,7 @@ Vor jedem Commit: `npm run lint`, `npm test`, `npm run build`, `npm run e2e` (lo
 
 ## Hinweise für den nächsten Durchgang (Phase 6 ff.)
 
-- **Zahlen:** 357 Unit-Tests in 26 Dateien und 40 Browsertests, dazu 8 Rust-Tests und 56 Prüfpunkte im Desktop-Test (Stand nach Phase 6, 11.11.2026), alle grün. Läuft der Rechner mit anderen Apps voll, scheitern Browsertests an Zeitlimits; dann `npm run e2e -- --workers=4` (so am 11.11.2026 grün, 2,1 min).
+- **Zahlen:** 375 Unit-Tests in 27 Dateien und 45 Browsertests, dazu 8 Rust-Tests und 59 Prüfpunkte im Desktop-Test (Stand nach dem Export Beratungsakte, 13.11.2026), alle grün. Läuft der Rechner mit anderen Apps voll, scheitern Browsertests an Zeitlimits; dann `npm run e2e -- --workers=4` (so am 11.11.2026 grün, 2,1 min).
 - **Schon da und getestet:** `src/fristen/datum.ts` (ISO-Daten, Tageszahlen in UTC, `plusMonate` mit Monatsletztem, Wochentag, Formatierung „Mo, 15.02.2027“; DA5 und DA10 schon geprüft), `src/modell/pruefung.ts` (alle Prüfungen aus 6.9 für 4.3), `aenderungenSeitSpeichern` und `gespeichertAus` für 4.8, `loescheLokaleDaten` für 4.1, `src/hash.ts` (SHA-256 über Web Crypto, auch für den Profilschlüssel der ICS-UIDs in 3.4).
 - **Auswertung:** `werteAus` erwartet ein gültiges Startdatum und Daten im Bereich der Prüfung (F13, F23: 1900–2099, E26); die Oberfläche ruft es erst auf, wenn `pruefeProfil` keinen Fehler meldet. Ohne Bundesland (F03) bleiben die Termine leer. Leere Ereignisse (F13, F23) fallen auf F02 zurück (`src/modell/wirksam.ts`).
 - **Oberfläche:** Bildschirmfotos für Sichtprüfung und README mit `scripts/ansehen.mjs` (Vorschau auf Port 4182 vorher starten). Browsertests nutzen `e2e/hilfen.ts` (festes Datum 11.11.2026 über `page.clock`, Beispiel laden, axe, Tab-Navigation). Im Arbeitsordner keinen Vorschau-Server laufen lassen: `reuseExistingServer` würde sonst einen alten Build testen.
@@ -110,6 +110,10 @@ Robin hat entschieden: Repo öffentlich, Release mit Windows-Installer, vorerst 
 - [x] **Prüfläufe:** lokal Lint, 357 Unit-Tests, Build, 40 Browsertests (`--workers=2`, 2,4 min) und 8 Rust-Tests grün; CI „Prüfung“ grün (Lauf 43102831005; der erste Lauf 43098530464 blieb beim Ausfall von GitHub Actions am Abend des 11.11.2026 ohne Jobs hängen, deshalb ein leerer Commit zum Neustart).
 - [x] **Release v0.1.0:** Tag auf `4519a56`, Lauf „Version veröffentlichen“ 43102937915 grün (Versionsprüfung, Unit- und Rust-Tests, Build). Assets `Pflichten-Kompass_0.1.0_x64-setup.exe` und `Pflichten-Kompass-Setup.exe`, je 1.602.502 Bytes, SHA-256 gleich (`24b22485…c2d101f`). Veröffentlicht als „latest“ am 11.11.2026 um 22:42 MEZ, danach Repo öffentlich. Ohne Anmeldung geprüft: `curl -sIL …/releases/latest/download/Pflichten-Kompass-Setup.exe` endet mit 200 und 1.602.502 Bytes; heruntergeladen, Prüfwert gleich.
 - [x] **Repo:** Beschreibung, Themen und Homepage https://olbricht-digital.de/software/pflichten-kompass gesetzt.
+
+## Export Beratungsakte v1 (13.11.2026)
+
+- [x] **Export im offenen Format Beratungsakte v1:** Knopf „Für die Beratungsakte speichern“ im Ergebnis mit Dialog (Mandant vorbelegt mit dem Namen des Vorhabens, Mandantennummer, Inhalt und Dateiname, Hinweis „keine Rechtsberatung“); im Browser Download, im Programm Speichern-Dialog (`speichern_unter` mit der Art `beratungsakte`). Abbildung in [E32](entscheidungen.md). Kopie der Bibliothek 1.0.1 in `src/beratungsakte/`, Beispiele in `testdaten/beratungsakte/`. Geprüft: 18 Unit-Tests (`src/export/beratungsakte.test.ts`, dazu einer, der mit `BERATUNGSAKTE_AUSGABE` die Beispieldatei schreibt: Beispiele A–F gültig ohne Hinweise, Zahlen aus den Golden Tests, Stufen, Status, Warnungen, Grenzfälle, Kopie der Bibliothek), 5 Browsertests mit axe hell und dunkel (`e2e/beratungsakte.spec.ts`), `cargo test`, Desktop-Test mit 59 Prüfpunkten.
 
 ## Phase 7 – Katalog 2027.01 (später)
 
